@@ -1,0 +1,9 @@
+included files from different sources:
+
+standard_1005.elc
+	obtained from FieldTrip 170410.
+	FieldTrip is licensed under the GNU GPL 3.
+
+standard_vol.mat
+	obtained from EEGLAB v13.6.5b.
+	EEGLAB is licensed under the GNU GPL 2.
