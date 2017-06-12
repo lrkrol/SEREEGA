@@ -1,10 +1,16 @@
+%% preparations
+% make sure that EEGLAB has been started.
+% in this tutorial, we will be using the leadfield from ICMB-NY. for that,
+% the file sa_nyhead.mat should be in the path. it can be downloaded from 
+% http://www.parralab.org/nyhead/sa_nyhead.mat
+
 %% generate a leadfield
-% first, generate a leadfield. this we can do either using FieldTriep, or
+% first, generate a leadfield. this we can do either using FieldTrip, or
 % by using (a part of) the ICBM-NY precalculated leadfield.
 
 % we can indicate the electrode locations we want to use by indicating
-% their channel labels. for example, to simulate a 64-channel actiCAP cap
-% based on the ICBM-NY head model:
+% their channel labels. for example, to simulate the closest available 
+% equivalent of a 64-channel actiCAP cap based on the ICBM-NY head model:
 
 channels = {'Fp1', 'Fp2', 'F7', 'F3', 'Fz', 'F4', 'F8', 'FC5', ...
             'FC1', 'FC2', 'FC6', 'T7', 'C3', 'Cz', 'C4', 'T8', ...
@@ -15,23 +21,24 @@ channels = {'Fp1', 'Fp2', 'F7', 'F3', 'Fz', 'F4', 'F8', 'FC5', ...
             'FT10', 'C5', 'C1', 'C2', 'C6', 'TP7', 'CP3', ...
             'CPz', 'CP4', 'TP8', 'P5', 'P1', 'P2', 'P6', ...
             'PO7', 'PO3', 'POz', 'PO4', 'PO8'};
-        
+
 lf = lf_generate_fromnyhead('labels', channels);
 
-% or, when generating the leadfield using FieldTrip, we can indicate the
+% when generating the leadfield using FieldTrip, we can also indicate the
 % resolution of the source model (i.e. the density of the source grid):
 
 % lf = lf_generate_fromfieldtrip('labels', channels, 'resolution', 5);
 
 % this gives us a leadfield with the following channel locations:
+
 h = plot_chanlocs(lf);
 pause; close(h);
 
 %% pick a source
 % the leadfield contains a number of 'sources' in the brain, i.e. source
-% locations plus their projection patterns to the scalp. in order to
-% simulate a signal coming from a given source, we first need to find that
-% source.
+% locations plus their projection patterns to the selected electrodes. in
+% order to simulate a signal coming from a given source, we first need to
+% select that source.
 
 % we can get a random source, and inspect its location:
 
@@ -40,7 +47,7 @@ h = plot_source_location(lf, source);
 pause; close(h);
 
 % or, if we know the location of a source, we can get the source nearest to
-% that location, for example, the right visual cortex:
+% that location, for example, somewhere in the right visual cortex:
 
 source = lf_get_source_nearest(lf, [20 -85 0]);
 h = plot_source_location(lf, source);
@@ -76,4 +83,6 @@ h = plot_source_projection(lf, source);
 pause; close(h);
 
 %% simulate data
-% we now have a source
+% we now have a source and its orientation, i.e., we now know exactly how
+% this source projects onto the scalp. next, we must determine what exactly
+% is to be projected onto the scalp, i.e., the source's activation pattern.
