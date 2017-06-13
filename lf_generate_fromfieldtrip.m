@@ -33,7 +33,7 @@
 %                    Berlin Institute of Technology
 
 % 2017-04-21 lrk
-%   - Complete revision
+%   - Complete revision for inclusion in SAREEGA
 %   - Changed leadfield structure
 % 2016-04-15 lrk
 %   - Complete revision

@@ -1,12 +1,19 @@
 %% preparations
 % make sure that EEGLAB has been started.
+
 % in this tutorial, we will be using the leadfield from ICMB-NY. for that,
 % the file sa_nyhead.mat should be in the path. it can be downloaded from 
 % http://www.parralab.org/nyhead/sa_nyhead.mat
 
+% the general configuration of the simulated epochs requires:
+
+epochs.n = 100;             % the number of epochs to simulate
+epochs.srate = 500;         % their sampling rate in Hz
+epochs.length = 1000;       % their length in ms
+
 %% generate a leadfield
-% first, generate a leadfield. this we can do either using FieldTrip, or
-% by using (a part of) the ICBM-NY precalculated leadfield.
+% first, obtain a leadfield. this we can do either using FieldTrip, or by
+% using (a part of) the ICBM-NY precalculated leadfield.
 
 % we can indicate the electrode locations we want to use by indicating
 % their channel labels. for example, to simulate the closest available 
@@ -34,7 +41,7 @@ lf = lf_generate_fromnyhead('labels', channels);
 h = plot_chanlocs(lf);
 pause; close(h);
 
-%% pick a source
+%% pick a source location
 % the leadfield contains a number of 'sources' in the brain, i.e. source
 % locations plus their projection patterns to the selected electrodes. in
 % order to simulate a signal coming from a given source, we first need to
@@ -53,7 +60,7 @@ source = lf_get_source_nearest(lf, [20 -85 0]);
 h = plot_source_location(lf, source);
 pause; close(h);
 
-%% orient the source
+%% orient the source dipole
 % the sources in the leadfield are represented by dipoles at specific
 % locations. these dipoles can be oriented in space into any direction.
 % this is indicated using an [x, y, z] orientation array. along with its 
@@ -83,6 +90,34 @@ h = plot_source_projection(lf, source);
 pause; close(h);
 
 %% simulate data
-% we now have a source and its orientation, i.e., we now know exactly how
-% this source projects onto the scalp. next, we must determine what exactly
-% is to be projected onto the scalp, i.e., the source's activation pattern.
+% we now have a source's location and its orientation, i.e., we now know
+% exactly how this source projects onto the scalp. next, we must determine
+% what exactly is to be projected onto the scalp, i.e., the source's
+% activation pattern.
+
+% let us consider an event-related potential (ERP). an ERP is defined by
+% the latency, width, and amplitude of its peak(s). we store EEG activation
+% definitions in "classes", in the form of structure arrays:
+
+erp.peakLatency = 300;      % in ms
+erp.peakWidth = 100;        % in ms
+erp.peakAmplitude = 1;      % in mV
+
+% the width is one-sided, i.e., the full width of the above peak will be
+% between apprximately 200 and 400 ms.
+
+% this toolbox actually works with more than these three variables for ERP
+% definitions. those other variables are not important right now, but they
+% are required for the further functioning of this toolbox. to make sure
+% the class is properly defined, including all currently missing variables,
+% we can use the following function and see the newly added values.
+% (alternatively, we could indicate all variables by hand.)
+
+erp = utl_check_class(erp, 'type', 'erp');
+erp
+
+% we can now plot what this ERP would look like.
+
+plot_signal(erp, epochs);
+
+%% brain components
