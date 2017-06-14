@@ -44,9 +44,11 @@
 
 function h = erp_plot_signal(class, epochs)
 
+% getting time stamps
 x = 1:epochs.length/1000*epochs.srate;
 x = x/epochs.srate;
 
+% correcting time stamps if a prestimulus period is indicated
 if isfield(epochs, 'prestim'),
     x = x - epochs.prestim/1000; end
 

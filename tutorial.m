@@ -10,13 +10,15 @@
 epochs.n = 100;             % the number of epochs to simulate
 epochs.srate = 500;         % their sampling rate in Hz
 epochs.length = 1000;       % their length in ms
+
+% additionally, in this tutorial we add:
 epochs.marker = 'event 1';  % the epochs' time-locking event marker
 epochs.prestim = 200;       % pre-stimulus period in ms. note that this
                             % only affects the time indicated in the final
                             % dataset; it is ignored during simulation.
                             % i.e., a simulated latency of 500 ms becomes a 
-                            % latency of 300 ms when a prestimulus of 200
-                            %  ms is indicated.
+                            % latency of 300 ms when a prestimulus period 
+                            % of 200 ms is later applied.
 
 %% generate a leadfield
 % first, obtain a leadfield. this we can do either using FieldTrip, or by
