@@ -1,11 +1,13 @@
-% h = plot_signal(class, epochs)
+% signal = generate_signal_fromclass(class, epochs, epochNumber)
 %
-%       Gateway function to plot class activation patterns. Takes a class
-%       variable and calls the corresponding plotting function.
+%       Gateway function to generate signals based on a class. Takes a 
+%       class variable and calls the corresponding signal generation
+%       function.
 %
 % In:
 %       class - 1x1 struct, the class variable
 %       epochs - 1x1 struct, an epoch configuration struct
+%       epochNumber - current epoch number (required for slope calculation)
 %
 % Out:  
 %       h - handle of the generated figure
@@ -14,13 +16,13 @@
 %       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
 %       >> erp.peakLatency = 200; erp.peakWidth = 100; erp.peakAmplitude = 1;
 %       >> erp = utl_check_class(erp, 'type', 'erp');
-%       >> plot_signal(erp, epochs);
+%       >> signal = generate_signal_fromclass(erp, epochs, 1);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
-% 2017-06-13 First version
+% 2017-06-14 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
 
@@ -37,16 +39,14 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function h = plot_signal(class, epochs)
+function signal = generate_signal_fromclass(class, epochs, epochNumber)
 
-class = utl_check_class(class);
-
-% calling type-specific plot function
-if ~exist(sprintf('%s_plot_signal', class.type), 'file')
-    error('no plotting function found for class type ''%s''', class.type);
+% calling type-specific generate function
+if ~exist(sprintf('%s_generate_signal', class.type), 'file')
+    error('no signal generation function found for class type ''%s''', class.type);
 else
-    class_plot_signal = str2func(sprintf('%s_plot_signal', class.type));
-    h = class_plot_signal(class, epochs);
+    class_generate_signal_fromclass = str2func(sprintf('%s_generate_signal_fromclass', class.type));
+    signal = class_generate_signal_fromclass(class, epochs, epochNumber);
 end
 
 end

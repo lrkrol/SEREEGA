@@ -1,12 +1,12 @@
 % class = utl_check_class(class, varargin)
 %
-%       Gate function to validate classes. Takes an incomplete class
-%       variable and completes it according to the check functions of the
-%       given/determined class.
+%       Gateway function to validate classes. Takes an (incomplete) class
+%       variable and validates/completes it according to the check
+%       function of the given/determined class.
 %
 % In:
 %       class - the class variable as a struct with at least the required
-%               fields 
+%               fields
 %
 % Optional (key-value pairs):
 %       type - the type of the class if not indicated in the class.type
@@ -58,17 +58,14 @@ type = p.Results.type;
 
 % seeing if type can be determined
 if ~isfield(class, 'type') && isempty(type)
-    error(['cannot determine class type. ' ...
-          'either insert a ''type'' field in the variable, or include ' ...
-          '''type'' in the call to this function.']);
+    error('cannot determine class type.');
 elseif isfield(class, 'type')
     type = class.type;
 end
 
 % calling type-specific check function
-if ~exist(sprintf('%s_check_class', type))
-    error(['cannot validate class ''%s'': cannot find function ''%s_check_class'''], ...
-          type, type);
+if ~exist(sprintf('%s_check_class', type) , 'file')
+    error('cannot check class ''%s'': cannot find function ''%s_check_class''', type, type);
 else
     check_class = str2func(sprintf('%s_check_class', type));
     class = check_class(class);

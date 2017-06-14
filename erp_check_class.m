@@ -3,20 +3,28 @@
 %       Validates and completes an ERP class structure.
 %
 %       ERPs are defined by peak latencies, widths, and amplitudes.
-%       additionally, the variability of each of these is indicated using a
-%       possible deviation (Dv), and slope. 
+%       Additionally, the epoch-to-epoch variability of each of these is
+%       indicated using a possible deviation (Dv), and the change over time
+%       is indicated using a slope. Finally, a probability can be set for
+%       the appearance of the signal as a whole.
 %
-%       for a peak at 400 ms with a width of 100 and a slope of 100, 99.7%
-%       (six sigma) of the peak will be between 300 and 500 ms on the first
-%       epoch. on the final epoch, due to the slope, the peak will be 100
-%       ms later, between 400 and 600 ms.
+%       For a peak at 400 ms latency, a width of 100 and a slope of 100, 
+%       99.7% (six sigma) of the peak will be between 300 and 500 ms on the 
+%       first epoch. On the final epoch, due to the slope, the peak will be 
+%       100 ms later, between 400 and 600 ms. A slope of 0 means nothing
+%       will change over time (barring any indicated deviations).
 %
-%       deviations represent the trial-to-trial variability. a deviation of
-%       20 for a peak at 400 ms means that the peak latency varies
-%       according to a normal distribution, with 99.7% of peaks being
-%       centered between 380 and 420 ms.
+%       Deviations represent the epoch-to-epoch (trial-to-trial) 
+%       variability. A deviation of 20 for a peak at 400 ms means that the
+%       peak latency varies according to a normal distribution, with 99.7% 
+%       of peaks being centered between 380 and 420 ms. A deviation of 0
+%       means all signals will be exactly the same (barring any sloping).
 %
-%       a complete ERP class definition includes the following fields:
+%       The probability can range from 0 (this ERP signal will never be
+%       generated) to 1 (this ERP signal will be generated for every single
+%       epoch). 
+%
+%       A complete ERP class definition includes the following fields:
 %
 %         type:                 class type (must be 'erp')
 %         peakLatency:          1-by-n matrix of peak latencies
@@ -28,6 +36,9 @@
 %         peakAmplitude:        1-by-n matrix of peak amplitudes
 %         peakAmplitudeDv:      1-by-n matrix of peak amplitude deviations
 %         peakAmplitudeSlope:   1-by-n matrix of peak amplitude slopes
+%         probability:          0-1 scalar indicating probability of
+%                               appearance
+%         probabilitySlope:     0-1 scalar, probability slope
 %
 % In:
 %       class - the class variable as a struct with at least the required
@@ -98,6 +109,12 @@ if ~isfield(class, 'peakAmplitudeDv'),
 if ~isfield(class, 'peakAmplitudeSlope'),
     class.peakAmplitudeSlope = zeros(1, numel(class.peakLatency)); end
 
+if ~isfield(class, 'probability'),
+    class.probability = 1; end
+
+if ~isfield(class, 'probabilitySlope'),
+    class.probabilitySlope = 0; end
+
 class = orderfields(class);
 
 % checking values
@@ -110,12 +127,15 @@ end
 if ~isequal(numel(class.peakLatency), numel(class.peakLatencyDv), numel(class.peakLatencySlope), ...
             numel(class.peakWidth), numel(class.peakWidthDv), numel(class.peakWidthSlope), ...
             numel(class.peakAmplitude), numel(class.peakAmplitudeDv), numel(class.peakAmplitudeSlope)),
-        error('all peak* fields must be of the same length'); end
+    error('all peak* fields must be of the same length'); end
     
 if any(class.peakLatency < 0),
     error('ERP peak latencies cannot be less than zero'); end
 
 if any(class.peakWidth <= 0),
     error('ERP peak widths cannot be zero or less'); end
+
+if any(class.peakWidth - class.peakWidthDv < 1),
+    warning('some peak widths may become zero or less due to the indicated deviation; this may lead to unexpected results'); end
 
 end

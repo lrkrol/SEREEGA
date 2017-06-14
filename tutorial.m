@@ -10,6 +10,13 @@
 epochs.n = 100;             % the number of epochs to simulate
 epochs.srate = 500;         % their sampling rate in Hz
 epochs.length = 1000;       % their length in ms
+epochs.marker = 'event 1';  % the epochs' time-locking event marker
+epochs.prestim = 200;       % pre-stimulus period in ms. note that this
+                            % only affects the time indicated in the final
+                            % dataset; it is ignored during simulation.
+                            % i.e., a simulated latency of 500 ms becomes a 
+                            % latency of 300 ms when a prestimulus of 200
+                            %  ms is indicated.
 
 %% generate a leadfield
 % first, obtain a leadfield. this we can do either using FieldTrip, or by
@@ -89,7 +96,7 @@ pause; close(h);
 h = plot_source_projection(lf, source);
 pause; close(h);
 
-%% simulate data
+%% define the signal
 % we now have a source's location and its orientation, i.e., we now know
 % exactly how this source projects onto the scalp. next, we must determine
 % what exactly is to be projected onto the scalp, i.e., the source's
@@ -99,12 +106,14 @@ pause; close(h);
 % the latency, width, and amplitude of its peak(s). we store EEG activation
 % definitions in "classes", in the form of structure arrays:
 
-erp.peakLatency = 300;      % in ms
+erp.peakLatency = 500;      % in ms, starting at the start of the epoch
 erp.peakWidth = 100;        % in ms
 erp.peakAmplitude = 1;      % in mV
 
 % the width is one-sided, i.e., the full width of the above peak will be
-% between apprximately 200 and 400 ms.
+% between apprximately 100 and 200 ms (note that we have defined a
+% prestimulus period of 200 ms, which must be subtracted from these
+% latencies.)
 
 % this toolbox actually works with more than these three variables for ERP
 % definitions. those other variables are not important right now, but they
@@ -120,4 +129,25 @@ erp
 
 plot_signal(erp, epochs);
 
-%% brain components
+%% brain components and scalp data
+% having defined both a signal (the ERP) and a source location plus
+% projection pattern for this signal, we can now combine these
+% into a single component.
+
+c.source = source;
+c.signal = {erp};
+
+c = utl_check_component(c, lf);
+
+% with this, we have all we need to simulate scalp data.
+
+scalpdata = generate_scalpdata(c, lf, epochs);
+
+% we can turn this into a dataset according to the EEGLAB format in order
+% to use EEGLAB's analysis tools, for example, to see the scalp projection
+% time course of the ERP we just simulated.
+
+EEG = utl_create_eeglabdataset(scalpdata, epochs.srate, 'chanlocs', lf.chanlocs, 'xmin', -epochs.prestim/1000, 'marker', epochs.marker);
+
+pop_topoplot(EEG, 1, [100, 200, 250, 300, 350, 400, 500], '', [1 8]);
+
