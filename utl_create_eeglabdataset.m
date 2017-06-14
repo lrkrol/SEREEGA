@@ -109,13 +109,13 @@ else
 end
 
 EEG = eeg_checkset(EEG);
-
+% keyboard
 if EEG.trials > 1
     % adding markers
     EEG.event = struct('type', {}, 'latency', {}, 'duration', {}, 'epoch', {}, 'init_index', {}, 'init_time', {});
     for e = 1:EEG.trials
         EEG.event(e) = importevent( ...
-                {marker, (e-1) * EEG.pnts/1000, 1/EEG.srate, e}, ...
+                {marker, -xmin + (e-1) * EEG.pnts/EEG.srate, 1/EEG.srate, e}, ...
                 [], EEG.srate, ...
                 'fields', {'type', 'latency', 'duration', 'epoch'});
     end

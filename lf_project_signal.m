@@ -1,4 +1,4 @@
-% scalpdata = lf_project_signal(signal, leadfield, source, orientation, normalise)
+% scalpdata = lf_project_signal(signal, leadfield, source, orientation, varargin)
 %
 %       Projects am activation signal through the indicated leadfield.
 %
@@ -8,10 +8,12 @@
 %       source - source index of the source in the leadfield
 %       orientation - orientation of the source to use
 %
-% Optional:
-%       normalise - 1|0, whether or not to normalise the leadfields before
-%                   projecting the signal to have the most extreme value be
-%                   either 1 or -1, depending on its sign. default: 1
+% Optional (key-value pairs):
+%       normaliseLeadfield - 1|0, whether or not to normalise the
+%                            leadfields before  projecting the signal to
+%                            have the most extreme value be either 1 or -1,
+%                            depending on its sign. default: 1
+%       normaliseOrientation - 1|0, as above, except for orientation
 %
 % Out:
 %       scalpdata - channels x samples array of simulated scalp data
@@ -45,16 +47,41 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function scalpdata = lf_project_signal(signal, leadfield, source, orientation, normalise)
+function scalpdata = lf_project_signal(signal, leadfield, source, orientation, varargin)
 
-if ~exist('normalise', 'var'), normalise = 1; end
+% parsing input
+p = inputParser;
 
+addRequired(p, 'signal', @isnumeric);
+addRequired(p, 'leadfield', @isstruct);
+addRequired(p, 'source', @isnumeric);
+addRequired(p, 'orientation', @isnumeric);
+
+addParamValue(p, 'normaliseLeadfield', 1, @isnumeric);
+addParamValue(p, 'normaliseOrientation', 1, @isnumeric);
+
+parse(p, signal, leadfield, source, orientation, varargin{:})
+
+signal = p.Results.signal;
+leadfield = p.Results.leadfield;
+source = p.Results.source;
+orientation = p.Results.orientation;
+normaliseLeadfield = p.Results.normaliseLeadfield;
+normaliseOrientation = p.Results.normaliseOrientation;
+
+% getting leadfield
 leadfield = squeeze(leadfield.leadfield(:,source,:));
 
-if normalise
+if normaliseLeadfield
     % normalising to have the maximum (or minimum) value be 1 (or -1)
     [~, i] = max(abs(leadfield(:)));
     leadfield = leadfield .* (sign(leadfield(i)) / leadfield(i));
+end
+
+if normaliseOrientation
+    % normalising to have the maximum (or minimum) value be 1 (or -1)
+    [~, i] = max(abs(orientation(:)));
+    orientation = orientation .* (sign(orientation(i)) / orientation(i));
 end
 
 scalpdata = leadfield * [signal * orientation(1); ...

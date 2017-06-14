@@ -42,7 +42,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function class = erp_plot_signal(class, epochs)
+function h = erp_plot_signal(class, epochs)
 
 x = 1:epochs.length/1000*epochs.srate;
 x = x/epochs.srate;

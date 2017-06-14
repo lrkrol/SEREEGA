@@ -76,11 +76,16 @@ pause; close(h);
 
 % our source's projections onto scalp along the X, Y, and Z axes look like:
 
-h = plot_source_projection(lf, source, 'orientation', [1 0 0], 'orientedonly', 1);
+h = plot_source_projection(lf, source, ...
+        'orientation', [1 0 0], 'orientedonly', 1);
 pause; close(h);
-h = plot_source_projection(lf, source, 'orientation', [0 1 0], 'orientedonly', 1);
+
+h = plot_source_projection(lf, source, ...
+        'orientation', [0 1 0], 'orientedonly', 1);
 pause; close(h);
-h = plot_source_projection(lf, source, 'orientation', [0 0 1], 'orientedonly', 1);
+
+h = plot_source_projection(lf, source, ...
+        'orientation', [0 0 1], 'orientedonly', 1);
 pause; close(h);
 
 % these projections can be linearly combined to get any simulated dipole
@@ -108,7 +113,7 @@ pause; close(h);
 
 erp.peakLatency = 500;      % in ms, starting at the start of the epoch
 erp.peakWidth = 100;        % in ms
-erp.peakAmplitude = 1;      % in mV
+erp.peakAmplitude = 1;      % in microV
 
 % the width is one-sided, i.e., the full width of the above peak will be
 % between apprximately 100 and 200 ms (note that we have defined a
@@ -127,7 +132,8 @@ erp
 
 % we can now plot what this ERP would look like.
 
-plot_signal(erp, epochs);
+h = plot_signal(erp, epochs);
+pause; close(h);
 
 %% brain components and scalp data
 % having defined both a signal (the ERP) and a source location plus
@@ -147,7 +153,9 @@ scalpdata = generate_scalpdata(c, lf, epochs);
 % to use EEGLAB's analysis tools, for example, to see the scalp projection
 % time course of the ERP we just simulated.
 
-EEG = utl_create_eeglabdataset(scalpdata, epochs.srate, 'chanlocs', lf.chanlocs, 'xmin', -epochs.prestim/1000, 'marker', epochs.marker);
+EEG = utl_create_eeglabdataset(scalpdata, epochs.srate, ...
+        'chanlocs', lf.chanlocs, 'xmin', -epochs.prestim/1000, ...
+        'marker', epochs.marker);
 
 pop_topoplot(EEG, 1, [100, 200, 250, 300, 350, 400, 500], '', [1 8]);
 

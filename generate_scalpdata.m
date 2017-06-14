@@ -1,4 +1,4 @@
-% scalpdata = generate_scalpdata(component, leadfield, epochs)
+% scalpdata = generate_scalpdata(component, leadfield, epochs, varargin)
 %
 %       Generates the scalp data by simulating all signals in all
 %       components, projecting them through the leadfield using the given
@@ -12,10 +12,12 @@
 %                (srate), epoch length (length), and total number of epochs 
 %                (n)
 %
-% Optional:
-%       normalise - 1|0, whether or not to normalise the leadfields before
-%                   projecting the signal to have the most extreme value be
-%                   either 1 or -1, depending on its sign. default: 1
+% Optional (key-value pairs):
+%       normaliseLeadfield - 1|0, whether or not to normalise the
+%                            leadfields before  projecting the signal to
+%                            have the most extreme value be either 1 or -1,
+%                            depending on its sign. default: 1
+%       normaliseOrientation - 1|0, as above, except for orientation
 %
 % Out:
 %       scalpdata - channels x samples x epochs array of simulated scalp
@@ -51,9 +53,25 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function scalpdata = generate_scalpdata(component, leadfield, epochs, normalise)
+function scalpdata = generate_scalpdata(component, leadfield, epochs, varargin)
 
-if ~exist('normalise', 'var'), normalise = 1; end
+% parsing input
+p = inputParser;
+
+addRequired(p, 'component', @isstruct);
+addRequired(p, 'leadfield', @isstruct);
+addRequired(p, 'epochs', @isstruct);
+
+addParamValue(p, 'normaliseLeadfield', 1, @isnumeric);
+addParamValue(p, 'normaliseOrientation', 1, @isnumeric);
+
+parse(p, component, leadfield, epochs, varargin{:})
+
+component = p.Results.component;
+leadfield = p.Results.leadfield;
+epochs = p.Results.epochs;
+normaliseLeadfield = p.Results.normaliseLeadfield;
+normaliseOrientation = p.Results.normaliseOrientation;
 
 scalpdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), epochs.n);
 
@@ -85,7 +103,9 @@ for e = 1:epochs.n
         orientation = utl_apply_dvslope(orientation, orientationDv, zeros(1,3), e, epochs.n);
             
         % projecting signal
-        componentdata(:,:,c) = lf_project_signal(componentsignal, leadfield, source, orientation, normalise);
+        componentdata(:,:,c) = lf_project_signal(componentsignal, leadfield, source, orientation, ...
+                'normaliseLeadfield', normaliseLeadfield, ...
+                'normaliseOrientation', normaliseOrientation);
     end
     
     % combining projected component signals into single epoch
