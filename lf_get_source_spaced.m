@@ -9,7 +9,7 @@
 %
 % In:
 %       leadfield - the leadfield from which to get the spaced sources
-%       num - the number of sources to return
+%       number - the number of sources to return
 %       spacing - the minimum spacing in mm between sources
 %
 % Out:
@@ -45,7 +45,7 @@ function [sourceIdx] = lf_get_source_spaced(leadfield, number, spacing)
 % randomising sources
 sources = randperm(size(leadfield.pos, 1));
 
-% starting with one random source
+% starting with first random source
 sourceIdx = sources(1);
 
 % running through remaining sources
