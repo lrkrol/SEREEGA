@@ -11,7 +11,8 @@ epochs.n = 100;             % the number of epochs to simulate
 epochs.srate = 500;         % their sampling rate in Hz
 epochs.length = 1000;       % their length in ms
 
-% additionally, in this tutorial we add:
+% additionally, for this tutorial we add:
+
 epochs.marker = 'event 1';  % the epochs' time-locking event marker
 epochs.prestim = 200;       % pre-stimulus period in ms. note that this
                             % only affects the time indicated in the final
@@ -118,7 +119,7 @@ erp.peakWidth = 100;        % in ms
 erp.peakAmplitude = 1;      % in microV
 
 % the width is one-sided, i.e., the full width of the above peak will be
-% between apprximately 100 and 200 ms (note that we have defined a
+% between apprximately 200 and 400 ms (note that we have defined a
 % prestimulus period of 200 ms, which must be subtracted from these
 % latencies.)
 
@@ -147,7 +148,10 @@ c.signal = {erp};
 
 c = utl_check_component(c, lf);
 
-% with this, we have all we need to simulate scalp data.
+% with this, we have all we need to simulate scalp data. scalp data is
+% simulating by projecting all components''signal activations through their
+% respective sources, and summing all projections together. right now, our
+% scalp data contains the activation of only one signal from one source.
 
 scalpdata = generate_scalpdata(c, lf, epochs);
 
