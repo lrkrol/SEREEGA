@@ -149,7 +149,7 @@ c.signal = {erp};
 c = utl_check_component(c, lf);
 
 % with this, we have all we need to simulate scalp data. scalp data is
-% simulating by projecting all components''signal activations through their
+% simulated by projecting all components' signal activations through their
 % respective sources, and summing all projections together. right now, our
 % scalp data contains the activation of only one signal from one source.
 
