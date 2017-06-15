@@ -1,6 +1,6 @@
 % h = erp_plot_signal_fromclass(class, epochs)
 %
-%       Plots ERP class activation signal. In blue, solid line: the mean 
+%       Plots an ERP class activation signal. In blue, solid line: the mean 
 %       signal as defined. The dotted and dashed lines indicate the
 %       signal's variability as per the defined deviations. If a slope has
 %       been defined, the red curve indicates the signal (mean and
@@ -8,7 +8,9 @@
 %
 % In:
 %       class - 1x1 struct, the class variable
-%       epochs - 1x1 struct, an epoch configuration struct
+%       epochs - single epoch configuration struct containing at least
+%                sampling rate (srate), epoch length (length), and total
+%                number of epochs (n)
 %
 % Out:  
 %       h - handle of the generated figure

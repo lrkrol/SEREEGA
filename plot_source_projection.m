@@ -1,6 +1,8 @@
 % h = plot_source_projection(leadfield, sourceIdx, varargin)
 %
-%       Plots the projection of the given source using EEGLAB's topoplot.
+%       Plots the projection of the given source using EEGLAB's topoplot
+%       for x, y, and z separately, plus using a given (or default)
+%       orientation. Can also plot only the oriented projection.
 %
 % In:
 %       leadfield - the leadfield from which to plot the source

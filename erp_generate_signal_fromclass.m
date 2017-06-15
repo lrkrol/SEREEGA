@@ -6,7 +6,9 @@
 %
 % In:
 %       class - 1x1 struct, the class variable
-%       epochs - 1x1 struct, an epoch configuration struct
+%       epochs - single epoch configuration struct containing at least
+%                sampling rate (srate), epoch length (length), and total
+%                number of epochs (n)
 %       epochNumber - current epoch number (required for slope calculation)
 %
 % Out:  

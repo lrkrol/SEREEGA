@@ -4,8 +4,8 @@
 %
 % In:
 %       leadfield - the leadfield from which to plot the sources
-%       sourceIdx - the index/indices of the source(s) in the leadfield to
-%                   be plotted
+%       sourceIdx - 1-by-n array containing the index/indices of the 
+%                   source(s) in the leadfield to be plotted
 %
 % Optional (key-value pairs):
 %       newfig - (0|1) whether or not to open a new figure window.

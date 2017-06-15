@@ -26,26 +26,26 @@
 %
 %       A complete ERP class definition includes the following fields:
 %
-%         type:                 class type (must be 'erp')
-%         peakLatency:          1-by-n matrix of peak latencies
-%         peakLatencyDv:        1-by-n matrix of peak latency deviations
-%         peakLatencySlope:     1-by-n matrix of peak latency slopes
-%         peakWidth:            1-by-n matrix of peak widths
-%         peakWidthDv:          1-by-n matrix of peak width deviations
-%         peakWidthSlope:       1-by-n matrix of peak width slopes
-%         peakAmplitude:        1-by-n matrix of peak amplitudes
-%         peakAmplitudeDv:      1-by-n matrix of peak amplitude deviations
-%         peakAmplitudeSlope:   1-by-n matrix of peak amplitude slopes
-%         probability:          0-1 scalar indicating probability of
-%                               appearance
-%         probabilitySlope:     0-1 scalar, probability slope
+%         .type:                 class type (must be 'erp')
+%         .peakLatency:          1-by-n matrix of peak latencies
+%         .peakLatencyDv:        1-by-n matrix of peak latency deviations
+%         .peakLatencySlope:     1-by-n matrix of peak latency slopes
+%         .peakWidth:            1-by-n matrix of peak widths
+%         .peakWidthDv:          1-by-n matrix of peak width deviations
+%         .peakWidthSlope:       1-by-n matrix of peak width slopes
+%         .peakAmplitude:        1-by-n matrix of peak amplitudes
+%         .peakAmplitudeDv:      1-by-n matrix of peak amplitude deviations
+%         .peakAmplitudeSlope:   1-by-n matrix of peak amplitude slopes
+%         .probability:          0-1 scalar indicating probability of
+%                                appearance
+%         .probabilitySlope:     scalar, slope of the probability
 %
 % In:
 %       class - the class variable as a struct with at least the required
 %               fields: peakLatency, peakWidth, and peakAmplitude
 %
 % Out:  
-%       class - the class variable with all fields completed
+%       class - the class variable struct with all fields completed
 %
 % Usage example:
 %       >> erp.peakLatency = 200;

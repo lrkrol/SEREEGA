@@ -1,7 +1,8 @@
-% component = utl_check_component(component)
+% component = utl_check_component(component, leadfield)
 %
 %       Validates a component. Takes an (incomplete) component variable
-%       and validates/completes it, including all indicated signals.
+%       and validates/completes it. Also validates/completes all indicated 
+%       signals.
 %
 % In:
 %       component - the component variable with at least the required
@@ -13,7 +14,7 @@
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead;
-%       >> erp.peakLatency = 300; erp.peakWidth = 100; erp.peakAmplitude = 1;
+%       >> erp.peakLatency= 300; erp.peakWidth= 100; erp.peakAmplitude= 1;
 %       >> erp = utl_check_class(erp, 'type', 'erp');
 %       >> c.source = [1, 2]; c.signal = {erp};
 %       >> c = utl_check_component(c, lf)
@@ -65,6 +66,7 @@ if ~all(size(component.orientation) == [numel(component.source), 3]),
 if ~iscell(component.signal),
     error('component signals must be in a cell array'); end
 
+% checking signals
 for s = 1:length(component.signal)
     component.signal{s} = utl_check_class(component.signal{s});
 end

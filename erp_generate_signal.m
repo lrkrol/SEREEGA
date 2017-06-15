@@ -6,8 +6,8 @@
 % In:
 %       peakLatency - 1-by-n matrix containing the peak latencies, in ms
 %       peakWidth - 1-by-n matrix containing the peak widths, in ms
-%       peakAmplitude - 1-by-n matrix containing the peak amplitudes
-%       srate - sampling rate of the produced signal
+%       peakAmplitude - 1-by-n matrix containing the peak amplitudes, in uV
+%       srate - sampling rate of the produced signal, in Hz
 %       epochLength - length of the epoch, in ms
 %
 % Out:  

@@ -1,16 +1,16 @@
 % scalpdata = generate_scalpdata(component, leadfield, epochs, varargin)
 %
-%       Generates the scalp data by simulating all signals in all
+%       Generates simulated scalp data by simulating all signals in all
 %       components, projecting them through the leadfield using the given
-%       source and orientation, and summing them together for all of the
+%       source and orientation, and summing them together, for all of the
 %       indicated epochs.
 %
 % In:
 %       component - 1-by-n struct of components (see utl_check_component)
 %       leadfield - a leadfield struct
-%       epochs - an epochs struct containing at least sampling rate
-%                (srate), epoch length (length), and total number of epochs 
-%                (n)
+%       epochs - single epoch configuration struct containing at least
+%                sampling rate (srate), epoch length (length), and total
+%                number of epochs (n)
 %
 % Optional (key-value pairs):
 %       normaliseLeadfield - 1|0, whether or not to normalise the

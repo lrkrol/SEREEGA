@@ -6,14 +6,15 @@
 %
 % In:
 %       class - the class variable as a struct with at least the required
-%               fields
+%               fields (see the class's own check function, i.e.
+%               <classtype>_check_class)
 %
 % Optional (key-value pairs):
 %       type - the type of the class if not indicated in the class.type
 %              field
 %
 % Out:  
-%       class - the updated/verified class
+%       class - the updated/verified class variable
 %
 % Usage example:
 %       >> erp.peakLatency = 200;

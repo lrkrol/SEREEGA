@@ -6,18 +6,21 @@
 %
 % Optional (key-value pairs):
 %       chanlocs - an EEGLAB chanlocs structure
-%       chanlabels - a cell array of channel labels
+%       chanlabels - a cell array of channel labels (ignored when chanlocs
+%                    is indicated)
 %       xmin - epoch start latency in seconds (for epoched data, relative
-%              to the time-locking event at time 0) (default 0)
-%       marker - string to put at 0 time point for epoched data
+%              to the time-locking event at time 0, i.e., should be <= 0)
+%              (default 0)
+%       marker - string to put at 0 time point for epoched data (default
+%                'event')
 %
 % Out:  
-%       EEG - datast in EEGLAB format
+%       EEG - dataset in EEGLAB format
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead();
 %       >> EEG = utl_create_eeglabdataset(rand(231, 512, 100), 512, ...
-%          'chanlocs', lf.chanlocs)
+%          'chanlocs', lf.chanlocs, 'xmin', -0.2)
 % 
 %                    Copyright 2015-2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
@@ -25,6 +28,7 @@
 
 % 2017-06-14 lrk
 %   - Now accepts both chanlocs structure and cell of channel labels
+%   - Added markers
 %   - Switched to inputParser to parse arguments
 %   - Modifications for inclusion in SAREEGA
 % 2015-11-30 First version
@@ -55,7 +59,7 @@ addRequired(p, 'srate', @isnumeric);
 addParamValue(p, 'chanlocs', [], @isstruct);
 addParamValue(p, 'chanlabels', [], @iscell);
 addParamValue(p, 'xmin', 0, @isnumeric);
-addParamValue(p, 'marker', 0, @ischar);
+addParamValue(p, 'marker', 'event', @ischar);
 
 parse(p, data, srate, varargin{:})
 

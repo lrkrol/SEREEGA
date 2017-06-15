@@ -1,6 +1,6 @@
 % [sourceIdx] = lf_get_source_spaced(leadfield, number, spacing)
 %
-%       Attempts to returns a list of source indices that are all at least
+%       Attempts to return a list of source indices that are all at least
 %       an indicated distance away from each other.
 %
 %       Note: It may take multiple iterations to find a solution. It may
@@ -10,7 +10,7 @@
 % In:
 %       leadfield - the leadfield from which to get the spaced sources
 %       number - the number of sources to return
-%       spacing - the minimum spacing in mm between sources
+%       spacing - the minimum spacing between sources, in mm
 %
 % Out:
 %       sourceIdx - the source indices of the spaced sources

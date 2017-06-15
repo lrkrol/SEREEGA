@@ -3,6 +3,8 @@
 %       Generates a leadfield of a given resolution using FieldTrip,
 %       containing the electrodes indicated.
 %
+%       Note: uses ft_read_sens, which is in FieldTrip's fileio directory.
+%
 % Optional inputs (key-value pairs):
 %       resolution - the resolution of the grid in mm (default: 10)
 %       labels - cell of electrode labels to be used. default uses all 346
