@@ -11,7 +11,7 @@
 %       epochLength - length of the epoch, in ms
 %
 % Out:  
-%       signal - the generated simulated ERP signal
+%       signal - 1-by-n array, the simulated noise activation signal
 %
 % Usage example:
 %       >> signal = erp_generate_signal([175, 500], [50, 150], [-.25, 1], 500, 1000)
