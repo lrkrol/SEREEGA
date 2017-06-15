@@ -24,6 +24,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-06-15 lrk
+%   - Switched to DSP to generate colored noise
 % 2017-06-15 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
