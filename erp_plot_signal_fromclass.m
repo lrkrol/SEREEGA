@@ -12,6 +12,10 @@
 %                sampling rate (srate), epoch length (length), and total
 %                number of epochs (n)
 %
+% Optional (key-value pairs):
+%       newfig - (0|1) whether or not to open a new figure window.
+%                default: 1
+%
 % Out:  
 %       h - handle of the generated figure
 %
@@ -44,7 +48,21 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function h = erp_plot_signal_fromclass(class, epochs)
+function h = erp_plot_signal_fromclass(class, epochs, varargin)
+
+% parsing input
+p = inputParser;
+
+addRequired(p, 'class', @isstruct);
+addRequired(p, 'epochs', @isstruct);
+
+addParamValue(p, 'newfig', 1, @isnumeric);
+
+parse(p, class, epochs, varargin{:})
+
+class = p.Results.class;
+epochs = p.Results.epochs;
+newfig = p.Results.newfig;
 
 % getting time stamps
 x = 1:epochs.length/1000*epochs.srate;
@@ -54,7 +72,7 @@ x = x/epochs.srate;
 if isfield(epochs, 'prestim'),
     x = x - epochs.prestim/1000; end
 
-h = figure;
+if newfig, h = figure; else h = NaN; end
 hold on;
 
 % plotting the mean signal, no deviations applied
