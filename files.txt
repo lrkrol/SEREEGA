@@ -1,12 +1,5 @@
 included files from different sources:
 
-noise_generate_brown
-noise_generate_pink
-	Copyright 2016, Hristo Zhivomirov
-	Copyright 2012, Przemyslaw Baranski
-	All rights reserved
-	Reused with permission
-
 standard_1005.elc
 	obtained from FieldTrip 170410.
 	http://www.fieldtriptoolbox.org

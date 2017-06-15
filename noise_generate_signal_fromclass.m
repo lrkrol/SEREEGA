@@ -45,15 +45,12 @@ function signal = noise_generate_signal_fromclass(class, epochs, epochNumber)
 
 samples = epochs.srate * epochs.length/1000;
 
-switch class.color
-    case 'white'
-        signal = wgn(1,samples,1);
-    case 'pink'
-        signal = noise_generate_pink(samples)';
-    case 'brown'
-        signal = noise_generate_brown(samples)';
-    otherwise
-        error('unknown noise color');
+if verLessThan('matlab', '8.3')
+    warning('your MATLAB version is lower than R2014a; ignoring noise color settings and generating white noise using randn()');
+    signal = randn(1,samples);
+else
+    cn = dsp.ColoredNoise('Color', class.color, 'SamplesPerFrame', samples);
+    signal = cn()';
 end
 
 % normalising to have the maximum (or minimum) value be (-)amplitude

@@ -21,10 +21,16 @@
 %       generated) to 1 (this signal will be generated for every single
 %       epoch). 
 %
+%       Note: Noise is generated using the ColoredNoise function of the DSP
+%       System Toolbox, which was introduced in version R2014a. For older
+%       versions of MATLAB, this function reverts to noise generated using
+%       the randn() function.
+%
 %       A complete noise class definition includes the following fields:
 %
 %         .type:                 class type (must be 'noise')
-%         .color:                noise color, 'white'|'pink'|'brown'
+%         .color:                noise color, 'white', 'pink', 'brown', 
+%                                'blue' or 'purple'
 %         .peakAmplitude:        1-by-n matrix of peak amplitudes
 %         .peakAmplitudeDv:      1-by-n matrix of peak amplitude deviations
 %         .peakAmplitudeSlope:   1-by-n matrix of peak amplitude slopes
@@ -94,7 +100,12 @@ if ~isfield(class, 'probabilitySlope'),
 class = orderfields(class);
 
 % checking values
-if ~ismember(class.color, {'white', 'pink', 'brown'});
-    error('an unknown noise color is indicated in the given noise class variable');
+if ~ismember(class.color, {'white', 'pink', 'brown', 'blue', 'purple'});
+    error('an unknown noise color is indicated in the given noise class variable'); end
+
+if verLessThan('matlab', '8.3'),
+    warning(['your MATLAB version is lower than R2014a; ' ...
+             'during simulation, noise color settings will be ignored; ' ...
+             'white noise will be generated using randn()']); end
     
 end
