@@ -1,8 +1,8 @@
-% signal = generate_signal_fromclass(class, epochs, epochNumber)
+% signal = noise_generate_signal_fromclass(class, epochs, epochNumber)
 %
-%       Gateway function to generate signals based on a class. Takes a 
-%       class variable and calls the corresponding signal generation
-%       function.
+%       Takes a noise activation class, determines single parameters given
+%       the deviations/slopes in the class, and returns a signal generated
+%       using those parameters.
 %
 % In:
 %       class - 1x1 struct, the class variable
@@ -12,19 +12,19 @@
 %       epochNumber - current epoch number (required for slope calculation)
 %
 % Out:  
-%       h - handle of the generated figure
+%       signal - the generated simulated noise activation signal
 %
 % Usage example:
 %       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
-%       >> erp.peakLatency = 200; erp.peakWidth = 100; erp.peakAmplitude = 1;
-%       >> erp = utl_check_class(erp, 'type', 'erp');
-%       >> signal = generate_signal_fromclass(erp, epochs, 1);
+%       >> noise.noisetype = 'white'; noise.amplitude = 0.1;
+%       >> noise = utl_check_class(noise, 'type', 'noise');
+%       >> signal = noise_generate_signal_fromclass(noise, epochs, 1);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
-% 2017-06-14 First version
+% 2017-06-15 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
 
@@ -41,14 +41,24 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function signal = generate_signal_fromclass(class, epochs, epochNumber)
+function signal = noise_generate_signal_fromclass(class, epochs, epochNumber)
 
-% calling type-specific generate function
-if ~exist(sprintf('%s_generate_signal_fromclass', class.type), 'file')
-    error('no signal generation function found for class type ''%s''', class.type);
-else
-    class_generate_signal_fromclass = str2func(sprintf('%s_generate_signal_fromclass', class.type));
-    signal = class_generate_signal_fromclass(class, epochs, epochNumber);
+samples = epochs.srate * epochs.length/1000;
+
+switch class.color
+    case 'white'
+        signal = wgn(1,samples,1);
+    case 'pink'
+        signal = noise_generate_pink(samples)';
+    case 'brown'
+        signal = noise_generate_brown(samples)';
+    otherwise
+        error('unknown noise color');
 end
+
+% normalising to have the maximum (or minimum) value be (-)amplitude
+amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
+[~, i] = max(abs(signal(:)));
+signal = signal .* (sign(signal(i)) / signal(i)) .* amplitude;
 
 end

@@ -1,4 +1,4 @@
-% h = plot_signal_fromclass(class, epochs)
+% h = plot_signal_fromclass(class, epochs, varargin)
 %
 %       Gateway function to plot class activation patterns. Takes a class
 %       variable and calls the corresponding plotting function.
