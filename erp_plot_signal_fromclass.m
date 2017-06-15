@@ -1,4 +1,4 @@
-% h = erp_plot_signal(class, epochs)
+% h = erp_plot_signal_fromclass(class, epochs)
 %
 %       Plots ERP class activation signal. In blue, solid line: the mean 
 %       signal as defined. The dotted and dashed lines indicate the
@@ -42,7 +42,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function h = erp_plot_signal(class, epochs)
+function h = erp_plot_signal_fromclass(class, epochs)
 
 % getting time stamps
 x = 1:epochs.length/1000*epochs.srate;

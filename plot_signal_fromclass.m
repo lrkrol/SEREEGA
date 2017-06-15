@@ -1,4 +1,4 @@
-% h = plot_signal(class, epochs)
+% h = plot_signal_fromclass(class, epochs)
 %
 %       Gateway function to plot class activation patterns. Takes a class
 %       variable and calls the corresponding plotting function.
@@ -37,16 +37,16 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function h = plot_signal(class, epochs)
+function h = plot_signal_fromclass(class, epochs)
 
 class = utl_check_class(class);
 
 % calling type-specific plot function
-if ~exist(sprintf('%s_plot_signal', class.type), 'file')
+if ~exist(sprintf('%s_plot_signal_fromclass', class.type), 'file')
     error('no plotting function found for class type ''%s''', class.type);
 else
-    class_plot_signal = str2func(sprintf('%s_plot_signal', class.type));
-    h = class_plot_signal(class, epochs);
+    class_plot_signal_fromclass = str2func(sprintf('%s_plot_signal_fromclass', class.type));
+    h = class_plot_signal_fromclass(class, epochs);
 end
 
 end

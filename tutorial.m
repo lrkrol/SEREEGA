@@ -135,7 +135,7 @@ erp
 
 % we can now plot what this ERP would look like.
 
-h = plot_signal(erp, epochs);
+h = plot_signal_fromclass(erp, epochs);
 pause; close(h);
 
 %% brain components and scalp data
