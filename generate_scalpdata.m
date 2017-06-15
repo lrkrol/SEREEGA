@@ -18,6 +18,8 @@
 %                            have the most extreme value be either 1 or -1,
 %                            depending on its sign. default: 1
 %       normaliseOrientation - 1|0, as above, except for orientation
+%       showprogress - 1|0, whether or not to show a progress bar
+%                      (default 1)
 %
 % Out:
 %       scalpdata - channels x samples x epochs array of simulated scalp
@@ -64,6 +66,7 @@ addRequired(p, 'epochs', @isstruct);
 
 addParamValue(p, 'normaliseLeadfield', 1, @isnumeric);
 addParamValue(p, 'normaliseOrientation', 1, @isnumeric);
+addParamValue(p, 'showprogress', 1, @isnumeric);
 
 parse(p, component, leadfield, epochs, varargin{:})
 
@@ -72,11 +75,15 @@ leadfield = p.Results.leadfield;
 epochs = p.Results.epochs;
 normaliseLeadfield = p.Results.normaliseLeadfield;
 normaliseOrientation = p.Results.normaliseOrientation;
+showprogress = p.Results.showprogress;
 
 scalpdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), epochs.n);
 
+if showprogress, w = waitbar(0, sprintf('Epoch 0 of %d', epochs.n), 'Name', 'Generating scalp data'); end
+
 % for each epoch...
 for e = 1:epochs.n
+    if showprogress, waitbar(e/epochs.n, w, sprintf('Epoch %d of %d', e, epochs.n), 'Name', 'Generating scalp data'); end
     componentdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), numel(component));
     
     % for each component...
@@ -111,5 +118,7 @@ for e = 1:epochs.n
     % combining projected component signals into single epoch
     scalpdata(:,:,e) = sum(componentdata, 3);
 end
+
+if showprogress, delete(w); end
 
 end
