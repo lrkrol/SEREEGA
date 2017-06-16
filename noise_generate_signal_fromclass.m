@@ -16,7 +16,7 @@
 %
 % Usage example:
 %       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
-%       >> noise.noisetype = 'white'; noise.amplitude = 0.1;
+%       >> noise.color = 'white'; noise.amplitude = 0.1;
 %       >> noise = utl_check_class(noise, 'type', 'noise');
 %       >> signal = noise_generate_signal_fromclass(noise, epochs, 1);
 % 
