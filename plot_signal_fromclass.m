@@ -10,6 +10,8 @@
 % Optional (key-value pairs):
 %       newfig - (0|1) whether or not to open a new figure window.
 %                default: 1
+%       baseonly - (0|1) whether or not to plot only the base signal,
+%                  without any deviations or sloping. default: 0
 %
 % Out:  
 %       h - handle of the generated figure
@@ -50,12 +52,14 @@ addRequired(p, 'class', @isstruct);
 addRequired(p, 'epochs', @isstruct);
 
 addParamValue(p, 'newfig', 1, @isnumeric);
+addParamValue(p, 'baseonly', 0, @isnumeric);
 
 parse(p, class, epochs, varargin{:})
 
 class = p.Results.class;
 epochs = p.Results.epochs;
 newfig = p.Results.newfig;
+baseonly = p.Results.baseonly;
 
 class = utl_check_class(class);
 
@@ -64,7 +68,7 @@ if ~exist(sprintf('%s_plot_signal_fromclass', class.type), 'file')
     error('no plotting function found for class type ''%s''', class.type);
 else
     class_plot_signal_fromclass = str2func(sprintf('%s_plot_signal_fromclass', class.type));
-    h = class_plot_signal_fromclass(class, epochs, 'newfig', newfig);
+    h = class_plot_signal_fromclass(class, epochs, 'newfig', newfig, 'baseonly', baseonly);
 end
 
 end

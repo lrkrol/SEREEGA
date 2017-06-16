@@ -12,6 +12,6 @@
 
 % <class>_plot_signal_fromclass - takes a (verified) class structure,
 % an epochs configuration structure, and (at least) accepts the optional
-% 'newfig' and 'meanonly' arguments. plots the signal activation as per
+% 'newfig' and 'baseonly' arguments. plots the signal activation as per
 % <class>_generate_signal_fromclass. returns the figure handle if a new
 % figure was opened.
