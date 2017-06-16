@@ -25,7 +25,7 @@
 %       >> noise.color = 'white'; noise.amplitude = 0.1;
 %       >> noise.amplitudeDv = .05; noise.amplitudeSlope = -.1;
 %       >> noise = utl_check_class(noise, 'type', 'noise');
-%       >> noise_plot_signal_fromclass(noise, epochs)
+%       >> noise_plot_signal_fromclass(noise, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
