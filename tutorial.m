@@ -48,8 +48,7 @@ lf = lf_generate_fromnyhead('labels', channels);
 
 % this gives us a leadfield with the following channel locations:
 
-h = plot_chanlocs(lf);
-pause; close(h);
+plot_chanlocs(lf);
 
 %% pick a source location
 % the leadfield contains a number of 'sources' in the brain, i.e. source
@@ -60,15 +59,13 @@ pause; close(h);
 % we can get a random source, and inspect its location:
 
 source = lf_get_source_random(lf);
-h = plot_source_location(lf, source);
-pause; close(h);
+plot_source_location(lf, source);
 
 % or, if we know the location of a source, we can get the source nearest to
 % that location, for example, somewhere in the right visual cortex:
 
 source = lf_get_source_nearest(lf, [20 -85 0]);
-h = plot_source_location(lf, source);
-pause; close(h);
+plot_source_location(lf, source);
 
 %% orient the source dipole
 % the sources in the leadfield are represented by dipoles at specific
@@ -79,17 +76,14 @@ pause; close(h);
 
 % our source's projections onto scalp along the X, Y, and Z axes look like:
 
-h = plot_source_projection(lf, source, ...
+plot_source_projection(lf, source, ...
         'orientation', [1 0 0], 'orientedonly', 1);
-pause; close(h);
 
-h = plot_source_projection(lf, source, ...
+plot_source_projection(lf, source, ...
         'orientation', [0 1 0], 'orientedonly', 1);
-pause; close(h);
 
-h = plot_source_projection(lf, source, ...
+plot_source_projection(lf, source, ...
         'orientation', [0 0 1], 'orientedonly', 1);
-pause; close(h);
 
 % these projections can be linearly combined to get any simulated dipole
 % orientation. in the ICBM-NY leadfield, default orientations are included,
@@ -98,11 +92,9 @@ pause; close(h);
 % fieldtrip-generated leadfields have no meaningful default orientation.
 
 orientation = [1, 1, 0];
-h = plot_source_projection(lf, source, 'orientation', orientation);
-pause; close(h);
+plot_source_projection(lf, source, 'orientation', orientation);
 
-h = plot_source_projection(lf, source);
-pause; close(h);
+plot_source_projection(lf, source);
 
 %% define the signal
 % we now have a source's location and its orientation, i.e., we now know
@@ -114,6 +106,7 @@ pause; close(h);
 % the latency, width, and amplitude of its peak(s). we store EEG activation
 % definitions in "classes", in the form of structure arrays:
 
+erp = struct();
 erp.peakLatency = 500;      % in ms, starting at the start of the epoch
 erp.peakWidth = 100;        % in ms
 erp.peakAmplitude = 1;      % in microV
@@ -135,8 +128,7 @@ erp
 
 % we can now plot what this ERP would look like.
 
-h = plot_signal_fromclass(erp, epochs);
-pause; close(h);
+plot_signal_fromclass(erp, epochs);
 
 %% brain components and scalp data
 % having defined both a signal (the ERP) and a source location plus
@@ -165,3 +157,45 @@ EEG = utl_create_eeglabdataset(scalpdata, epochs.srate, ...
 
 pop_topoplot(EEG, 1, [100, 200, 250, 300, 350, 400, 500], '', [1 8]);
 
+%% variability
+% if we scroll through the data, we see that all 100 epochs we generated
+% are exactly the same, having a peak at exactly the indicated 300 ms and a
+% width of exactly 100.
+
+pop_eegplot(EEG, 1, 1, 1);
+
+% this is of course unrealistic. we can build in a variability of the
+% signal by indicating allowed deviations and slopes. a deviation of 50 ms
+% for our peak latency allows this latency to vary +/- 50 ms between
+% trials, following a normal distribution.
+
+erp.peakLatencyDv = 50;
+erp.peakAmplitudeDv = .2;
+
+c.signal = {erp};
+EEG = utl_create_eeglabdataset(generate_scalpdata(c, lf, epochs), ...
+        epochs.srate, 'chanlocs', lf.chanlocs, ...
+        'xmin', -epochs.prestim/1000, 'marker', epochs.marker);
+pop_eegplot(EEG, 1, 1, 1);
+
+% we can also indicate a slope, resulting in a consistent change over time.
+% an amplitude of 1 and an amplitude slope of -.75 for example results in
+% the signal having an amplitude of 1 in the first epoch, and .25 in the
+% last.
+
+erp.peakAmplitudeSlope = -.75;
+
+c.signal = {erp};
+EEG = utl_create_eeglabdataset(generate_scalpdata(c, lf, epochs), ...
+        epochs.srate, 'chanlocs', lf.chanlocs, ...
+        'xmin', -epochs.prestim/1000, 'marker', epochs.marker);
+pop_eegplot(EEG, 1, 1, 1);
+
+% after these changes, the possible shapes that ERP can take vary
+% significantly. in blue: extreme values for the first epoch; in red:
+% extreme values for the last.
+
+plot_signal_fromclass(erp, epochs);
+
+%% multiple signal classes
+% 

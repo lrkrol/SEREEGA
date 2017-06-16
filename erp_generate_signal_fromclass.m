@@ -43,33 +43,35 @@
 
 function signal = erp_generate_signal_fromclass(class, epochs, epochNumber)
 
-% obtaining specific instances of peak latencies
-peakLatency = zeros(1, numel(class.peakLatency));
-for p = 1:length(class.peakLatency)
-    peakLatency(p) = utl_apply_dvslope(class.peakLatency(p), class.peakLatencyDv(p), class.peakLatencySlope, epochNumber, epochs.n);
-end
-
-% peak widths
-peakWidth = zeros(1, numel(class.peakWidth));
-for p = 1:length(class.peakWidth)
-    peakWidth(p) = utl_apply_dvslope(class.peakWidth(p), class.peakWidthDv(p), class.peakWidthSlope, epochNumber, epochs.n);
-    if peakWidth(p) == 0, peakWidth(p) = 1; end
-    if peakWidth(p) < 0, peakWidth(p) = -peakWidth(p); end
-end
-
-% peak amplitudes
-peakAmplitude = zeros(1, numel(class.peakAmplitude));
-for p = 1:length(class.peakAmplitude)
-    peakAmplitude(p) = utl_apply_dvslope(class.peakAmplitude(p), class.peakAmplitudeDv(p), class.peakAmplitudeSlope, epochNumber, epochs.n);
-end
 
 % checking probability
-if rand() < class.probability + class.probabilitySlope * epochNumber / epochs.n
-    % generating signal
-    signal = erp_generate_signal(peakLatency, peakWidth, peakAmplitude, epochs.srate, epochs.length);
-else
+if rand() > class.probability + class.probabilitySlope * epochNumber / epochs.n
     % returning flatline
     signal = zeros(1, floor((epochs.length/1000)*epochs.srate));
+else
+    
+    % obtaining specific instances of peak latencies
+    peakLatency = zeros(1, numel(class.peakLatency));
+    for p = 1:length(class.peakLatency)
+        peakLatency(p) = utl_apply_dvslope(class.peakLatency(p), class.peakLatencyDv(p), class.peakLatencySlope, epochNumber, epochs.n);
+    end
+
+    % peak widths
+    peakWidth = zeros(1, numel(class.peakWidth));
+    for p = 1:length(class.peakWidth)
+        peakWidth(p) = utl_apply_dvslope(class.peakWidth(p), class.peakWidthDv(p), class.peakWidthSlope, epochNumber, epochs.n);
+        if peakWidth(p) == 0, peakWidth(p) = 1; end
+        if peakWidth(p) < 0, peakWidth(p) = -peakWidth(p); end
+    end
+
+    % peak amplitudes
+    peakAmplitude = zeros(1, numel(class.peakAmplitude));
+    for p = 1:length(class.peakAmplitude)
+        peakAmplitude(p) = utl_apply_dvslope(class.peakAmplitude(p), class.peakAmplitudeDv(p), class.peakAmplitudeSlope, epochNumber, epochs.n);
+    end
+    
+    % generating signal
+    signal = erp_generate_signal(peakLatency, peakWidth, peakAmplitude, epochs.srate, epochs.length);
 end
 
 end

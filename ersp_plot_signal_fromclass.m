@@ -1,10 +1,8 @@
-% h = noise_plot_signal_fromclass(class, epochs, varargin)
+% h = ersp_plot_signal_fromclass(class, epochs, varargin)
 %
-%       Plots noise class activation signal. In blue, solid line: the base
-%       signal as defined. The dotted and dashed lines indicate the
-%       signal's variability as per the defined deviations. If a slope has
-%       been defined, the red curve indicates the signal (mean and
-%       extremes) at the end of the slope (i.e. the final epoch).
+%       Plots an ERSP class activation signal. In blue, solid line: the 
+%       base signal as defined. This function does not apply any deviations
+%       or slopes.
 %
 % In:
 %       class - 1x1 struct, the class variable
@@ -16,22 +14,22 @@
 %       newfig - (0|1) whether or not to open a new figure window.
 %                default: 1
 %       baseonly - (0|1) whether or not to plot only the base signal,
-%                  without any deviations or sloping. default: 0
+%                  without any deviations or sloping. default: 1
 %
 % Out:  
 %       h - handle of the generated figure
 %
 % Usage example:
-%       >> noise.color = 'white'; noise.amplitude = 0.1;
-%       >> noise.amplitudeDv = .05; noise.amplitudeSlope = -.1;
-%       >> noise = utl_check_class(noise, 'type', 'noise');
-%       >> noise_plot_signal_fromclass(noise, epochs);
+%       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
+%       >> ersp.frequency = 20; ersp.amplitude = 1; ersp.phase = 0;
+%       >> ersp.modulation='pac'; ersp.pacFrequency=2; ersp.pacPhase= -.25;
+%       >> plot_signal_fromclass(ersp, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
-% 2017-06-13 First version
+% 2017-06-16 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
 
@@ -48,7 +46,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function h = noise_plot_signal_fromclass(class, epochs, varargin)
+function h = ersp_plot_signal_fromclass(class, epochs, varargin)
 
 % parsing input
 p = inputParser;
@@ -57,14 +55,13 @@ addRequired(p, 'class', @isstruct);
 addRequired(p, 'epochs', @isstruct);
 
 addParamValue(p, 'newfig', 1, @isnumeric);
-addParamValue(p, 'baseonly', 0, @isnumeric);
+addParamValue(p, 'baseonly', 1, @isnumeric);
 
 parse(p, class, epochs, varargin{:})
 
 class = p.Results.class;
 epochs = p.Results.epochs;
 newfig = p.Results.newfig;
-baseonly = p.Results.baseonly;
 
 % getting time stamps
 x = 1:epochs.length/1000*epochs.srate;
@@ -78,30 +75,15 @@ if newfig, h = figure; else h = NaN; end
 hold on;
 
 % plotting the base signal, no deviations applied
-tempClass = class;
-tempClass.peakAmplitudeDv = 0;
-signal = noise_generate_signal_fromclass(tempClass, epochs, 1);
-plot(x, signal, 'b-', 'LineWidth', 2);
-
-if ~baseonly
-    % signal with maximum possible deviation (negative)
-    plot(x, signal - class.amplitudeDv, 'b:');
-
-    % signal with maximum possible deviation (positive)
-    plot(x, signal + class.amplitudeDv, 'b:');
-
-    if class.amplitudeSlope
-       % additionally plotting a new signal with maximum slope applied
-            signal = noise_generate_signal_fromclass(class, epochs, epochs.n);
-            % mean
-            plot(x, signal, 'r-', 'LineWidth', 2);
-
-            % negative deviation
-            plot(x, signal - class.amplitudeDv, 'r:');
-
-            % positive deviation
-            plot(x, signal + class.amplitudeDv, 'r--');
-    end
+if strcmp(class.modulation, 'none')
+    signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length);
+elseif ismember(class.modulation, {'burst', 'invburst'})
+    signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length, ...
+            'modulation', class.modulation, 'burstLatency', class.burstLatency, 'burstWidth', class.burstWidth, 'burstTaper', class.burstTaper);
+elseif strcmp(class.modulation, 'pac')
+    signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length, ...
+            'modulation', class.modulation, 'pacFrequency', class.pacFrequency, 'pacPhase', class.pacPhase, 'pacMinAmplitude', class.pacMinAmplitude);
 end
+plot(x, signal, 'b-', 'LineWidth', 2);
 
 end

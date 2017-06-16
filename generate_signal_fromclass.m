@@ -9,7 +9,10 @@
 %       epochs - single epoch configuration struct containing at least
 %                sampling rate (srate), epoch length (length), and total
 %                number of epochs (n)
-%       epochNumber - current epoch number (required for slope calculation)
+%
+% Optional:
+%       epochNumber - current epoch number. this is required for slope
+%                     calculation, but defaults to 1 if not indicated
 %
 % Out:  
 %       signal - row array containing the simulated noise activation signal
@@ -18,7 +21,7 @@
 %       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
 %       >> erp.peakLatency= 200; erp.peakWidth= 100; erp.peakAmplitude = 1;
 %       >> erp = utl_check_class(erp, 'type', 'erp');
-%       >> signal = generate_signal_fromclass(erp, epochs, 1);
+%       >> signal = generate_signal_fromclass(erp, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
@@ -42,6 +45,8 @@
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
 function signal = generate_signal_fromclass(class, epochs, epochNumber)
+
+if ~exist('epochNumber', 'var'), epochNumber = 1; end
 
 % calling type-specific generate function
 if ~exist(sprintf('%s_generate_signal_fromclass', class.type), 'file')

@@ -45,19 +45,27 @@
 
 function signal = noise_generate_signal_fromclass(class, epochs, epochNumber)
 
-samples = epochs.srate * epochs.length/1000;
+samples = floor(epochs.srate * epochs.length/1000);
 
-if verLessThan('matlab', '8.3')
-    warning('your MATLAB version is lower than R2014a; ignoring noise color settings and generating white noise using randn()');
-    signal = randn(1,samples);
+% checking probability
+if rand() > class.probability + class.probabilitySlope * epochNumber / epochs.n
+    % returning flatline
+    signal = zeros(1, samples);
 else
-    cn = dsp.ColoredNoise('Color', class.color, 'SamplesPerFrame', samples);
-    signal = cn()';
-end
 
-% normalising to have the maximum (or minimum) value be (-)amplitude
-amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
-[~, i] = max(abs(signal(:)));
-signal = signal .* (sign(signal(i)) / signal(i)) .* amplitude;
+    if verLessThan('matlab', '8.3')
+        warning('your MATLAB version is lower than R2014a; ignoring noise color settings and generating white noise using randn()');
+        signal = randn(1,samples);
+    else
+        cn = dsp.ColoredNoise('Color', class.color, 'SamplesPerFrame', samples);
+        signal = cn()';
+    end
+
+    % normalising to have the maximum (or minimum) value be (-)amplitude
+    amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
+    [~, i] = max(abs(signal(:)));
+    signal = signal .* (sign(signal(i)) / signal(i)) .* amplitude;
+    
+end
 
 end

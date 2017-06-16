@@ -86,28 +86,28 @@ elseif isfield(class, 'type') && ~isempty(class.type) && ~strcmp(class.type, 'no
 end
 
 % adding fields / filling in defaults
-if ~isfield(class, 'type') || isempty(class.type),
+if ~isfield(class, 'type') || isempty(class.type)
     class.type = 'noise'; end
 
-if ~isfield(class, 'amplitudeDv'),
+if ~isfield(class, 'amplitudeDv')
     class.amplitudeDv = 0; end
 
-if ~isfield(class, 'amplitudeSlope'),
+if ~isfield(class, 'amplitudeSlope')
     class.amplitudeSlope = 0; end
 
-if ~isfield(class, 'probability'),
+if ~isfield(class, 'probability')
     class.probability = 1; end
 
-if ~isfield(class, 'probabilitySlope'),
+if ~isfield(class, 'probabilitySlope')
     class.probabilitySlope = 0; end
 
 class = orderfields(class);
 
 % checking values
-if ~ismember(class.color, {'white', 'pink', 'brown', 'blue', 'purple'});
+if ~ismember(class.color, {'white', 'pink', 'brown', 'blue', 'purple'})
     error('an unknown noise color is indicated in the given noise class variable'); end
 
-if verLessThan('matlab', '8.3'),
+if verLessThan('matlab', '8.3')
     warning(['your MATLAB version is lower than R2014a; ' ...
              'during simulation, noise color settings will be ignored; ' ...
              'white noise will be generated using randn()']); end
