@@ -1,6 +1,6 @@
-% h = erp_plot_signal_fromclass(class, epochs, varargin)
+% h = noise_plot_signal_fromclass(class, epochs, varargin)
 %
-%       Plots an ERP class activation signal. In blue, solid line: the mean 
+%       Plots noise class activation signal. In blue, solid line: the base
 %       signal as defined. The dotted and dashed lines indicate the
 %       signal's variability as per the defined deviations. If a slope has
 %       been defined, the red curve indicates the signal (mean and
