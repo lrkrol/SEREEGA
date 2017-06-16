@@ -12,7 +12,7 @@
 %       epochNumber - current epoch number (required for slope calculation)
 %
 % Out:  
-%       signal - 1-by-n array, the simulated noise activation signal
+%       signal - row array containing the simulated noise activation signal
 %
 % Usage example:
 %       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;

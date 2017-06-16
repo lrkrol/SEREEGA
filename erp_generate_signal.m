@@ -11,10 +11,11 @@
 %       epochLength - length of the epoch, in ms
 %
 % Out:  
-%       signal - 1-by-n array, the simulated noise activation signal
+%       signal - row array containing the simulated noise activation signal
 %
 % Usage example:
-%       >> signal = erp_generate_signal([175, 500], [50, 150], [-.25, 1], 500, 1000)
+%       >> signal = erp_generate_signal([175, 500], [50, 150], ...
+%                                       [-.25, 1], 500, 1000)
 % 
 %                    Copyright 2015-2017 Fabien Lotte & Laurens R Krol
 %

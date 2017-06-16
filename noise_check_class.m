@@ -1,21 +1,25 @@
 % class = noise_check_class(class)
 %
-%       Validates and completes a noise class structure.
+%       Validates (and/or completes) a given noise class structure.
 %
-%       Noise is defined by its type and its amplitude.
+%       Noise is defined by its colour and its amplitude.
 %       Additionally, the epoch-to-epoch variability of the amplitude is
 %       indicated using a possible deviation (Dv), and the change over time
 %       is indicated using a slope. Finally, a probability can be set for
-%       the appearance of the signal as a whole.
+%       the appearance of the noise signal as a whole.
 %
 %       The amplitude represents the maximum absolute amplitude of any
 %       point in the noise signal.
 %
-%       The Deviation represents the epoch-to-epoch (trial-to-trial) 
+%       The deviation represents the epoch-to-epoch (trial-to-trial) 
 %       variability. A deviation of .05 for an amplitude of .1 means that
 %       the amplitude varies according to a normal distribution, with 99.7% 
-%       of amplitudes being between .05 and .15. A deviation of 0
+%       of maximum amplitudes being between .05 and .15. A deviation of 0
 %       means all signals will be exactly the same (barring any sloping).
+%
+%       The slope represents the change over time, from the first to the
+%       last epoch. An amplitude of .1 with a slope of -.1 will have a
+%       maximum amplitude of .1 in the first epoch, and .2 in the last.
 %
 %       The probability can range from 0 (this signal will never be 
 %       generated) to 1 (this signal will be generated for every single
@@ -23,7 +27,7 @@
 %
 %       Note: Noise is generated using the ColoredNoise function of the DSP
 %       System Toolbox, which was introduced in version R2014a. For older
-%       versions of MATLAB, this function reverts to noise generated using
+%       versions of MATLAB, the script reverts to noise generated using
 %       the randn() function.
 %
 %       A complete noise class definition includes the following fields:

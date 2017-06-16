@@ -1,4 +1,4 @@
-% h = erp_plot_signal_fromclass(class, epochs)
+% h = erp_plot_signal_fromclass(class, epochs, varargin)
 %
 %       Plots an ERP class activation signal. In blue, solid line: the mean 
 %       signal as defined. The dotted and dashed lines indicate the

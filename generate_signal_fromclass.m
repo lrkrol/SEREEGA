@@ -12,11 +12,11 @@
 %       epochNumber - current epoch number (required for slope calculation)
 %
 % Out:  
-%       h - handle of the generated figure
+%       signal - row array containing the simulated noise activation signal
 %
 % Usage example:
 %       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
-%       >> erp.peakLatency = 200; erp.peakWidth = 100; erp.peakAmplitude = 1;
+%       >> erp.peakLatency= 200; erp.peakWidth= 100; erp.peakAmplitude = 1;
 %       >> erp = utl_check_class(erp, 'type', 'erp');
 %       >> signal = generate_signal_fromclass(erp, epochs, 1);
 % 
