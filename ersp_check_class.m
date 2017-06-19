@@ -21,6 +21,8 @@
 %       90-degree phase (.25) of this second frequency. The base
 %       frequency's minimal amplitude (at .75 of the second frequency) can 
 %       be indicated separately as well.
+%       Additionally, a prestimulus period can be indicated to attenuate
+%       the signal during that time, using an inverse window as above.
 %
 %       Deviations and slopes can be indicated for all variables.
 %       A deviation of x indicates that 99.7% (six sigma) of the final 
@@ -58,29 +60,40 @@
 %       In case modulation is set to 'burst' or 'invburst', the following
 %       additional fields are included:
 %
-%         .burstLatency:        latency in ms of the burst centre
-%         .burstLatencyDv:      latency deviation
-%         .burstLatencySlope:   latency slope
-%         .burstWidth:          width of the width in ms (one-sided)
-%         .burstWidthDv:        width deviation
-%         .burstWidthSlope:     width slope
-%         .burstTaper:          taper of the tukey window, between 0 and 1
-%         .burstTaperDv:        taper deviation
-%         .burstTaperSlope:     taper slope
+%         .modLatency:            latency in ms of the burst centre
+%         .modLatencyDv:          latency deviation
+%         .modLatencySlope:       latency slope
+%         .modWidth:              width of the width in ms (one-sided)
+%         .modWidthDv:            width deviation
+%         .modWidthSlope:         width slope
+%         .modTaper:              taper of the tukey window between 0 and 1
+%         .modTaperDv:            taper deviation
+%         .modTaperSlope:         taper slope
+%         .modMinAmplitude:       minimum amplitude of the base signal as a
+%                                 percentage of the base amplitude
+%         .modMinAmplitudeDv:     minimum amplitude deviation
+%         .modMinAmplitudeSlope:  minimum amplitude slope
 %
 %       In case modulation is set to 'pac', the following additional fields 
 %       are included:
 %
-%         .pacFrequency:          frequency of the modulating signal, in Hz
-%         .pacFrequencyDv:        modulating frequency deviation
-%         .pacFrequencySlope:     modulating frequency slope
-%         .pacPhase:              phase of the modulation frequency
-%         .pacPhaseDv:            modulating frequency phase deviation
-%         .pacPhaseSlope:         modulating frequency phase slope
-%         .pacMinAmplitude:       minimum amplitude of the base signal as a
+%         .modFrequency:          frequency of the modulating signal, in Hz
+%         .modFrequencyDv:        modulating frequency deviation
+%         .modFrequencySlope:     modulating frequency slope
+%         .modPhase:              phase of the modulation frequency
+%         .modPhaseDv:            modulating frequency phase deviation
+%         .modPhaseSlope:         modulating frequency phase slope
+%         .modMinAmplitude:       minimum amplitude of the base signal as a
 %                                 percentage of the base amplitude
-%         .pacMinAmplitudeDv:     minimum amplitude deviation
-%         .pacMinAmplitudeSlope:  minimum amplitude slope
+%         .modMinAmplitudeDv:     minimum amplitude deviation
+%         .modMinAmplitudeSlope:  minimum amplitude slope
+%         .modPrestimPeriod:      length in ms of the prestimulus period
+%                                 during which to attenuate the signal;
+%                                 default 0 disables
+%         .modPrestimTaper:       taper of the window to use to apply a
+%                                 prestimulus attenuation; 0 >= taper < 1
+%         .modPrestimAmplitude:   amplitude during prestimulus period, as a
+%                                 percentage of the base amplitude
 %
 % In:
 %       class - the class variable as a struct with at least the required
@@ -91,14 +104,17 @@
 %
 % Usage example:
 %       >> ersp.frequency = 20; ersp.amplitude = 1;
-%       >> ersp.modulation = 'pac'; ersp.pacFrequency = 1;
-%       >> ersp.pacPhase = -.25; ersp.pacMinAmplitude = .1;
+%       >> ersp.modulation = 'pac'; ersp.modFrequency = 1;
+%       >> ersp.modPhase = -.25; ersp.modMinAmplitude = .1;
 %       >> ersp = ersp_check_class(ersp)
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2016-06-20 lrk
+%   - Changed variable names for consistency
+%   - Added prestimulus attenuation to PAC
 % 2017-06-16 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -158,57 +174,75 @@ if ~ismember(class.modulation, {'none', 'burst', 'invburst', 'pac'})
     error('unknown modulation type'); end
 
 if ismember(class.modulation, {'burst', 'invburst'})
-    if ~isfield(class, 'burstLatency')
-        error('field burstLatency is missing from given burst-modulated ERSP class variable');
-    elseif ~isfield(class, 'burstWidth')
-        error('field burstWidth is missing from given burst-modulated ERSP class variable');
-    elseif ~isfield(class, 'burstTaper')
-        error('field burstTaper is missing from given burst-modulated ERSP class variable');
+    if ~isfield(class, 'modLatency')
+        error('field modLatency is missing from given burst-modulated ERSP class variable');
+    elseif ~isfield(class, 'modWidth')
+        error('field modWidth is missing from given burst-modulated ERSP class variable');
+    elseif ~isfield(class, 'modTaper')
+        error('field modTaper is missing from given burst-modulated ERSP class variable');
     end
     
-    if ~isfield(class, 'burstLatencyDv')
-        class.burstLatencyDv = 0; end
-    if ~isfield(class, 'burstLatencySlope')
-        class.burstLatencySlope = 0; end
+    if ~isfield(class, 'modLatencyDv')
+        class.modLatencyDv = 0; end
+    if ~isfield(class, 'modLatencySlope')
+        class.modLatencySlope = 0; end
     
-    if ~isfield(class, 'burstWidthDv')
-        class.burstWidthDv = 0; end
-    if ~isfield(class, 'burstWidthSlope')
-        class.burstWidthSlope = 0; end
+    if ~isfield(class, 'modWidthDv')
+        class.modWidthDv = 0; end
+    if ~isfield(class, 'modWidthSlope')
+        class.modWidthSlope = 0; end
     
-    if ~isfield(class, 'burstTaperDv')
-        class.burstTaperDv = 0; end
-    if ~isfield(class, 'burstTaperSlope')
-        class.burstTaperSlope = 0; end
+    if ~isfield(class, 'modTaperDv')
+        class.modTaperDv = 0; end
+    if ~isfield(class, 'modTaperSlope')
+        class.modTaperSlope = 0; end
+    
+    if ~isfield(class, 'modMinAmplitude')
+        class.modMinAmplitude = 0; end
+    if ~isfield(class, 'modMinAmplitudeDv')
+        class.modMinAmplitudeDv = 0; end
+    if ~isfield(class, 'modMinAmplitudeSlope')
+        class.modMinAmplitudeSlope = 0; end
+    
+    % checking values
+    if class.modWidth - class.modWidthDv - class.modWidthSlope < 1
+        warning('some burst widths may become zero or less due to the indicated deviation; this may lead to unexpected results'); end
 elseif strcmp(class.modulation, 'pac')
-    if ~isfield(class, 'pacFrequency')
-        error('field pacFrequency is missing from given PAC-modulated ERSP class variable');
+    if ~isfield(class, 'modFrequency')
+        error('field modFrequency is missing from given PAC-modulated ERSP class variable');
     end
     
-    if ~isfield(class, 'pacFrequencyDv')
-        class.pacFrequencyDv = 0; end
-    if ~isfield(class, 'pacFrequencySlope')
-        class.pacFrequencySlope = 0; end
+    if ~isfield(class, 'modFrequencyDv')
+        class.modFrequencyDv = 0; end
+    if ~isfield(class, 'modFrequencySlope')
+        class.modFrequencySlope = 0; end
     
-    if ~isfield(class, 'pacPhase')
-        class.pacPhase = []; end
-    if ~isfield(class, 'pacPhaseDv')
-        class.pacPhaseDv = 0; end
-    if ~isfield(class, 'pacPhaseSlope')
-        class.pacPhaseSlope = 0; end
+    if ~isfield(class, 'modPhase')
+        class.modPhase = []; end
+    if ~isfield(class, 'modPhaseDv')
+        class.modPhaseDv = 0; end
+    if ~isfield(class, 'modPhaseSlope')
+        class.modPhaseSlope = 0; end
     
-    if ~isfield(class, 'pacMinAmplitude')
-        class.pacMinAmplitude = 0; end
-    if ~isfield(class, 'pacMinAmplitudeDv')
-        class.pacMinAmplitudeDv = 0; end
-    if ~isfield(class, 'pacMinAmplitudeSlope')
-        class.pacMinAmplitudeSlope = 0; end
+    if ~isfield(class, 'modMinAmplitude')
+        class.modMinAmplitude = 0; end
+    if ~isfield(class, 'modMinAmplitudeDv')
+        class.modMinAmplitudeDv = 0; end
+    if ~isfield(class, 'modMinAmplitudeSlope')
+        class.modMinAmplitudeSlope = 0; end
+    
+    if ~isfield(class, 'modPrestimPeriod')
+        class.modPrestimPeriod = 0; end
+    if ~isfield(class, 'modPrestimTaper')
+        class.modPrestimTaper = 0; end
+    if ~isfield(class, 'modPrestimAmplitude')
+        class.modPrestimAmplitude = 0; end
+    
+    % checking values
+    if class.modPrestimTaper < 0 || class.modPrestimTaper >= 1
+        error('prestimulus taper should be greater than or equal to 0, and less than 1'); end
 end
 
 class = orderfields(class);
-
-% checking values
-if isfield(class, 'burstWidth') && (class.burstWidth - class.burstWidthDv - class.burstWidthSlope < 1)
-    warning('some burst widths may become zero or less due to the indicated deviation; this may lead to unexpected results'); end
 
 end

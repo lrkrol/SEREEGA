@@ -17,13 +17,16 @@
 % Usage example:
 %       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
 %       >> ersp.frequency = 20; ersp.amplitude = 1; ersp.phase = 0;
-%       >> ersp.modulation='pac'; ersp.pacFrequency=2; ersp.pacPhase= -.25;
+%       >> ersp.modulation='pac'; ersp.modFrequency=2; ersp.modPhase= -.25;
 %       >> signal = ersp_generate_signal_fromclass(ersp, epochs, 1);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2016-06-20 lrk
+%   - Changed variable names for consistency
+%   - Added prestimulus attenuation to PAC
 % 2017-06-16 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -63,26 +66,28 @@ else
         signal = ersp_generate_signal(frequency, amplitude, phase, epochs.srate, epochs.length);
     elseif ismember(class.modulation, {'burst', 'invburst'})
         % obtaining specific burst values
-        latency = utl_apply_dvslope(class.burstLatency, class.burstLatencyDv, class.burstLatencySlope, epochNumber, epochs.n);
-        width = utl_apply_dvslope(class.burstWidth, class.burstWidthDv, class.burstWidthSlope, epochNumber, epochs.n);
-        taper = utl_apply_dvslope(class.burstTaper, class.burstTaperDv, class.burstTaperSlope, epochNumber, epochs.n);
+        latency = utl_apply_dvslope(class.modLatency, class.modLatencyDv, class.modLatencySlope, epochNumber, epochs.n);
+        width = utl_apply_dvslope(class.modWidth, class.modWidthDv, class.modWidthSlope, epochNumber, epochs.n);
+        taper = utl_apply_dvslope(class.modTaper, class.modTaperDv, class.modTaperSlope, epochNumber, epochs.n);
+        minAmplitude = utl_apply_dvslope(class.modMinAmplitude, class.modMinAmplitudeDv, class.modMinAmplitudeSlope, epochNumber, epochs.n);
         
         % generating signal
         signal = ersp_generate_signal(frequency, amplitude, phase, epochs.srate, epochs.length, ...
-                'modulation', class.modulation, 'burstLatency', latency, 'burstWidth', width, 'burstTaper', taper);
+                'modulation', class.modulation, 'modLatency', latency, 'modWidth', width, 'modTaper', taper, 'modMinAmplitude', minAmplitude);
     elseif strcmp(class.modulation, {'pac'})
         % obtaining specific pac values
-        pacFrequency = utl_apply_dvslope(class.pacFrequency, class.pacFrequencyDv, class.pacFrequencySlope, epochNumber, epochs.n);
-        minAmplitude = utl_apply_dvslope(class.pacMinAmplitude, class.pacMinAmplitudeDv, class.pacMinAmplitudeSlope, epochNumber, epochs.n);
-        if ~isempty(class.pacPhase)
-            pacPhase = utl_apply_dvslope(class.pacPhase, class.pacPhaseDv, class.pacPhaseSlope, epochNumber, epochs.n);
+        modFrequency = utl_apply_dvslope(class.modFrequency, class.modFrequencyDv, class.modFrequencySlope, epochNumber, epochs.n);
+        minAmplitude = utl_apply_dvslope(class.modMinAmplitude, class.modMinAmplitudeDv, class.modMinAmplitudeSlope, epochNumber, epochs.n);
+        if ~isempty(class.modPhase)
+            modPhase = utl_apply_dvslope(class.modPhase, class.modPhaseDv, class.modPhaseSlope, epochNumber, epochs.n);
         else
-            pacPhase = class.pacPhase;
+            modPhase = class.modPhase;
         end 
         
         % generating signal
         signal = ersp_generate_signal(frequency, amplitude, phase, epochs.srate, epochs.length, ...
-                'modulation', class.modulation, 'pacFrequency', pacFrequency, 'pacPhase', pacPhase, 'pacMinAmplitude', minAmplitude);
+                'modulation', class.modulation, 'modFrequency', modFrequency, 'modPhase', modPhase, 'modMinAmplitude', minAmplitude, ...
+                'modPrestimPeriod', class.modPrestimPeriod, 'modPrestimTaper', class.modPrestimTaper, 'modPrestimAmplitude', class.modPrestimAmplitude);
     end
     
 end

@@ -13,14 +13,19 @@
 %
 % Optional (key-value pairs):
 %       modulation - type of modulation to apply; 'none', 'burst',
-%                    'invburst' or 'pac'
-%       burstLatency - latency in ms of the burst centre
-%       burstWidth - width of the width in ms (one-sided)
-%       burstTaper - taper of the tukey window, between 0 and 1
-%       pacFrequency - frequency of the modulating signal, in Hz
-%       pacPhase - phase of the modulation frequency
-%       pacMinAmplitude - minimum amplitude of the base signal as a
+%                    'invburst' or 'mod'
+%       modLatency - latency in ms of the burst centre
+%       modWidth - width of the burst in ms (one-sided)
+%       modTaper - taper of the burst tukey window, between 0 and 1
+%       modFrequency - frequency of the pac modulating signal, in Hz
+%       modPhase - phase of the pac modulation frequency
+%       modMinAmplitude - minimum amplitude of the base signal as a
 %                         percentage of the base amplitude
+%       modPrestimPeriod - prestimuls period length in ms
+%       modPrestimTaper - tapering of the tukey window used to apply a
+%                         prestimulus signal attenuation; 0 <= taper < 1
+%       modPrestimAmplitude - amplitude of the prestimulus signal as a
+%                             percentage of the base amplitude
 %
 % Out:  
 %       signal - row array containing the simulated noise activation signal
@@ -32,7 +37,9 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
-
+% 2016-06-20 lrk
+%   - Changed variable names for consistency
+%   - Added prestimulus attenuation to PAC
 % 2017-06-16 First version by Fabien Lotte
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -62,12 +69,15 @@ addRequired(p, 'srate', @isnumeric);
 addRequired(p, 'epochLength', @isnumeric);
 
 addParamValue(p, 'modulation', 'none', @ischar);
-addParamValue(p, 'burstLatency', 0, @isnumeric);
-addParamValue(p, 'burstWidth', 0, @isnumeric);
-addParamValue(p, 'burstTaper', 0, @isnumeric);
-addParamValue(p, 'pacFrequency', 0, @isnumeric);
-addParamValue(p, 'pacPhase', 0, @isnumeric);
-addParamValue(p, 'pacMinAmplitude', 0, @isnumeric);
+addParamValue(p, 'modLatency', 0, @isnumeric);
+addParamValue(p, 'modWidth', 0, @isnumeric);
+addParamValue(p, 'modTaper', 0, @isnumeric);
+addParamValue(p, 'modFrequency', 0, @isnumeric);
+addParamValue(p, 'modPhase', 0, @isnumeric);
+addParamValue(p, 'modMinAmplitude', 0, @isnumeric);
+addParamValue(p, 'modPrestimPeriod', 0, @isnumeric);
+addParamValue(p, 'modPrestimTaper', 0, @isnumeric);
+addParamValue(p, 'modPrestimAmplitude', 0, @isnumeric);
 
 parse(p, frequency, amplitude, phase, srate, epochLength, varargin{:})
 
@@ -77,29 +87,31 @@ phase = p.Results.phase;
 srate = p.Results.srate;
 epochLength = p.Results.epochLength;
 modulation = p.Results.modulation;
-burstLatency = p.Results.burstLatency;
-burstWidth = p.Results.burstWidth;
-burstTaper = p.Results.burstTaper;
-pacFrequency = p.Results.pacFrequency;
-pacPhase = p.Results.pacPhase;
-pacMinAmplitude = p.Results.pacMinAmplitude;
+modLatency = p.Results.modLatency;
+modWidth = p.Results.modWidth;
+modTaper = p.Results.modTaper;
+modFrequency = p.Results.modFrequency;
+modPhase = p.Results.modPhase;
+modMinAmplitude = p.Results.modMinAmplitude;
+modPrestimPeriod = p.Results.modPrestimPeriod;
+modPrestimTaper = p.Results.modPrestimTaper;
+modPrestimAmplitude = p.Results.modPrestimAmplitude;
 
 samples = floor(srate * epochLength/1000);
 
 if isempty(phase), phase = rand(); end
 
 % generating the base signal
-t = 0:samples-1;
-signal = sin(phase*2*pi + 2*pi*frequency*(t/srate));
+t = (0:samples-1)/srate;
+signal = sin(phase*2*pi + 2*pi*frequency*t);
 
 % normalising
 signal = amplitude .* (-1 + 2 .* (signal - min(signal)) ./ (max(signal) - min(signal)));
 
-
 if ismember(modulation, {'burst', 'invburst'})
-    latency = floor((burstLatency/1000)*srate);
-    width = floor((burstWidth/1000)*srate) * 2;
-    taper = burstTaper;
+    latency = floor((modLatency/1000)*srate);
+    width = floor((modWidth/1000)*srate) * 2;
+    taper = modTaper;
     
     % generating tukey window for burst
     if width < 1; width = 0; end
@@ -119,23 +131,54 @@ if ismember(modulation, {'burst', 'invburst'})
         win = [win, zeros(1, samples - length(win))];
     end
     
+    % inverting in case of inverse burst
     if strcmp(modulation, 'invburst')
         win = 1 - win; end
+    
+    % normalising between modMinAmplitude and 1
+    win = modMinAmplitude + (1-modMinAmplitude) .* (win - min(win)) ./ (max(win) - min(win));
 
     % applying modulation
     signal = signal .* win;
 elseif strcmp(modulation, 'pac')
     % phase-amplitude coupling
-    if isempty(pacPhase), pacPhase = rand(); end
+    if isempty(modPhase), modPhase = rand(); end
 
     % generating the modulating signal
-    ms = sin(pacPhase*2*pi + 2*pi*pacFrequency*(t/srate));
+    ms = sin(modPhase*2*pi + 2*pi*modFrequency*t);
     
-    % normalising between pacMinAmplitude and 1
-    ms = pacMinAmplitude + (1-pacMinAmplitude) .* (ms - min(ms)) ./ (max(ms) - min(ms));
+    % normalising between modMinAmplitude and 1
+    ms = modMinAmplitude + (1-modMinAmplitude) .* (ms - min(ms)) ./ (max(ms) - min(ms));
     
     % applying the modulation
     signal = signal .* ms;
-end
+    
+    % applying prestimulus attenuation
+    if modPrestimPeriod
+        latency = 0;
+        width = (modPrestimPeriod * 1/(1-modPrestimTaper))/1000 * srate * 2;
+        taper = modPrestimTaper;
 
+        if width < 1; width = 0; end
+        win = tukeywin(width, taper)';
+
+        if latency > ceil(width/2)
+            win = [zeros(1, latency - ceil(width/2)), win];
+        else
+            win(1:ceil(width/2)-latency) = [];
+        end
+
+        if length(win) > samples
+            win(samples+1:length(win)) = [];
+        elseif length(win) < samples
+            win = [win, zeros(1, samples - length(win))];
+        end
+
+        win = 1 - win;
+
+        % normalising between modPrestimAmplitude and 1
+        win = modPrestimAmplitude + (1-modPrestimAmplitude) .* (win - min(win)) ./ (max(win) - min(win));
+        
+        signal = signal .* win;
+    end
 end

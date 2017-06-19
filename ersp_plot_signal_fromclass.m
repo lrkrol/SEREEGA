@@ -22,13 +22,16 @@
 % Usage example:
 %       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
 %       >> ersp.frequency = 20; ersp.amplitude = 1; ersp.phase = 0;
-%       >> ersp.modulation='pac'; ersp.pacFrequency=2; ersp.pacPhase= -.25;
+%       >> ersp.modulation='mod'; ersp.modFrequency=2; ersp.modPhase= -.25;
 %       >> plot_signal_fromclass(ersp, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2016-06-20 lrk
+%   - Changed variable names for consistency
+%   - Added prestimulus attenuation to PAC
 % 2017-06-16 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -79,10 +82,11 @@ if strcmp(class.modulation, 'none')
     signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length);
 elseif ismember(class.modulation, {'burst', 'invburst'})
     signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length, ...
-            'modulation', class.modulation, 'burstLatency', class.burstLatency, 'burstWidth', class.burstWidth, 'burstTaper', class.burstTaper);
+            'modulation', class.modulation, 'modLatency', class.modLatency, 'modWidth', class.modWidth, 'modTaper', class.modTaper, 'modMinAmplitude', class.modMinAmplitude);
 elseif strcmp(class.modulation, 'pac')
     signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length, ...
-            'modulation', class.modulation, 'pacFrequency', class.pacFrequency, 'pacPhase', class.pacPhase, 'pacMinAmplitude', class.pacMinAmplitude);
+            'modulation', class.modulation, 'modFrequency', class.modFrequency, 'modPhase', class.modPhase, 'modMinAmplitude', class.modMinAmplitude, ...
+                'modPrestimPeriod', class.modPrestimPeriod, 'modPrestimTaper', class.modPrestimTaper, 'modPrestimAmplitude', class.modPrestimAmplitude);
 end
 plot(x, signal, 'b-', 'LineWidth', 2);
 
