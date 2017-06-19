@@ -1,11 +1,11 @@
-% h = plot_source_location(leadfield, sourceIdx, varargin)
+% h = plot_source_location(sourceIdx, leadfield, varargin)
 %
 %       Plots the location of the given sources using EEGLAB's dipfit plot.
 %
 % In:
-%       leadfield - the leadfield from which to plot the sources
 %       sourceIdx - 1-by-n array containing the index/indices of the 
 %                   source(s) in the leadfield to be plotted
+%       leadfield - the leadfield from which to plot the sources
 %
 % Optional (key-value pairs):
 %       newfig - (0|1) whether or not to open a new figure window.
@@ -48,19 +48,19 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function h = plot_source_location(leadfield, sourceIdx, varargin)
+function h = plot_source_location(sourceIdx, leadfield, varargin)
 
 % parsing input
 p = inputParser;
 
-addRequired(p, 'leadfield', @isstruct);
 addRequired(p, 'sourceIdx', @isnumeric);
 
+addRequired(p, 'leadfield', @isstruct);
 addParamValue(p, 'newfig', 1, @isnumeric);
 addParamValue(p, 'color', {}, @iscell);
 addParamValue(p, 'view', [90, 0], @isnumeric);
 
-parse(p, leadfield, sourceIdx, varargin{:})
+parse(p, sourceIdx, leadfield, varargin{:})
 
 lf = p.Results.leadfield;
 sourceIdx = p.Results.sourceIdx;

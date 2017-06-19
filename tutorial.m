@@ -59,13 +59,13 @@ plot_chanlocs(lf);
 % we can get a random source, and inspect its location:
 
 source = lf_get_source_random(lf);
-plot_source_location(lf, source);
+plot_source_location(source, lf);
 
 % or, if we know the location of a source, we can get the source nearest to
 % that location, for example, somewhere in the right visual cortex:
 
 source = lf_get_source_nearest(lf, [20 -85 0]);
-plot_source_location(lf, source);
+plot_source_location(source, lf);
 
 %% orient the source dipole
 % the sources in the leadfield are represented by dipoles at specific
