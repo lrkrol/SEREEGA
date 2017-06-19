@@ -190,7 +190,8 @@ c.signal = {erp};
 EEG = utl_create_eeglabdataset(generate_scalpdata(c, lf, epochs), ...
         epochs.srate, 'chanlocs', lf.chanlocs, ...
         'xmin', -epochs.prestim/1000, 'marker', epochs.marker);
-pop_eegplot(EEG, 1, 1, 1);
+
+figure; pop_erpimage(EEG,1, [25],[[]],'Pz',10,1,{},[],'' ,'yerplabel','\muV','erp','on','cbar','on','topo', { [25] EEG.chanlocs EEG.chaninfo } );
 
 % after these changes, the possible shape that the ERP can take varies
 % significantly. in blue: extreme values for the first epoch; in red:
@@ -230,7 +231,7 @@ pop_eegplot(EEG, 1, 1, 1);
 
 ersp = struct();
 ersp.frequency = 20;
-ersp.amplitude = 1;
+ersp.amplitude = .25;
 
 ersp = utl_check_class(ersp, 'type', 'ersp');
 
@@ -247,6 +248,8 @@ ersp.modulation = 'burst';
 ersp.modLatency = 500;
 ersp.modWidth = 100;
 ersp.modTaper = 0.5;
+
+ersp = utl_check_class(ersp, 'type', 'ersp');
 
 plot_signal_fromclass(ersp, epochs);
 
@@ -268,6 +271,8 @@ ersp.modulation = 'pac';
 ersp.modFrequency = 2;
 ersp.modPhase = .25;
 
+ersp = utl_check_class(ersp, 'type', 'ersp');
+
 plot_signal_fromclass(ersp, epochs);
 
 % additionally, the phase-amplitude coupling can be attenuated during a
@@ -277,4 +282,16 @@ plot_signal_fromclass(ersp, epochs);
 ersp.modPrestimPeriod = epochs.prestim;
 ersp.modPrestimTaper = .5;
 
+ersp = utl_check_class(ersp, 'type', 'ersp');
+
 plot_signal_fromclass(ersp, epochs);
+
+% to put that all together again, and see the resulting EEG:
+
+c.signal = {erp, ersp, noise};
+EEG = utl_create_eeglabdataset(generate_scalpdata(c, lf, epochs), ...
+        epochs.srate, 'chanlocs', lf.chanlocs, ...
+        'xmin', -epochs.prestim/1000, 'marker', epochs.marker);
+pop_topoplot(EEG, 1, [100, 200, 250, 300, 350, 400, 500], '', [1 8]);
+pop_eegplot(EEG, 1, 1, 1);
+
