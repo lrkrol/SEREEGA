@@ -88,27 +88,19 @@ for e = 1:epochs.n
     
     % for each component...
     for c = 1:numel(component)
-        signaldata = zeros(numel(component(c).signal), floor((epochs.length/1000)*epochs.srate));
-                
-        % for each signal...
-        for s = 1:numel(component(c).signal)
-            % obtaining signal
-            signal = generate_signal_fromclass(component(c).signal{s}, epochs, e);
-            signaldata(s,:) = signal;
-        end
-        
-        % combining signals into single component activation
-        componentsignal = sum(signaldata, 1);
-            
+        % getting component's sum signal
+        componentsignal = generate_signal_fromcomponent(component(c), epochs, 'epochNumber', e);
+
         % obtaining single source
-        n = randperm(1:numel(component(c).source));
+        n = randperm(numel(component(c).source));
+        n = n(1);
         source = component(c).source(n);
 
         % obtaining orientation
         orientation = component(c).orientation(n,:);
         orientationDv = component(c).orientationDv(n,:);
-        orientation = utl_apply_dvslope(orientation, orientationDv, zeros(1,3), e, epochs.n);
-            
+        orientation = utl_apply_dvslope(orientation, orientationDv, zeros(size(orientation)), e, epochs.n);
+
         % projecting signal
         componentdata(:,:,c) = lf_project_signal(componentsignal, leadfield, source, orientation, ...
                 'normaliseLeadfield', normaliseLeadfield, ...

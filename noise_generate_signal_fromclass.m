@@ -9,7 +9,12 @@
 %       epochs - single epoch configuration struct containing at least
 %                sampling rate (srate), epoch length (length), and total
 %                number of epochs (n)
-%       epochNumber - current epoch number (required for slope calculation)
+%
+% Optional (key-value pairs):
+%       epochNumber - current epoch number. this is required for slope
+%                     calculation, but defaults to 1 if not indicated
+%       baseonly - whether or not to only plot the base signal, without any
+%                  deviations or slopes (1|0, default 0)
 %
 % Out:  
 %       signal - row array containing the simulated noise activation signal
@@ -43,12 +48,28 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function signal = noise_generate_signal_fromclass(class, epochs, epochNumber)
+function signal = noise_generate_signal_fromclass(class, epochs, varargin)
+
+% parsing input
+p = inputParser;
+
+addRequired(p, 'class', @isstruct);
+addRequired(p, 'epochs', @isstruct);
+
+addParamValue(p, 'epochNumber', 1, @isnumeric);
+addParamValue(p, 'baseonly', 0, @isnumeric);
+
+parse(p, class, epochs, varargin{:})
+
+class = p.Results.class;
+epochs = p.Results.epochs;
+epochNumber = p.Results.epochNumber;
+baseonly = p.Results.baseonly;
 
 samples = floor(epochs.srate * epochs.length/1000);
 
 % checking probability
-if rand() > class.probability + class.probabilitySlope * epochNumber / epochs.n
+if ~baseonly && rand() > class.probability + class.probabilitySlope * epochNumber / epochs.n
     % returning flatline
     signal = zeros(1, samples);
 else
@@ -62,7 +83,11 @@ else
     end
 
     % normalising to have the maximum (or minimum) value be (-)amplitude
-    amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
+    if ~baseonly
+        amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
+    else 
+        amplitude = class.amplitude;
+    end
     [~, i] = max(abs(signal(:)));
     signal = signal .* (sign(signal(i)) / signal(i)) .* amplitude;
     

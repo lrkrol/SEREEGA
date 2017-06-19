@@ -1,4 +1,4 @@
-% signal = generate_signal_fromclass(class, epochs, epochNumber)
+% signal = generate_signal_fromclass(class, epochs, varargin)
 %
 %       Gateway function to generate signals based on a class. Takes a 
 %       class variable and calls the corresponding signal generation
@@ -10,9 +10,11 @@
 %                sampling rate (srate), epoch length (length), and total
 %                number of epochs (n)
 %
-% Optional:
+% Optional (key-value pairs):
 %       epochNumber - current epoch number. this is required for slope
 %                     calculation, but defaults to 1 if not indicated
+%       baseonly - whether or not to only plot the base signal, without any
+%                  deviations or slopes (1|0, default 0)
 %
 % Out:  
 %       signal - row array containing the simulated noise activation signal
@@ -44,16 +46,30 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function signal = generate_signal_fromclass(class, epochs, epochNumber)
+function signal = generate_signal_fromclass(class, epochs, varargin)
 
-if ~exist('epochNumber', 'var'), epochNumber = 1; end
+% parsing input
+p = inputParser;
+
+addRequired(p, 'class', @isstruct);
+addRequired(p, 'epochs', @isstruct);
+
+addParamValue(p, 'epochNumber', 1, @isnumeric);
+addParamValue(p, 'baseonly', 0, @isnumeric);
+
+parse(p, class, epochs, varargin{:})
+
+class = p.Results.class;
+epochs = p.Results.epochs;
+epochNumber = p.Results.epochNumber;
+baseonly = p.Results.baseonly;
 
 % calling type-specific generate function
 if ~exist(sprintf('%s_generate_signal_fromclass', class.type), 'file')
     error('no signal generation function found for class type ''%s''', class.type);
 else
     class_generate_signal_fromclass = str2func(sprintf('%s_generate_signal_fromclass', class.type));
-    signal = class_generate_signal_fromclass(class, epochs, epochNumber);
+    signal = class_generate_signal_fromclass(class, epochs, 'epochNumber', epochNumber, 'baseonly', baseonly);
 end
 
 end

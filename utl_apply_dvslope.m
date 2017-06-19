@@ -35,7 +35,7 @@
 
 function value = utl_apply_dvslope(mean, deviation, slope, epochNumber, maxEpoch)
 
-if numel(mean) > 1,
+if numel(mean) > 1
     % recursively calling self in case more than one value is given
     for i = 1:numel(mean)
         value(i) = utl_apply_dvslope(mean(i), deviation(i), slope(i), epochNumber, maxEpoch);

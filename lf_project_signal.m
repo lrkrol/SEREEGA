@@ -48,30 +48,30 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function scalpdata = lf_project_signal(signal, leadfield, source, orientation, varargin)
+function scalpdata = lf_project_signal(signal, leadfield, sourceIdx, orientation, varargin)
 
 % parsing input
 p = inputParser;
 
 addRequired(p, 'signal', @isnumeric);
 addRequired(p, 'leadfield', @isstruct);
-addRequired(p, 'source', @isnumeric);
+addRequired(p, 'sourceIdx', @isnumeric);
 addRequired(p, 'orientation', @isnumeric);
 
 addParamValue(p, 'normaliseLeadfield', 1, @isnumeric);
 addParamValue(p, 'normaliseOrientation', 1, @isnumeric);
 
-parse(p, signal, leadfield, source, orientation, varargin{:})
+parse(p, signal, leadfield, sourceIdx, orientation, varargin{:})
 
 signal = p.Results.signal;
 leadfield = p.Results.leadfield;
-source = p.Results.source;
+sourceIdx = p.Results.sourceIdx;
 orientation = p.Results.orientation;
 normaliseLeadfield = p.Results.normaliseLeadfield;
 normaliseOrientation = p.Results.normaliseOrientation;
 
 % getting leadfield
-leadfield = squeeze(leadfield.leadfield(:,source,:));
+leadfield = squeeze(leadfield.leadfield(:,sourceIdx,:));
 
 if normaliseLeadfield
     % normalising to have the maximum (or minimum) value be 1 (or -1)

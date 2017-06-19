@@ -76,13 +76,13 @@ plot_source_location(lf, source);
 
 % our source's projections onto scalp along the X, Y, and Z axes look like:
 
-plot_source_projection(lf, source, ...
+plot_source_projection(source, lf, ...
         'orientation', [1 0 0], 'orientedonly', 1);
 
-plot_source_projection(lf, source, ...
+plot_source_projection(source, lf, ...
         'orientation', [0 1 0], 'orientedonly', 1);
 
-plot_source_projection(lf, source, ...
+plot_source_projection(source, lf, ...
         'orientation', [0 0 1], 'orientedonly', 1);
 
 % these projections can be linearly combined to get any simulated dipole
@@ -92,9 +92,9 @@ plot_source_projection(lf, source, ...
 % fieldtrip-generated leadfields have no meaningful default orientation.
 
 orientation = [1, 1, 0];
-plot_source_projection(lf, source, 'orientation', orientation);
+plot_source_projection(source, lf, 'orientation', orientation);
 
-plot_source_projection(lf, source);
+plot_source_projection(source, lf);
 
 %% define the signal
 % we now have a source's location and its orientation, i.e., we now know
@@ -292,6 +292,5 @@ c.signal = {erp, ersp, noise};
 EEG = utl_create_eeglabdataset(generate_scalpdata(c, lf, epochs), ...
         epochs.srate, 'chanlocs', lf.chanlocs, ...
         'xmin', -epochs.prestim/1000, 'marker', epochs.marker);
-pop_topoplot(EEG, 1, [100, 200, 250, 300, 350, 400, 500], '', [1 8]);
 pop_eegplot(EEG, 1, 1, 1);
 

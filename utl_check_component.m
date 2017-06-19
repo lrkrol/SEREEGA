@@ -42,33 +42,41 @@
 
 function component = utl_check_component(component, leadfield)
 
-% checking for required variables
-if ~isfield(component, 'source'),
-    error('no source indicated'); 
-elseif ~isfield(component, 'signal'),
-    error('no signal indicated');
-end
+if numel(component) > 1
+    for c = 1:numel(component)
+        component(c) = utl_check_component(component(c), leadfield);
+    end
+else
+    % checking for required variables
+    if ~isfield(component, 'source') || isempty(component.source)
+        error('no source indicated'); 
+    elseif ~isfield(component, 'signal') || isempty(component.signal)
+        error('no signal indicated');
+    end
 
-% adding fields / filling in defaults
-if ~isfield(component, 'orientation'),
-    component.orientation = leadfield.orientation(component.source,:); end
+    % adding fields / filling in defaults
+    if ~isfield(component, 'orientation') || isempty(component.orientation)
+        component.orientation = leadfield.orientation(component.source,:); end
 
-if ~isfield(component, 'orientationDv'),
-    component.orientationDv = zeros(size(component.orientation)); end
+    if ~isfield(component, 'orientationDv') || isempty(component.orientationDv)
+        component.orientationDv = zeros(size(component.orientation)); end
 
-if any(component.source > size(leadfield.pos, 1)),
-    error('indicated source(s) not present in the leadfield'); end
+    if any(component.source > size(leadfield.pos, 1))
+        error('indicated source(s) not present in the leadfield'); end
 
-% checking values
-if ~all(size(component.orientation) == [numel(component.source), 3]),
-    error('number of orientations does not match number of sources'); end
+    % checking values
+    if ~all(size(component.orientation) == [numel(component.source), 3])
+        warning('number of orientations does not match number of sources; resetting to defaults'); 
+        component.orientation = leadfield.orientation(component.source,:); 
+    end
 
-if ~iscell(component.signal),
-    error('component signals must be in a cell array'); end
+    if ~iscell(component.signal)
+        error('component signals must be in a cell array'); end
 
-% checking signals
-for s = 1:length(component.signal)
-    component.signal{s} = utl_check_class(component.signal{s});
+    % checking signals
+    for s = 1:length(component.signal)
+        component.signal{s} = utl_check_class(component.signal{s});
+    end
 end
 
 end

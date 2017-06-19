@@ -1,10 +1,11 @@
 % h = erp_plot_signal_fromclass(class, epochs, varargin)
 %
-%       Plots an ERP class activation signal. In blue, solid line: the mean 
-%       signal as defined. The dotted and dashed lines indicate the
-%       signal's variability as per the defined deviations. If a slope has
-%       been defined, the red curve indicates the signal (mean and
-%       extremes) at the end of the slope (i.e. the final epoch).
+%       Plots an ERP class activation signal. In your colour map first's 
+%       colour, solid line: the mean signal as defined. The dotted and
+%       dashed lines indicate the signal's variability as per the defined
+%       deviations. If a slope has been defined, the second colour curves
+%       indicate the signal (mean and extremes) at the end of the slope
+%       (i.e. the final epoch).
 %
 % In:
 %       class - 1x1 struct, the class variable
@@ -74,33 +75,32 @@ x = 1:epochs.length/1000*epochs.srate;
 x = x/epochs.srate;
 
 % correcting time stamps if a prestimulus period is indicated
-if isfield(epochs, 'prestim'),
+if isfield(epochs, 'prestim')
     x = x - epochs.prestim/1000; end
 
-if newfig, h = figure; else h = NaN; end
+if newfig, h = figure; else, h = NaN; end
 hold on;
 
 % plotting the mean signal, no deviations applied
-plot(x, erp_generate_signal( ...
-        class.peakLatency, ...
-        class.peakWidth, ...
-        class.peakAmplitude, ...
-        epochs.srate, epochs.length), 'b-', 'LineWidth', 2);
+plot(x, erp_generate_signal_fromclass(class, epochs, 'baseonly', 1), '-');
 
 if ~baseonly
     % signal with maximum possible deviation (negative)
+    ax = gca;
+    ax.ColorOrderIndex = 1;
     plot(x, erp_generate_signal( ...
             class.peakLatency - class.peakLatencyDv, ...
             class.peakWidth - class.peakWidthDv, ...
             class.peakAmplitude - class.peakAmplitudeDv, ...
-            epochs.srate, epochs.length), 'b:');
+            epochs.srate, epochs.length), ':');
 
     % signal with maximum possible deviation (positive)
+    ax.ColorOrderIndex = 1;
     plot(x, erp_generate_signal( ...
             class.peakLatency + class.peakLatencyDv, ...
             class.peakWidth + class.peakWidthDv, ...
             class.peakAmplitude + class.peakAmplitudeDv, ...
-            epochs.srate, epochs.length), 'b--');
+            epochs.srate, epochs.length), '--');
 
     if any([class.peakLatencySlope, class.peakWidthSlope, class.peakAmplitudeSlope])
        % additionally plotting the signal with maximum slope applied
@@ -109,21 +109,23 @@ if ~baseonly
                     class.peakLatency + class.peakLatencySlope, ...
                     class.peakWidth + class.peakWidthSlope, ...
                     class.peakAmplitude + class.peakAmplitudeSlope, ...
-                    epochs.srate, epochs.length), 'r-', 'LineWidth', 2);
+                    epochs.srate, epochs.length), '-');
 
             % negative deviation
+            ax.ColorOrderIndex = 2;
             plot(x, erp_generate_signal( ...
                     class.peakLatency + class.peakLatencySlope - class.peakLatencyDv, ...
                     class.peakWidth + class.peakWidthSlope - class.peakWidthDv, ...
                     class.peakAmplitude + class.peakAmplitudeSlope - class.peakAmplitudeDv, ...
-                    epochs.srate, epochs.length), 'r:');
+                    epochs.srate, epochs.length), ':');
 
             % positive deviation
+            ax.ColorOrderIndex = 2;
             plot(x, erp_generate_signal( ...
                     class.peakLatency + class.peakLatencySlope + class.peakLatencyDv, ...
                     class.peakWidth + class.peakWidthSlope + class.peakWidthDv, ...
                     class.peakAmplitude + class.peakAmplitudeSlope + class.peakAmplitudeDv, ...
-                    epochs.srate, epochs.length), 'r--');
+                    epochs.srate, epochs.length), '--');
     end
 end
 

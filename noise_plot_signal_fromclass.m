@@ -80,27 +80,33 @@ hold on;
 % plotting the base signal, no deviations applied
 tempClass = class;
 tempClass.peakAmplitudeDv = 0;
-signal = noise_generate_signal_fromclass(tempClass, epochs, 1);
-plot(x, signal, 'b-', 'LineWidth', 2);
+signal = noise_generate_signal_fromclass(tempClass, epochs, 'baseonly', baseonly);
+plot(x, signal, '-');
 
 if ~baseonly
     % signal with maximum possible deviation (negative)
-    plot(x, signal - class.amplitudeDv, 'b:');
+    ax = gca;
+    ax.ColorOrderIndex = 1;
+    plot(x, signal - class.amplitudeDv, ':');
 
     % signal with maximum possible deviation (positive)
-    plot(x, signal + class.amplitudeDv, 'b:');
+    ax.ColorOrderIndex = 1;
+    plot(x, signal + class.amplitudeDv, ':');
 
     if class.amplitudeSlope
        % additionally plotting a new signal with maximum slope applied
             signal = noise_generate_signal_fromclass(class, epochs, epochs.n);
             % mean
-            plot(x, signal, 'r-', 'LineWidth', 2);
+            ax.ColorOrderIndex = 2;
+            plot(x, signal, '-');
 
             % negative deviation
-            plot(x, signal - class.amplitudeDv, 'r:');
+            ax.ColorOrderIndex = 2;
+            plot(x, signal - class.amplitudeDv, ':');
 
             % positive deviation
-            plot(x, signal + class.amplitudeDv, 'r--');
+            ax.ColorOrderIndex = 2;
+            plot(x, signal + class.amplitudeDv, '--');
     end
 end
 

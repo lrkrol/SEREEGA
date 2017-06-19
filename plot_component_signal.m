@@ -1,38 +1,31 @@
-% h = ersp_plot_signal_fromclass(class, epochs, varargin)
+% h = plot_component_signal(class, epochs, varargin)
 %
-%       Plots an ERSP class activation signal. In blue, solid line: the 
-%       base signal as defined. This function does not apply any deviations
-%       or slopes.
+%       Plots the signal from a component without any deviations or slopes
+%       applied. Due to the random nature of noise, it takes the mean of 10
+%       such epochs before the signal is plotted.
 %
 % In:
 %       class - 1x1 struct, the class variable
-%       epochs - single epoch configuration struct containing at least
-%                sampling rate (srate), epoch length (length), and total
-%                number of epochs (n)
+%       epochs - 1x1 struct, an epoch configuration struct
 %
 % Optional (key-value pairs):
 %       newfig - (0|1) whether or not to open a new figure window.
 %                default: 1
-%       baseonly - (0|1) whether or not to plot only the base signal,
-%                  without any deviations or sloping. default: 1
 %
 % Out:  
 %       h - handle of the generated figure
 %
 % Usage example:
-%       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
-%       >> ersp.frequency = 20; ersp.amplitude = 1; ersp.phase = 0;
-%       >> ersp.modulation='mod'; ersp.modFrequency=2; ersp.modPhase= -.25;
-%       >> plot_signal_fromclass(ersp, epochs);
+%       >> epochs.srate = 1000; epochs.length = 1000;
+%       >> erp.peakLatency = 500; erp.peakWidth = 100; erp.amplitude = 1;
+%       >> c.source = 1; c.signal = {erp, noise};
+%       >> plot_signal_fromcomponent(c, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
-% 2016-06-20 lrk
-%   - Changed variable names for consistency
-%   - Added prestimulus attenuation to PAC
-% 2017-06-16 First version
+% 2017-06-19 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
 
@@ -49,20 +42,19 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function h = ersp_plot_signal_fromclass(class, epochs, varargin)
+function h = plot_component_signal(component, epochs, varargin)
 
 % parsing input
 p = inputParser;
 
-addRequired(p, 'class', @isstruct);
+addRequired(p, 'component', @isstruct);
 addRequired(p, 'epochs', @isstruct);
 
 addParamValue(p, 'newfig', 1, @isnumeric);
-addParamValue(p, 'baseonly', 1, @isnumeric);
 
-parse(p, class, epochs, varargin{:})
+parse(p, component, epochs, varargin{:})
 
-class = p.Results.class;
+component = p.Results.component;
 epochs = p.Results.epochs;
 newfig = p.Results.newfig;
 
@@ -74,10 +66,13 @@ x = x/epochs.srate;
 if isfield(epochs, 'prestim')
     x = x - epochs.prestim/1000; end
 
-if newfig, h = figure; else h = NaN; end
-hold on;
+if newfig, h = figure; else, h = NaN; end
 
-signal = ersp_generate_signal_fromclass(class, epochs, 'baseonly', 1);
-plot(x, signal, '-');
-
+% getting mean signal of ten epochs 
+componentsignal = [];
+for i = 1:10
+    componentsignal(i,:) = generate_signal_fromcomponent(component, epochs, 'baseonly', 1);
 end
+
+componentsignal = mean(componentsignal, 1);
+plot(x, componentsignal, '-');
