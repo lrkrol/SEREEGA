@@ -8,7 +8,7 @@
 % the general configuration of the simulated epochs requires:
 
 epochs.n = 100;             % the number of epochs to simulate
-epochs.srate = 500;         % their sampling rate in Hz
+epochs.srate = 1000;        % their sampling rate in Hz
 epochs.length = 1000;       % their length in ms
 
 % additionally, for this tutorial we add:
@@ -135,6 +135,7 @@ plot_signal_fromclass(erp, epochs);
 % projection pattern for this signal, we can now combine these
 % into a single component.
 
+c = struct();
 c.source = source;
 c.signal = {erp};
 
@@ -191,11 +192,89 @@ EEG = utl_create_eeglabdataset(generate_scalpdata(c, lf, epochs), ...
         'xmin', -epochs.prestim/1000, 'marker', epochs.marker);
 pop_eegplot(EEG, 1, 1, 1);
 
-% after these changes, the possible shapes that ERP can take vary
+% after these changes, the possible shape that the ERP can take varies
 % significantly. in blue: extreme values for the first epoch; in red:
 % extreme values for the last.
 
 plot_signal_fromclass(erp, epochs);
 
-%% multiple signal classes
-% 
+%% noise and multiple signal classes
+% for further, random variability, we can add noise to the signal. we do
+% this by defining a new activation class containing the noise we want to
+% simulate, and simply adding it to the existing component's signals.
+
+noise = struct();
+noise.color = 'brown';
+noise.amplitude = 1;
+
+noise = utl_check_class(noise, 'type', 'noise');
+
+c.signal = {erp, noise};
+EEG = utl_create_eeglabdataset(generate_scalpdata(c, lf, epochs), ...
+        epochs.srate, 'chanlocs', lf.chanlocs, ...
+        'xmin', -epochs.prestim/1000, 'marker', epochs.marker);
+pop_eegplot(EEG, 1, 1, 1);
+
+% when a component's signal activity is simulated, all of its signals are
+% simualed separately and summed together before being projected through
+% the leadfield. it is thus possible to generate multiple signal activation
+% patterns from the same source using a single component.
+
+%% event-related spectral perturbation
+% besides ERP and noise classes, one final class of signal activation is
+% available by default in this toolbox. this class concerns oscillatory
+% activations.
+
+% in its basic form, it is merely a sine wave of a given frequency, 
+% amplitude and, optionally, phase.
+
+ersp = struct();
+ersp.frequency = 20;
+ersp.amplitude = 1;
+
+ersp = utl_check_class(ersp, 'type', 'ersp');
+
+plot_signal_fromclass(ersp, epochs);
+
+% this base frequency can additionally be modulated in different ways.
+
+% frequency burst / event-related synchronisation
+% the base oscillatory signal can be modulated such that it appears only as
+% a single frequency burst, with a given peak (centre) latency, width, and
+% taper.
+
+ersp.modulation = 'burst';
+ersp.modLatency = 500;
+ersp.modWidth = 100;
+ersp.modTaper = 0.5;
+
+plot_signal_fromclass(ersp, epochs);
+
+% inverse frequency burst / event-related desynchronisation
+% the inverse of the above; it results in an attenuation in the given
+% window. in both cases, it is also possible to set a minimum amplitude,
+% in order to restrict the attenuation, which is otherwise 100%. 
+
+ersp.modulation = 'invburst';
+ersp.modMinAmplitude = 0.2;
+
+plot_signal_fromclass(ersp, epochs);
+
+% phase-amplitude coupling
+% this allows the base signal's amplitude to be modulated according to the
+% phase of another. 
+
+ersp.modulation = 'pac';
+ersp.modFrequency = 2;
+ersp.modPhase = .25;
+
+plot_signal_fromclass(ersp, epochs);
+
+% additionally, the phase-amplitude coupling can be attenuated during a
+% given baseline period, using a window similar to the one used for
+% frequency bursts.
+
+ersp.modPrestimPeriod = epochs.prestim;
+ersp.modPrestimTaper = .5;
+
+plot_signal_fromclass(ersp, epochs);
