@@ -36,6 +36,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-06-21 lrk
+%   - Excluded fiducials from default channel set
 % 2017-04-21 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -66,17 +68,17 @@ labels = p.Results.labels;
 
 % loading the NY Head leadfield
 load('sa_nyhead.mat', 'sa');
+if isempty(labels)
+    % taking all available EEG electrodes, i.e., excluding fiducials
+    labels = setdiff(sa.clab_electrodes, {'RPA', 'LPA', 'Nz'});
+end
 
 % obtaining indices of indicated electrodes
-if ~isempty(labels)
-    [~, chanidx] = ismember(labels, sa.clab_electrodes);
-    if any(~chanidx)
-        missingchans = find(~chanidx);
-        warning('\nElectrode %s not available', labels{missingchans});
-        chanidx(missingchans) = [];
-    end
-else
-    chanidx = 1:length(sa.clab_electrodes);
+[~, chanidx] = ismember(labels, sa.clab_electrodes);
+if any(~chanidx)
+    missingchans = find(~chanidx);
+    warning('\nElectrode %s not available', labels{missingchans});
+    chanidx(missingchans) = [];
 end
 
 % preparing leadfield
