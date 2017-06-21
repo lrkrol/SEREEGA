@@ -70,6 +70,7 @@ for s = 1:length(component.source)
 end
 meanproj = mean(meanproj,2);
 
+if newfig, h = figure; else h = NaN; end
 topoplot(meanproj, leadfield.chanlocs, 'colormap', cmap);
 
 end

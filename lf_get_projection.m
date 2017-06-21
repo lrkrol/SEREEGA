@@ -1,3 +1,49 @@
+% projection = lf_get_projection(sourceIdx, leadfield, varargin)
+%
+%       Returns the projection matrix of a given source in the given
+%       leadfield, using the optionally given orientation and normalisation
+%       arguments.
+%
+% In:
+%       sourceIdx - single source index of the source in the leadfield
+%       leadfield - the leadfield from which to obtain the projection
+%
+% Optional (key-value pairs):
+%       orientation - [x, y, z] orientation of the source to use
+%       normaliseLeadfield - 1|0, whether or not to normalise the
+%                            leadfields before  projecting the signal to
+%                            have the most extreme value be either 1 or -1,
+%                            depending on its sign. default: 1
+%       normaliseOrientation - 1|0, as above, except for orientation
+%
+% Out:
+%       projection - channels x 1 array representing the projection
+%
+% Usage example:
+%       >> lf = lf_generate_fromnyhead;
+%       >> projection = lf_get_projection(1, lf, 'orientation', [1 1 0]);
+% 
+%                    Copyright 2017 Laurens R Krol
+%                    Team PhyPA, Biological Psychology and Neuroergonomics,
+%                    Berlin Institute of Technology
+
+% 2017-06-20 First version
+
+% This file is part of Simulating Event-Related EEG Activity (SEREEGA).
+
+% SEREEGA is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+
+% SEREEGA is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+
+% You should have received a copy of the GNU General Public License
+% along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
+
 function projection = lf_get_projection(sourceIdx, leadfield, varargin)
 
 % parsing input
@@ -17,6 +63,10 @@ sourceIdx = p.Results.sourceIdx;
 orientation = p.Results.orientation;
 normaliseLeadfield = p.Results.normaliseLeadfield;
 normaliseOrientation = p.Results.normaliseOrientation;
+
+if numel(sourceIdx) > 1
+    error('lf_get_projection can only project a single source');
+end
 
 if isempty(orientation)
     orientation = leadfield.orientation(sourceIdx,:);

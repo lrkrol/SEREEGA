@@ -1,3 +1,50 @@
+% componentsignal = generate_signal_fromcomponent(component, epochs, varargin)
+%
+%       Generates a mean base signal from all signals in a given component.
+%
+% In:
+%       component - 1x1 struct, the component variable
+%       epochs - single epoch configuration struct containing at least
+%                sampling rate (srate), epoch length (length), and total
+%                number of epochs (n)
+%
+% Optional (key-value pairs):
+%       epochNumber - current epoch number. this is required for slope
+%                     calculation, but defaults to 1 if not indicated
+%       baseonly - whether or not to only plot the base signal, without any
+%                  deviations or slopes (1|0, default 0)
+%
+% Out:  
+%       componentsignal - row array containing the simulated mean signal
+%
+% Usage example:
+%       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
+%       >> erp.peakLatency= 200; erp.peakWidth= 100; erp.peakAmplitude = 1;
+%       >> noise.color = 'brown'; noise.amplitude = .5;
+%       >> c.source = 1; c.signal = {erp, noise};
+%       >> csignal = generate_signal_fromcomponent(c, epochs);
+% 
+%                    Copyright 2017 Laurens R Krol
+%                    Team PhyPA, Biological Psychology and Neuroergonomics,
+%                    Berlin Institute of Technology
+
+% 2017-06-20 First version
+
+% This file is part of Simulating Event-Related EEG Activity (SEREEGA).
+
+% SEREEGA is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+
+% SEREEGA is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+
+% You should have received a copy of the GNU General Public License
+% along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
+
 function componentsignal = generate_signal_fromcomponent(component, epochs, varargin)
 
 % parsing input

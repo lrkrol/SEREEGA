@@ -1,4 +1,4 @@
-% scalpdata = lf_project_signal(signal, leadfield, source, orientation, varargin)
+% scalpdata = lf_project_signal(signal, leadfield, sourceIdx, orientation, varargin)
 %
 %       Projects an activation signal through the indicated leadfield using
 %       the indicated source and orientation.
@@ -6,7 +6,7 @@
 % In:
 %       signal - 1-by-n array, the activation signal to be projected
 %       leadfield - a leadfield struct
-%       source - source index of the source in the leadfield
+%       sourceIdx - source index of the source in the leadfield
 %       orientation - [x, y, z] orientation of the source to use
 %
 % Optional (key-value pairs):
