@@ -44,8 +44,9 @@ function component = utl_check_component(component, leadfield)
 
 if numel(component) > 1
     for c = 1:numel(component)
-        component(c) = utl_check_component(component(c), leadfield);
+        checkedcomponent(c) = utl_check_component(component(c), leadfield);
     end
+    component = checkedcomponent;
 else
     % checking for required variables
     if ~isfield(component, 'source') || isempty(component.source)
