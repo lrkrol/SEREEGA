@@ -54,8 +54,8 @@ function h = plot_source_location(sourceIdx, leadfield, varargin)
 p = inputParser;
 
 addRequired(p, 'sourceIdx', @isnumeric);
-
 addRequired(p, 'leadfield', @isstruct);
+
 addParamValue(p, 'newfig', 1, @isnumeric);
 addParamValue(p, 'color', {}, @iscell);
 addParamValue(p, 'view', [90, 0], @isnumeric);

@@ -88,31 +88,31 @@ elseif isfield(class, 'type') && ~isempty(class.type) && ~strcmp(class.type, 'er
 end
 
 % adding fields / filling in defaults
-if ~isfield(class, 'type') || isempty(class.type),
+if ~isfield(class, 'type') || isempty(class.type)
     class.type = 'erp'; end
 
-if ~isfield(class, 'peakLatencyDv'),
+if ~isfield(class, 'peakLatencyDv')
     class.peakLatencyDv = zeros(1, numel(class.peakLatency)); end
 
-if ~isfield(class, 'peakLatencySlope'),
+if ~isfield(class, 'peakLatencySlope')
     class.peakLatencySlope = zeros(1, numel(class.peakLatency)); end
 
-if ~isfield(class, 'peakWidthDv'),
+if ~isfield(class, 'peakWidthDv')
     class.peakWidthDv = zeros(1, numel(class.peakLatency)); end
 
-if ~isfield(class, 'peakWidthSlope'),
+if ~isfield(class, 'peakWidthSlope')
     class.peakWidthSlope = zeros(1, numel(class.peakLatency)); end
 
-if ~isfield(class, 'peakAmplitudeDv'),
+if ~isfield(class, 'peakAmplitudeDv')
     class.peakAmplitudeDv = zeros(1, numel(class.peakLatency)); end
 
-if ~isfield(class, 'peakAmplitudeSlope'),
+if ~isfield(class, 'peakAmplitudeSlope')
     class.peakAmplitudeSlope = zeros(1, numel(class.peakLatency)); end
 
-if ~isfield(class, 'probability'),
+if ~isfield(class, 'probability')
     class.probability = 1; end
 
-if ~isfield(class, 'probabilitySlope'),
+if ~isfield(class, 'probabilitySlope')
     class.probabilitySlope = 0; end
 
 class = orderfields(class);
@@ -120,22 +120,22 @@ class = orderfields(class);
 % checking values
 fields = fieldnames(class);
 for f = 1:length(fields)
-    if ~isrow(class.(fields{f})),
-        error('field ''%s'' is not a row vector', fields{f}); end
+    if ~isrow(class.(fields{f}))
+        class.(fields{f}) = class.(fields{f})';
 end
 
 if ~isequal(numel(class.peakLatency), numel(class.peakLatencyDv), numel(class.peakLatencySlope), ...
             numel(class.peakWidth), numel(class.peakWidthDv), numel(class.peakWidthSlope), ...
-            numel(class.peakAmplitude), numel(class.peakAmplitudeDv), numel(class.peakAmplitudeSlope)),
+            numel(class.peakAmplitude), numel(class.peakAmplitudeDv), numel(class.peakAmplitudeSlope))
     error('all peak* fields must be of the same length'); end
     
-if any(class.peakLatency < 0),
+if any(class.peakLatency < 0)
     error('ERP peak latencies cannot be less than zero'); end
 
-if any(class.peakWidth <= 0),
+if any(class.peakWidth <= 0)
     error('ERP peak widths cannot be zero or less'); end
 
-if any(class.peakWidth - class.peakWidthDv < 1),
+if any(class.peakWidth - class.peakWidthDv < 1)
     warning('some peak widths may become zero or less due to the indicated deviation; this may lead to unexpected results'); end
 
 end
