@@ -16,6 +16,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-07-05 lrk
+%   - Fixed issue where slope already influenced the very first epoch
 % 2017-06-14 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -41,7 +43,7 @@ if numel(mean) > 1
         value(i) = utl_apply_dvslope(mean(i), deviation(i), slope(i), epochNumber, maxEpoch);
     end
 else
-    value = mean + deviation / 3 * randn() + slope * epochNumber / maxEpoch;
+    value = mean + deviation / 3 * randn() + slope * (epochNumber-1) / (maxEpoch-1);
 end
 
 end
