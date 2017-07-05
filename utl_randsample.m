@@ -1,7 +1,7 @@
 % Y = utl_randsample(n, k, replace, w)
 %
 %       Wrapper for MATLAB's randsample function, adjusted to also accept a
-%       1-by-1 0-vector as input and always returning a row.
+%       1-by-1 0-vector as input and to always return a row.
 %
 %       See MATLAB's randsample function for additional help.
 % 
