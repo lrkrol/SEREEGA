@@ -95,7 +95,7 @@ if ~baseonly
 
     if class.amplitudeSlope
        % additionally plotting a new signal with maximum slope applied
-            signal = noise_generate_signal_fromclass(class, epochs, epochs.n);
+            signal = noise_generate_signal_fromclass(class, epochs, 'epochNumber', epochs.n);
             % mean
             ax.ColorOrderIndex = 2;
             plot(x, signal, '-');

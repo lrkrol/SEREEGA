@@ -34,7 +34,8 @@
 %
 %         .type:                 class type (must be 'noise')
 %         .color:                noise color, 'white', 'pink', 'brown', 
-%                                'blue' or 'purple'
+%                                'blue' or 'purple' for gaussian noise, or
+%                                'white-unif' for uniform white noise
 %         .peakAmplitude:        1-by-n matrix of peak amplitudes
 %         .peakAmplitudeDv:      1-by-n matrix of peak amplitude deviations
 %         .peakAmplitudeSlope:   1-by-n matrix of peak amplitude slopes
@@ -50,13 +51,15 @@
 %       class - the class variable struct with all fields completed
 %
 % Usage example:
-%       >> noise.color = 'white'; noise.amplitude = .1;
+%       >> noise.color = 'brown'; noise.amplitude = .1;
 %       >> noise = noise_check_class(noise)
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-07-06 lrk
+%   - Added uniform white noise
 % 2017-06-15 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -104,12 +107,12 @@ if ~isfield(class, 'probabilitySlope')
 class = orderfields(class);
 
 % checking values
-if ~ismember(class.color, {'white', 'pink', 'brown', 'blue', 'purple'})
+if ~ismember(class.color, {'white', 'pink', 'brown', 'blue', 'purple', 'white-unif'})
     error('an unknown noise color is indicated in the given noise class variable'); end
 
-if verLessThan('matlab', '8.3')
-    warning(['your MATLAB version is lower than R2014a; ' ...
-             'during simulation, noise color settings will be ignored; ' ...
-             'white noise will be generated using randn()']); end
+if verLessThan('dsp', '8.6')
+    warning(['your DSP version is lower than 8.6 (MATLAB R2014a); ' ...
+             'during simulation, noise color settings will be ignored;' ...
+             'all gaussian noise will be white noise using randn()']); end
     
 end

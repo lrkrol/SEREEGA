@@ -23,12 +23,15 @@
 %       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
 %       >> noise.color = 'white'; noise.amplitude = 0.1;
 %       >> noise = utl_check_class(noise, 'type', 'noise');
-%       >> signal = noise_generate_signal_fromclass(noise, epochs, 1);
+%       >> signal = noise_generate_signal_fromclass(noise, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-07-06 lrk
+%   - Added uniform white noise and changed DSP syntax for backwards
+%     compatibility
 % 2017-06-15 lrk
 %   - Switched to DSP to generate colored noise
 % 2017-06-15 First version
@@ -73,13 +76,29 @@ if ~baseonly && rand() > class.probability + class.probabilitySlope * epochNumbe
     % returning flatline
     signal = zeros(1, samples);
 else
-
-    if verLessThan('matlab', '8.3')
-        warning('your MATLAB version is lower than R2014a; ignoring noise color settings and generating white noise using randn()');
-        signal = randn(1,samples);
+    
+    if strcmp(class.color, 'white-unif')
+        signal = rand(1, samples);
     else
-        cn = dsp.ColoredNoise('Color', class.color, 'SamplesPerFrame', samples);
-        signal = cn()';
+        if verLessThan('dsp', '8.6')
+            warning(['your DSP version is lower than 8.6 (MATLAB R2014a); ' ...
+                     'ignoring noise color settings; generating white noise using randn()']); 
+             signal = randn(1, samples);
+        else
+            switch class.color
+                case 'white'
+                    cn = dsp.ColoredNoise(0, samples);
+                case 'pink'
+                    cn = dsp.ColoredNoise(1, samples);
+                case 'brown'
+                    cn = dsp.ColoredNoise(2, samples);
+                case 'blue'
+                    cn = dsp.ColoredNoise(-1, samples);
+                case 'purple'
+                    cn = dsp.ColoredNoise(-2, samples);
+            end
+        end
+        signal = step(cn)';
     end
 
     % normalising to have the maximum (or minimum) value be (-)amplitude
