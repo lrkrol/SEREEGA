@@ -78,7 +78,7 @@ if ~baseonly && rand() > class.probability + class.probabilitySlope * epochNumbe
 else
     
     if strcmp(class.color, 'white-unif')
-        signal = rand(1, samples);
+        signal = rand(1, samples) - .5;
     else
         if verLessThan('dsp', '8.6')
             warning(['your DSP version is lower than 8.6 (MATLAB R2014a); ' ...
@@ -100,7 +100,7 @@ else
         end
         signal = step(cn)';
     end
-
+    
     % normalising to have the maximum (or minimum) value be (-)amplitude
     if ~baseonly
         amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
