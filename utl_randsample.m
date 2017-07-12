@@ -1,7 +1,7 @@
 % Y = utl_randsample(n, k, replace, w)
 %
-%       Wrapper for MATLAB's randsample function, adjusted to also accept a
-%       1-by-1 0-vector as input and to always return a row.
+%       Wrapper for MATLAB's randsample function, adjusted to always
+%       interpret n as a population, and to always return a row vector.
 %
 %       See MATLAB's randsample function for additional help.
 % 
@@ -9,6 +9,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-07-13 lrk
+%   - Changed behaviour such that n is always interpreted as a population
 % 2017-07-05 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -28,7 +30,7 @@
 
 function y = utl_randsample(n, k, replace, w)
 
-if n == 0, n = [0 0]; end
+if numel(n) == 1, n = [n n]; end
 if nargin < 3, replace = 1; end
 if nargin < 4; w = []; end
 
