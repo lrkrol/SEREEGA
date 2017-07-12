@@ -29,7 +29,10 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
-% 2016-06-20 lrk
+% 2016-07-13 lrk
+%   - Fixed bug where modMinAmplitude was ignored for burst/invburst
+%     baseonly signal
+% 2017-06-20 lrk
 %   - Changed variable names for consistency
 %   - Added prestimulus attenuation to PAC
 % 2017-06-16 First version
@@ -68,16 +71,12 @@ epochNumber = p.Results.epochNumber;
 baseonly = p.Results.baseonly;
 
 if baseonly
-    % generating base signal
-    frequency = class.frequency;
-    amplitude = class.amplitude;
-    phase = class.phase;
-    
+    % generating base signal    
     if strcmp(class.modulation, 'none')
         signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length);
     elseif ismember(class.modulation, {'burst', 'invburst'})
         signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length, ...
-                'modulation', class.modulation, 'modLatency', class.modLatency, 'modWidth', class.modWidth, 'modTaper', class.modTaper);
+                'modulation', class.modulation, 'modLatency', class.modLatency, 'modWidth', class.modWidth, 'modTaper', class.modTaper, 'modMinAmplitude', class.modMinAmplitude);
     elseif strcmp(class.modulation, 'pac')
         signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length, ...
                 'modulation', class.modulation, 'modFrequency', class.modFrequency, 'modPhase', class.modPhase, 'modMinAmplitude', class.modMinAmplitude, ...
