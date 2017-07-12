@@ -91,9 +91,11 @@
 %                                 during which to attenuate the signal;
 %                                 default 0 disables
 %         .modPrestimTaper:       taper of the window to use to apply a
-%                                 prestimulus attenuation; 0 >= taper < 1
+%                                 prestimulus attenuation; 0 >= taper < 1;
+%                                 default: 0
 %         .modPrestimAmplitude:   amplitude during prestimulus period, as a
-%                                 percentage of the base amplitude
+%                                 percentage of the base amplitude;
+%                                 default: 0
 %
 % In:
 %       class - the class variable as a struct with at least the required
