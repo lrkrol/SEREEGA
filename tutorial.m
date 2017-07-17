@@ -5,7 +5,8 @@
 % the file sa_nyhead.mat should be in the path. it can be downloaded from 
 % http://www.parralab.org/nyhead/sa_nyhead.mat
 
-% the general configuration of the simulated epochs requires:
+% the general configuration of the simulated epochs is given as a structrue
+% array, and requires the following fields:
 
 epochs.n = 100;             % the number of epochs to simulate
 epochs.srate = 1000;        % their sampling rate in Hz
@@ -103,7 +104,7 @@ plot_source_projection(source, lf);
 % activation pattern.
 
 % let us consider an event-related potential (ERP). an ERP is defined by
-% the latency, width, and amplitude of its peak(s). we store EEG activation
+% the latency, width, and amplitude of its peak(s). we store activation
 % definitions in "classes", in the form of structure arrays:
 
 erp = struct();
@@ -112,7 +113,7 @@ erp.peakWidth = 100;        % in ms
 erp.peakAmplitude = 1;      % in microV
 
 % the width is one-sided, i.e., the full width of the above peak will be
-% between apprximately 200 and 400 ms (note that we have defined a
+% between approximately 200 and 400 ms (note that we have defined a
 % prestimulus period of 200 ms, which must be subtracted from these
 % latencies.)
 
@@ -133,18 +134,21 @@ plot_signal_fromclass(erp, epochs);
 %% brain components and scalp data
 % having defined both a signal (the ERP) and a source location plus
 % projection pattern for this signal, we can now combine these
-% into a single component.
+% into a single component. brain components again are represented as
+% structure arrays in this toolbox, with separate fields for the 
+% component's source location and its activation pattern.
 
 c = struct();
-c.source = source;
-c.signal = {erp};
+c.source = source;      % obtained from the leadfield, as above
+c.signal = {erp};       % ERP class, defined above
 
 c = utl_check_component(c, lf);
 
 % with this, we have all we need to simulate scalp data. scalp data is
 % simulated by projecting all components' signal activations through their
 % respective sources, and summing all projections together. right now, our
-% scalp data contains the activation of only one signal from one source.
+% scalp data contains the activation of only one component, with one single
+% and fixed activation pattern coming from one and the same location.
 
 scalpdata = generate_scalpdata(c, lf, epochs);
 
@@ -219,7 +223,8 @@ pop_eegplot(EEG, 1, 1, 1);
 % when a component's signal activity is simulated, all of its signals are
 % simualed separately and summed together before being projected through
 % the leadfield. it is thus possible to generate multiple signal activation
-% patterns from the same source using a single component.
+% patterns from the same source location using a single component, e.g. in
+% order to add noise to an otherwise clean signal.
 
 %% event-related spectral perturbation
 % besides ERP and noise classes, one final class of signal activation is
@@ -245,9 +250,9 @@ plot_signal_fromclass(ersp, epochs);
 % taper.
 
 ersp.modulation = 'burst';
-ersp.modLatency = 500;
-ersp.modWidth = 100;
-ersp.modTaper = 0.5;
+ersp.modLatency = 500;      % centre of the burst, in ms    
+ersp.modWidth = 100;        % width (half duration) of the burst, in ms
+ersp.modTaper = 0.5;        % taper of the burst
 
 ersp = utl_check_class(ersp, 'type', 'ersp');
 
