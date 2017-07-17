@@ -135,8 +135,13 @@ if ismember(modulation, {'burst', 'invburst'})
     if strcmp(modulation, 'invburst')
         win = 1 - win; end
     
-    % normalising between modMinAmplitude and 1
-    win = modMinAmplitude + (1-modMinAmplitude) .* (win - min(win)) ./ (max(win) - min(win));
+    if max(win) - min(win) ~= 0
+        % normalising between modMinAmplitude and 1
+        win = modMinAmplitude + (1-modMinAmplitude) .* (win - min(win)) ./ (max(win) - min(win));
+    else
+        % window is flat; if all-zero, it should be modMinAmplitude instead
+        if ~win, win = repmat(modMinAmplitude, size(win)); end
+    end
 
     % applying modulation
     signal = signal .* win;
@@ -181,4 +186,6 @@ elseif strcmp(modulation, 'pac')
         
         signal = signal .* win;
     end
+end
+    
 end

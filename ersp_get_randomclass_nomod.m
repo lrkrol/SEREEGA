@@ -93,6 +93,7 @@ for c = 1:numClasses
     erspclass.frequency = utl_randsample(frequencies, 1);
     erspclass.phase = [];
     erspclass.amplitude = utl_randsample(amplitudes, 1);
+    erspclass.modulation = 'none';
     
     % sampling randomly from given possible values
     erspclass.frequencyDv = utl_randsample(frequencyDvs, 1) * erspclass.frequency;

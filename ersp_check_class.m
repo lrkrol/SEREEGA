@@ -143,6 +143,39 @@ elseif ~isfield(class, 'amplitude')
     error('field amplitude is missing from given ERSP class variable');
 end
 
+if ismember(class.modulation, {'burst', 'invburst'})
+    if ~isfield(class, 'modLatency')
+        error('field modLatency is missing from given burst-modulated ERSP class variable');
+    elseif ~isfield(class, 'modWidth')
+        error('field modWidth is missing from given burst-modulated ERSP class variable');
+    elseif ~isfield(class, 'modTaper')
+        error('field modTaper is missing from given burst-modulated ERSP class variable');
+    end
+    
+    if ~isfield(class, 'modFrequency')
+        class.modFrequency = NaN; end
+elseif strcmp(class.modulation, 'pac')
+    if ~isfield(class, 'modFrequency')
+        error('field modFrequency is missing from given PAC-modulated ERSP class variable');
+    end
+    
+    if ~isfield(class, 'modLatency')
+        class.modLatency = NaN; end
+    if ~isfield(class, 'modWidth')
+        class.modWidth = NaN; end
+    if ~isfield(class, 'modTaper')
+        class.modTaper = NaN; end
+elseif strcmp(class.modulation, 'none')
+    if ~isfield(class, 'modFrequency')
+        class.modFrequency = NaN; end
+    if ~isfield(class, 'modLatency')
+        class.modLatency = NaN; end
+    if ~isfield(class, 'modWidth')
+        class.modWidth = NaN; end
+    if ~isfield(class, 'modTaper')
+        class.modTaper = NaN; end
+end
+
 % adding fields / filling in defaults
 if ~isfield(class, 'type') || isempty(class.type)
     class.type = 'ersp'; end
@@ -174,76 +207,63 @@ if ~isfield(class, 'modulation')
 
 if ~ismember(class.modulation, {'none', 'burst', 'invburst', 'pac'})
     error('unknown modulation type'); end
+   
+% burst modulation variables
+if ~isfield(class, 'modLatencyDv')
+    class.modLatencyDv = 0; end
+if ~isfield(class, 'modLatencySlope')
+    class.modLatencySlope = 0; end
 
-if ismember(class.modulation, {'burst', 'invburst'})
-    if ~isfield(class, 'modLatency')
-        error('field modLatency is missing from given burst-modulated ERSP class variable');
-    elseif ~isfield(class, 'modWidth')
-        error('field modWidth is missing from given burst-modulated ERSP class variable');
-    elseif ~isfield(class, 'modTaper')
-        error('field modTaper is missing from given burst-modulated ERSP class variable');
-    end
+if ~isfield(class, 'modWidthDv')
+    class.modWidthDv = 0; end
+if ~isfield(class, 'modWidthSlope')
+    class.modWidthSlope = 0; end
+
+if ~isfield(class, 'modTaperDv')
+    class.modTaperDv = 0; end
+if ~isfield(class, 'modTaperSlope')
+    class.modTaperSlope = 0; end
+
+if ~isfield(class, 'modMinAmplitude')
+    class.modMinAmplitude = 0; end
+if ~isfield(class, 'modMinAmplitudeDv')
+    class.modMinAmplitudeDv = 0; end
+if ~isfield(class, 'modMinAmplitudeSlope')
+    class.modMinAmplitudeSlope = 0; end
     
-    if ~isfield(class, 'modLatencyDv')
-        class.modLatencyDv = 0; end
-    if ~isfield(class, 'modLatencySlope')
-        class.modLatencySlope = 0; end
+% PAC modulation variables
+if ~isfield(class, 'modFrequencyDv')
+    class.modFrequencyDv = 0; end
+if ~isfield(class, 'modFrequencySlope')
+    class.modFrequencySlope = 0; end
+
+if ~isfield(class, 'modPhase')
+    class.modPhase = []; end
+if ~isfield(class, 'modPhaseDv')
+    class.modPhaseDv = 0; end
+if ~isfield(class, 'modPhaseSlope')
+    class.modPhaseSlope = 0; end
+
+if ~isfield(class, 'modMinAmplitude')
+    class.modMinAmplitude = 0; end
+if ~isfield(class, 'modMinAmplitudeDv')
+    class.modMinAmplitudeDv = 0; end
+if ~isfield(class, 'modMinAmplitudeSlope')
+    class.modMinAmplitudeSlope = 0; end
+
+if ~isfield(class, 'modPrestimPeriod')
+    class.modPrestimPeriod = 0; end
+if ~isfield(class, 'modPrestimTaper')
+    class.modPrestimTaper = 0; end
+if ~isfield(class, 'modPrestimAmplitude')
+    class.modPrestimAmplitude = 0; end
     
-    if ~isfield(class, 'modWidthDv')
-        class.modWidthDv = 0; end
-    if ~isfield(class, 'modWidthSlope')
-        class.modWidthSlope = 0; end
-    
-    if ~isfield(class, 'modTaperDv')
-        class.modTaperDv = 0; end
-    if ~isfield(class, 'modTaperSlope')
-        class.modTaperSlope = 0; end
-    
-    if ~isfield(class, 'modMinAmplitude')
-        class.modMinAmplitude = 0; end
-    if ~isfield(class, 'modMinAmplitudeDv')
-        class.modMinAmplitudeDv = 0; end
-    if ~isfield(class, 'modMinAmplitudeSlope')
-        class.modMinAmplitudeSlope = 0; end
-    
-    % checking values
-    if class.modWidth - class.modWidthDv - class.modWidthSlope < 1
-        warning('some burst widths may become zero or less due to the indicated deviation; this may lead to unexpected results'); end
-elseif strcmp(class.modulation, 'pac')
-    if ~isfield(class, 'modFrequency')
-        error('field modFrequency is missing from given PAC-modulated ERSP class variable');
-    end
-    
-    if ~isfield(class, 'modFrequencyDv')
-        class.modFrequencyDv = 0; end
-    if ~isfield(class, 'modFrequencySlope')
-        class.modFrequencySlope = 0; end
-    
-    if ~isfield(class, 'modPhase')
-        class.modPhase = []; end
-    if ~isfield(class, 'modPhaseDv')
-        class.modPhaseDv = 0; end
-    if ~isfield(class, 'modPhaseSlope')
-        class.modPhaseSlope = 0; end
-    
-    if ~isfield(class, 'modMinAmplitude')
-        class.modMinAmplitude = 0; end
-    if ~isfield(class, 'modMinAmplitudeDv')
-        class.modMinAmplitudeDv = 0; end
-    if ~isfield(class, 'modMinAmplitudeSlope')
-        class.modMinAmplitudeSlope = 0; end
-    
-    if ~isfield(class, 'modPrestimPeriod')
-        class.modPrestimPeriod = 0; end
-    if ~isfield(class, 'modPrestimTaper')
-        class.modPrestimTaper = 0; end
-    if ~isfield(class, 'modPrestimAmplitude')
-        class.modPrestimAmplitude = 0; end
-    
-    % checking values
-    if class.modPrestimTaper < 0 || class.modPrestimTaper >= 1
-        error('prestimulus taper should be greater than or equal to 0, and less than 1'); end
-end
+% checking values
+if class.modWidth - class.modWidthDv - class.modWidthSlope < 1
+    warning('some burst widths may become zero or less due to the indicated deviation; this may lead to unexpected results'); end
+
+if class.modPrestimTaper < 0 || class.modPrestimTaper >= 1
+    error('prestimulus taper should be greater than or equal to 0, and less than 1'); end
 
 class = orderfields(class);
 

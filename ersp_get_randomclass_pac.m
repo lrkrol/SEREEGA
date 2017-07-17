@@ -25,8 +25,7 @@
 %       probabilities - row array of possible signal probabilities.
 %                       default: 1
 %       frequencyDvs, frequencySlopes, amplitudeDvs, amplitudeSlopes,
-%       modLatencyDvs, modLatencySlopes, modWidthDvs, modWidthSlopes,
-%       modTaperDvs, modTaperSlopes, modMinAmplitudeDvs,
+%       modFrequencyDvs, modFrequencySlopes, modMinAmplitudeDvs,
 %       modMinAmplitudeSlopes, probabilitySlopes,
 %           - possible deviations and slopes for the base and modulation 
 %             values, and the signal probability. these are given as ratio
