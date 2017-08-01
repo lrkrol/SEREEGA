@@ -1,7 +1,7 @@
-% [sourceIdx] = lf_get_source_spaced(leadfield, number, spacing)
+% [sourceIdx] = lf_get_source_spaced(leadfield, number, spacing, varargin)
 %
-%       Attempts to return a list of source indices that are all at least
-%       an indicated distance away from each other.
+%       Attempts to return a list of random source indices that are all at 
+%       least an indicated distance away from each other.
 %
 %       Note: It may take multiple iterations to find a solution. It may
 %       also not be possible at all; in that case, try reducing the spacing
@@ -12,8 +12,15 @@
 %       number - the number of sources to return
 %       spacing - the minimum spacing between sources, in mm
 %
+% Optional (key-value pairs):
+%       sourceIdx - source indices to be included in the final results. 
+%                   these must not satisfy the spacing criterion among each
+%                   other, but all randomly added sources will be at least
+%                   the indicated distance away from these.
+%
 % Out:
-%       sourceIdx - the source indices of the spaced sources
+%       sourceIdx - 1-by-number array containing the source indices of the
+%                   spaced sources
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead;
@@ -23,6 +30,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-08-01 lrk
+%   - Added option to start with given source array
 % 2017-06-12 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -40,16 +49,44 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function [sourceIdx] = lf_get_source_spaced(leadfield, number, spacing)
+function [sourceIdx] = lf_get_source_spaced(leadfield, number, spacing, varargin)
+
+% parsing input
+p = inputParser;
+
+addRequired(p, 'leadfield', @isstruct);
+addRequired(p, 'number', @isnumeric);
+addRequired(p, 'spacing', @isnumeric);
+
+addParamValue(p, 'sourceIdx', [], @isnumeric);
+
+parse(p, leadfield, number, spacing, varargin{:})
+
+leadfield = p.Results.leadfield;
+number = p.Results.number;
+spacing = p.Results.spacing;
+sourceIdx = p.Results.sourceIdx;
+
+if ~all(sourceIdx <= size(leadfield.pos, 1))
+    warning('not all indicated sources are in the leadfield.');
+    sourceIdx = sourceIdx(sourceIdx <= size(leadfield.pos, 1));
+end
 
 % randomising sources
 sources = randperm(size(leadfield.pos, 1));
 
-% starting with first random source
-sourceIdx = sources(1);
+if isempty(sourceIdx)
+    % starting with first random source, beginning search at second
+    sourceIdx = sources(1);
+    rndsource = 2;
+else
+    % removing given sources from source list, beginning search at first
+    idx = ismember(sources, sourceIdx);
+    sources(idx) = [];
+    rndsource = 1;
+end
 
 % running through remaining sources
-rndsource = 2;
 while numel(sourceIdx) < number
     % calculating distance of next source to previously selected sources
     distances = zeros(numel(sourceIdx), 1);
