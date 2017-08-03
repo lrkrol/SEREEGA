@@ -4,6 +4,25 @@
 %       and validates/completes it. Also validates/completes all indicated 
 %       signals.
 %
+%       A SEREEGA brain component is one of the main elements in the
+%       forward model, and contains the source location, its orientation,
+%       and the activation pattern(s) it produces.
+%
+%       A full brain component is defined by the following fields.
+%         .source        - row array of source indices in the leadfield, 
+%                          giving the component's (possible) location(s). 
+%                          if more than one source is indicated, one of 
+%                          those sources will randomly be selected for each
+%                          simulated epoch.
+%         .signal        - cell array of activation classes. see e.g.
+%                          utl_check_class, erp_check_class, etc.
+%         .orientation   - nsources-by-3 matrix containing the source 
+%                          dipoles'/dipole's x, y, z orientation(s). if 
+%                          left empty, the default value(s) will be taken 
+%                          from the leadfield.
+%         .orientationDv - nsources-by-3 matrix of allowed deviations for 
+%                          each dipole's x, y, z orientation values.
+%
 % In:
 %       component - the component variable with at least the required
 %                   fields: source and signal
