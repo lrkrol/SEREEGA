@@ -16,7 +16,7 @@
 %       normaliseLeadfield - 1|0, whether or not to normalise the
 %                            leadfields before  projecting the signal to
 %                            have the most extreme value be either 1 or -1,
-%                            depending on its sign. default: 1
+%                            depending on its sign. default: 0
 %       normaliseOrientation - 1|0, as above, except for orientation
 %       showprogress - 1|0, whether or not to show a progress bar
 %                      (default 1)
@@ -38,6 +38,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-08-03 lrk
+%   - Switched normalisation defaults to 0
 % 2017-06-14 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -64,8 +66,8 @@ addRequired(p, 'component', @isstruct);
 addRequired(p, 'leadfield', @isstruct);
 addRequired(p, 'epochs', @isstruct);
 
-addParamValue(p, 'normaliseLeadfield', 1, @isnumeric);
-addParamValue(p, 'normaliseOrientation', 1, @isnumeric);
+addParamValue(p, 'normaliseLeadfield', 0, @isnumeric);
+addParamValue(p, 'normaliseOrientation', 0, @isnumeric);
 addParamValue(p, 'showprogress', 1, @isnumeric);
 
 parse(p, component, leadfield, epochs, varargin{:})
