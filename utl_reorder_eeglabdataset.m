@@ -72,7 +72,7 @@ if strcmp(mode, 'random')
     order = randperm(EEG.trials);
 elseif strcmp(mode, 'interleave')
     % interleaving epochs of different event types
-    eventtypes = sort(unique({EEG.event.type}));
+    eventtypes = unique({EEG.event.type});
     for i = 1:length(eventtypes)
         order(i,:) = find(strcmp(eventtypes{i}, {EEG.event.type}));
     end
