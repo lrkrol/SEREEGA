@@ -70,7 +70,7 @@ view = p.Results.view;
 
 if isempty(color)
     % setting default, somewhat varying "brainy" colours
-    for i = .8:.025:1, color = [color, {[1 .9 .9]*i}]; end
+    for i = .5:.025:.9, color = [color, {[1, i, i]}]; end
     color = color([1, 1+randperm(length(color)-1)]);
 end
 
