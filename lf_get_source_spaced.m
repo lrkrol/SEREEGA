@@ -87,6 +87,7 @@ else
 end
 
 % running through remaining sources
+iteration = 1;
 while numel(sourceIdx) < number
     % calculating distance of next source to previously selected sources
     distances = zeros(numel(sourceIdx), 1);
@@ -108,10 +109,11 @@ while numel(sourceIdx) < number
     % starting again if all sources have been examined without having found
     % the required number of spaced sources
     if rndsource > numel(sources)
-        warning('could not find %d sources with %d mm spacing; re-randomising...', number, spacing);
+        warning('could not find %d sources with %d mm spacing; re-randomising (%d)...', number, spacing, iteration);
         sources = randperm(size(leadfield.pos, 1));
         sourceIdx = sources(1);
         rndsource = 2;
+        iteration = iteration + 1;
     end
 end
 
