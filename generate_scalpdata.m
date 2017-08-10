@@ -79,6 +79,8 @@ normaliseLeadfield = p.Results.normaliseLeadfield;
 normaliseOrientation = p.Results.normaliseOrientation;
 showprogress = p.Results.showprogress;
 
+component = utl_check_component(component, leadfield);
+
 scalpdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), epochs.n);
 
 if showprogress
