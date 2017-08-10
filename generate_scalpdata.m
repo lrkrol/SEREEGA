@@ -81,15 +81,19 @@ showprogress = p.Results.showprogress;
 
 scalpdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), epochs.n);
 
-if showprogress, w = waitbar(0, sprintf('Epoch 0 of %d', epochs.n), 'Name', 'Generating scalp data'); end
+if showprogress
+    w = waitbar(0, sprintf('Epoch 0 of %d', epochs.n), 'Name', 'Generating scalp data');
+    maxwait = epochs.n * numel(component);
+end
 
 % for each epoch...
 for e = 1:epochs.n
-    if showprogress, waitbar(e/epochs.n, w, sprintf('Epoch %d of %d', e, epochs.n), 'Name', 'Generating scalp data'); end
     componentdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), numel(component));
     
     % for each component...
     for c = 1:numel(component)
+        if showprogress, waitbar(((e-1)*numel(component)+c)/maxwait, w, sprintf('Epoch %d of %d\nComponent %d of %d', e, epochs.n, c, numel(component)), 'Name', 'Generating scalp data'); end
+    
         % getting component's sum signal
         componentsignal = generate_signal_fromcomponent(component(c), epochs, 'epochNumber', e);
 
