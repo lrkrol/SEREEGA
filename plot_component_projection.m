@@ -1,8 +1,6 @@
 % h = plot_component_projection(component, leadfield, varargin)
 %
-%       Plots the signal from a component without any deviations or slopes
-%       applied. Due to the random nature of noise, it takes the mean of 10
-%       such epochs before the signal is plotted.
+%       Plots a component's projection onto the scalp.
 %
 % In:
 %       component - 1x1 struct, the component variable
@@ -66,7 +64,6 @@ cmap = p.Results.colormap;
 meanproj = [];
 for s = 1:length(component.source)
     meanproj(:,s) = lf_get_projection(component.source(s), leadfield, 'orientation', component.orientation(s,:));
-    
 end
 meanproj = mean(meanproj,2);
 
