@@ -9,6 +9,7 @@
 %       resolution - the resolution of the grid in mm (default: 10)
 %       labels - cell of electrode labels to be used. default uses all 346
 %                available channels (including fiducials).
+%       montage - name of predefined channel montage. see utl_get_montage.
 %       plotelecs - whether or not to plot electrodes in FieldTrip, e.g. to
 %                   check their alignment to the model (1|0, default 0)
 %
@@ -34,6 +35,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-08-10 lrk
+%   - Added channel montage argument
 % 2017-04-21 lrk
 %   - Complete revision for inclusion in SAREEGA
 %   - Changed leadfield structure
@@ -62,12 +65,14 @@ function lf  = lf_generate_fromfieldtrip(varargin)
 p = inputParser;
 
 addParameter(p, 'labels', {}, @iscell);
+addParameter(p, 'montage', '', @ischar);
 addParameter(p, 'resolution', 10, @isnumeric)
 addParameter(p, 'plotelecs', 0, @isnumeric)
 
 parse(p, varargin{:})
 
 labels = p.Results.labels;
+montage = p.Results.montage;
 resolution = p.Results.resolution;
 plotelecs = p.Results.plotelecs;
 
@@ -76,6 +81,11 @@ load('standard_vol.mat');
 
 % loading channel positions
 elec = ft_read_sens('standard_1005.elc');
+
+if ~isempty(montage)
+    % taking channel labels from indicated montage
+    labels = utl_get_montage(montage);
+end
 
 % obtaining indices of indicated electrodes
 if ~isempty(labels)

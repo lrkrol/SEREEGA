@@ -27,25 +27,20 @@ epochs.prestim = 200;       % pre-stimulus period in ms. note that this
 % using (a part of) the ICBM-NY precalculated leadfield.
 
 % we can indicate the electrode locations we want to use by indicating
-% their channel labels. for example, to simulate the closest available 
-% equivalent of a 64-channel actiCAP cap based on the ICBM-NY head model:
+% their channel labels, or by indicating a predefined electrode montage. 
+% for example, to simulate a predefined 64-electrode montage using the
+% ICBM-NY head model:
 
-channels = {'Fp1', 'Fp2', 'F7', 'F3', 'Fz', 'F4', 'F8', 'FC5', ...
-            'FC1', 'FC2', 'FC6', 'T7', 'C3', 'Cz', 'C4', 'T8', ...
-            'P9', 'CP5', 'CP1', 'CP2', 'CP6', 'P10', 'P7', ...
-            'P3', 'Pz', 'P4', 'P8', 'PO9', 'O1', 'Oz', 'O2', ...
-            'PO10', 'AF7', 'AF3', 'AF4', 'AF8', 'F5', 'F1', ...
-            'F2', 'F6', 'FT9', 'FT7', 'FC3', 'FC4', 'FT8', ...
-            'FT10', 'C5', 'C1', 'C2', 'C6', 'TP7', 'CP3', ...
-            'CPz', 'CP4', 'TP8', 'P5', 'P1', 'P2', 'P6', ...
-            'PO7', 'PO3', 'POz', 'PO4', 'PO8'};
+lf = lf_generate_fromnyhead('montage', 'S64');
 
-lf = lf_generate_fromnyhead('labels', channels);
+% or, to only simulate the center line, we can use:
+
+% lf = lf_generate_fromnyhead('labels', {'Fz', 'Cz', 'Pz', 'Oz'})
 
 % when generating the leadfield using FieldTrip, we can also indicate the
 % resolution of the source model (i.e. the density of the source grid):
 
-% lf = lf_generate_fromfieldtrip('labels', channels, 'resolution', 5);
+% lf = lf_generate_fromfieldtrip('montage', 'S64', 'resolution', 5);
 
 % this gives us a leadfield with the following channel locations:
 

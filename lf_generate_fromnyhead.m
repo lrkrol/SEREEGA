@@ -18,6 +18,7 @@
 % Optional inputs (key-value pairs):
 %       labels - cell of electrode labels to be used. default uses all 231
 %                available channels (including fiducials).
+%       montage - name of predefined channel montage. see utl_get_montage.
 %
 % Out:  
 %       lf - the leadfield containing the following fields
@@ -36,6 +37,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-08-10 lrk
+%   - Added channel montage argument
 % 2017-06-21 lrk
 %   - Excluded fiducials from default channel set
 % 2017-04-21 First version
@@ -61,14 +64,20 @@ function lf = lf_generate_fromnyhead(varargin)
 p = inputParser;
 
 addParameter(p, 'labels', {}, @iscell);
+addParameter(p, 'montage', '', @ischar);
 
 parse(p, varargin{:})
 
 labels = p.Results.labels;
+montage = p.Results.montage;
 
 % loading the NY Head leadfield
 load('sa_nyhead.mat', 'sa');
-if isempty(labels)
+
+if ~isempty(montage)
+    % taking channel labels from indicated montage
+    labels = utl_get_montage(montage);
+elseif isempty(labels)
     % taking all available EEG electrodes, i.e., excluding fiducials
     labels = setdiff(sa.clab_electrodes, {'RPA', 'LPA', 'Nz'});
 end
