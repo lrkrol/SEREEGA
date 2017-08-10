@@ -57,9 +57,9 @@ p = inputParser;
 addRequired(p, 'sourceIdx', @isnumeric);
 addRequired(p, 'leadfield', @isstruct);
 
-addParamValue(p, 'orientation', [], @isnumeric);
-addParamValue(p, 'normaliseLeadfield', 0, @isnumeric);
-addParamValue(p, 'normaliseOrientation', 0, @isnumeric);
+addParameter(p, 'orientation', [], @isnumeric);
+addParameter(p, 'normaliseLeadfield', 0, @isnumeric);
+addParameter(p, 'normaliseOrientation', 0, @isnumeric);
 
 parse(p, sourceIdx, leadfield, varargin{:})
 

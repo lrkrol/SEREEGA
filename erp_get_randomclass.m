@@ -64,15 +64,15 @@ addRequired(p, 'latencies', @isnumeric);
 addRequired(p, 'widths', @isnumeric);
 addRequired(p, 'amplitudes', @isnumeric);
 
-addParamValue(p, 'latencyDvs', 0, @isnumeric);
-addParamValue(p, 'latencySlopes', 0, @isnumeric);
-addParamValue(p, 'widthDvs', 0, @isnumeric);
-addParamValue(p, 'widthSlopes', 0, @isnumeric);
-addParamValue(p, 'amplitudeDvs', 0, @isnumeric);
-addParamValue(p, 'amplitudeSlopes', 0, @isnumeric);
-addParamValue(p, 'probabilities', 1, @isnumeric);
-addParamValue(p, 'probabilitySlopes', 0, @isnumeric);
-addParamValue(p, 'numClasses', 1, @isnumeric);
+addParameter(p, 'latencyDvs', 0, @isnumeric);
+addParameter(p, 'latencySlopes', 0, @isnumeric);
+addParameter(p, 'widthDvs', 0, @isnumeric);
+addParameter(p, 'widthSlopes', 0, @isnumeric);
+addParameter(p, 'amplitudeDvs', 0, @isnumeric);
+addParameter(p, 'amplitudeSlopes', 0, @isnumeric);
+addParameter(p, 'probabilities', 1, @isnumeric);
+addParameter(p, 'probabilitySlopes', 0, @isnumeric);
+addParameter(p, 'numClasses', 1, @isnumeric);
 
 parse(p, numpeaks, latencies, widths, amplitudes, varargin{:})
 

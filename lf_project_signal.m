@@ -60,8 +60,8 @@ addRequired(p, 'leadfield', @isstruct);
 addRequired(p, 'sourceIdx', @isnumeric);
 addRequired(p, 'orientation', @isnumeric);
 
-addParamValue(p, 'normaliseLeadfield', 0, @isnumeric);
-addParamValue(p, 'normaliseOrientation', 0, @isnumeric);
+addParameter(p, 'normaliseLeadfield', 0, @isnumeric);
+addParameter(p, 'normaliseOrientation', 0, @isnumeric);
 
 parse(p, signal, leadfield, sourceIdx, orientation, varargin{:})
 

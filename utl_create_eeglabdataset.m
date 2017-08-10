@@ -56,10 +56,10 @@ p = inputParser;
 addRequired(p, 'data', @isnumeric);
 addRequired(p, 'srate', @isnumeric);
 
-addParamValue(p, 'chanlocs', [], @isstruct);
-addParamValue(p, 'chanlabels', [], @iscell);
-addParamValue(p, 'xmin', 0, @isnumeric);
-addParamValue(p, 'marker', 'event', @ischar);
+addParameter(p, 'chanlocs', [], @isstruct);
+addParameter(p, 'chanlabels', [], @iscell);
+addParameter(p, 'xmin', 0, @isnumeric);
+addParameter(p, 'marker', 'event', @ischar);
 
 parse(p, data, srate, varargin{:})
 

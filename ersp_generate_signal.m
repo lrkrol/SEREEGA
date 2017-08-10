@@ -68,16 +68,16 @@ addRequired(p, 'phase', @isnumeric);
 addRequired(p, 'srate', @isnumeric);
 addRequired(p, 'epochLength', @isnumeric);
 
-addParamValue(p, 'modulation', 'none', @ischar);
-addParamValue(p, 'modLatency', 0, @isnumeric);
-addParamValue(p, 'modWidth', 0, @isnumeric);
-addParamValue(p, 'modTaper', 0, @isnumeric);
-addParamValue(p, 'modFrequency', 0, @isnumeric);
-addParamValue(p, 'modPhase', 0, @isnumeric);
-addParamValue(p, 'modMinAmplitude', 0, @isnumeric);
-addParamValue(p, 'modPrestimPeriod', 0, @isnumeric);
-addParamValue(p, 'modPrestimTaper', 0, @isnumeric);
-addParamValue(p, 'modPrestimAmplitude', 0, @isnumeric);
+addParameter(p, 'modulation', 'none', @ischar);
+addParameter(p, 'modLatency', 0, @isnumeric);
+addParameter(p, 'modWidth', 0, @isnumeric);
+addParameter(p, 'modTaper', 0, @isnumeric);
+addParameter(p, 'modFrequency', 0, @isnumeric);
+addParameter(p, 'modPhase', 0, @isnumeric);
+addParameter(p, 'modMinAmplitude', 0, @isnumeric);
+addParameter(p, 'modPrestimPeriod', 0, @isnumeric);
+addParameter(p, 'modPrestimTaper', 0, @isnumeric);
+addParameter(p, 'modPrestimAmplitude', 0, @isnumeric);
 
 parse(p, frequency, amplitude, phase, srate, epochLength, varargin{:})
 

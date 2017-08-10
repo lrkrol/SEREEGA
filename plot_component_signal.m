@@ -52,7 +52,7 @@ p = inputParser;
 addRequired(p, 'component', @isstruct);
 addRequired(p, 'epochs', @isstruct);
 
-addParamValue(p, 'newfig', 1, @isnumeric);
+addParameter(p, 'newfig', 1, @isnumeric);
 
 parse(p, component, epochs, varargin{:})
 

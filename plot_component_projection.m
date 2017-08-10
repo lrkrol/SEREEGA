@@ -52,8 +52,8 @@ p = inputParser;
 addRequired(p, 'component', @isstruct);
 addRequired(p, 'leadfield', @isstruct);
 
-addParamValue(p, 'newfig', 1, @isnumeric);
-addParamValue(p, 'colormap', jet(100), @isnumeric);
+addParameter(p, 'newfig', 1, @isnumeric);
+addParameter(p, 'colormap', jet(100), @isnumeric);
 
 parse(p, component, leadfield, varargin{:})
 

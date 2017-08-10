@@ -66,9 +66,9 @@ addRequired(p, 'component', @isstruct);
 addRequired(p, 'leadfield', @isstruct);
 addRequired(p, 'epochs', @isstruct);
 
-addParamValue(p, 'normaliseLeadfield', 0, @isnumeric);
-addParamValue(p, 'normaliseOrientation', 0, @isnumeric);
-addParamValue(p, 'showprogress', 1, @isnumeric);
+addParameter(p, 'normaliseLeadfield', 0, @isnumeric);
+addParameter(p, 'normaliseOrientation', 0, @isnumeric);
+addParameter(p, 'showprogress', 1, @isnumeric);
 
 parse(p, component, leadfield, epochs, varargin{:})
 

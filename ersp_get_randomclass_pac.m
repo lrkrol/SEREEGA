@@ -75,21 +75,21 @@ addRequired(p, 'amplitudes', @isnumeric);
 addRequired(p, 'modFrequencies', @isnumeric);
 addRequired(p, 'modMinAmplitudes', @isnumeric);
 
-addParamValue(p, 'bursts', [1], @isnumeric);
-addParamValue(p, 'frequencyDvs', 0, @isnumeric);
-addParamValue(p, 'frequencySlopes', 0, @isnumeric);
-addParamValue(p, 'amplitudeDvs', 0, @isnumeric);
-addParamValue(p, 'amplitudeSlopes', 0, @isnumeric);
-addParamValue(p, 'modFrequencyDvs', 0, @isnumeric);
-addParamValue(p, 'modFrequencySlopes', 0, @isnumeric);
-addParamValue(p, 'modMinAmplitudeDvs', 0, @isnumeric);
-addParamValue(p, 'modMinAmplitudeSlopes', 0, @isnumeric);
-addParamValue(p, 'modPrestimPeriod', 0, @isnumeric);
-addParamValue(p, 'modPrestimTaper', 0, @isnumeric);
-addParamValue(p, 'modPrestimAmplitude', 0, @isnumeric);
-addParamValue(p, 'probabilities', 1, @isnumeric);
-addParamValue(p, 'probabilitySlopes', 0, @isnumeric);
-addParamValue(p, 'numClasses', 1, @isnumeric);
+addParameter(p, 'bursts', [1], @isnumeric);
+addParameter(p, 'frequencyDvs', 0, @isnumeric);
+addParameter(p, 'frequencySlopes', 0, @isnumeric);
+addParameter(p, 'amplitudeDvs', 0, @isnumeric);
+addParameter(p, 'amplitudeSlopes', 0, @isnumeric);
+addParameter(p, 'modFrequencyDvs', 0, @isnumeric);
+addParameter(p, 'modFrequencySlopes', 0, @isnumeric);
+addParameter(p, 'modMinAmplitudeDvs', 0, @isnumeric);
+addParameter(p, 'modMinAmplitudeSlopes', 0, @isnumeric);
+addParameter(p, 'modPrestimPeriod', 0, @isnumeric);
+addParameter(p, 'modPrestimTaper', 0, @isnumeric);
+addParameter(p, 'modPrestimAmplitude', 0, @isnumeric);
+addParameter(p, 'probabilities', 1, @isnumeric);
+addParameter(p, 'probabilitySlopes', 0, @isnumeric);
+addParameter(p, 'numClasses', 1, @isnumeric);
 
 parse(p, frequencies, amplitudes, modFrequencies, modMinAmplitudes, varargin{:})
 

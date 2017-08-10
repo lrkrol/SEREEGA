@@ -61,9 +61,9 @@ function lf  = lf_generate_fromfieldtrip(varargin)
 % parsing input
 p = inputParser;
 
-addParamValue(p, 'labels', {}, @iscell);
-addParamValue(p, 'resolution', 10, @isnumeric)
-addParamValue(p, 'plotelecs', 0, @isnumeric)
+addParameter(p, 'labels', {}, @iscell);
+addParameter(p, 'resolution', 10, @isnumeric)
+addParameter(p, 'plotelecs', 0, @isnumeric)
 
 parse(p, varargin{:})
 

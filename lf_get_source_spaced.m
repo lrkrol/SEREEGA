@@ -58,7 +58,7 @@ addRequired(p, 'leadfield', @isstruct);
 addRequired(p, 'number', @isnumeric);
 addRequired(p, 'spacing', @isnumeric);
 
-addParamValue(p, 'sourceIdx', [], @isnumeric);
+addParameter(p, 'sourceIdx', [], @isnumeric);
 
 parse(p, leadfield, number, spacing, varargin{:})
 

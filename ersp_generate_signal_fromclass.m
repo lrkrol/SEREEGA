@@ -60,8 +60,8 @@ p = inputParser;
 addRequired(p, 'class', @isstruct);
 addRequired(p, 'epochs', @isstruct);
 
-addParamValue(p, 'epochNumber', 1, @isnumeric);
-addParamValue(p, 'baseonly', 0, @isnumeric);
+addParameter(p, 'epochNumber', 1, @isnumeric);
+addParameter(p, 'baseonly', 0, @isnumeric);
 
 parse(p, class, epochs, varargin{:})
 

@@ -65,13 +65,13 @@ p = inputParser;
 addRequired(p, 'frequencies', @isnumeric);
 addRequired(p, 'amplitudes', @isnumeric);
 
-addParamValue(p, 'frequencyDvs', 0, @isnumeric);
-addParamValue(p, 'frequencySlopes', 0, @isnumeric);
-addParamValue(p, 'amplitudeDvs', 0, @isnumeric);
-addParamValue(p, 'amplitudeSlopes', 0, @isnumeric);
-addParamValue(p, 'probabilities', 1, @isnumeric);
-addParamValue(p, 'probabilitySlopes', 0, @isnumeric);
-addParamValue(p, 'numClasses', 1, @isnumeric);
+addParameter(p, 'frequencyDvs', 0, @isnumeric);
+addParameter(p, 'frequencySlopes', 0, @isnumeric);
+addParameter(p, 'amplitudeDvs', 0, @isnumeric);
+addParameter(p, 'amplitudeSlopes', 0, @isnumeric);
+addParameter(p, 'probabilities', 1, @isnumeric);
+addParameter(p, 'probabilitySlopes', 0, @isnumeric);
+addParameter(p, 'numClasses', 1, @isnumeric);
 
 parse(p, frequencies, amplitudes, varargin{:})
 

@@ -58,7 +58,7 @@ p = inputParser;
 
 addRequired(p, 'EEG', @isstruct);
 
-addParamValue(p, 'mode', 'random', @ischar);
+addParameter(p, 'mode', 'random', @ischar);
 
 parse(p, EEG, varargin{:})
 

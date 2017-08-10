@@ -50,13 +50,12 @@ p = inputParser;
 
 addRequired(p, 'class', @isstruct);
 
-addParamValue(p, 'type', '', @ischar);
+addParameter(p, 'type', '', @ischar);
 
 parse(p, class, varargin{:})
 
 class = p.Results.class;
 type = p.Results.type;
-
 % seeing if type can be determined
 if ~isfield(class, 'type') && isempty(type)
     error('cannot determine class type.');

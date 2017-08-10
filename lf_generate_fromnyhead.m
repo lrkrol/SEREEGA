@@ -60,7 +60,7 @@ function lf = lf_generate_fromnyhead(varargin)
 % parsing input
 p = inputParser;
 
-addParamValue(p, 'labels', {}, @iscell);
+addParameter(p, 'labels', {}, @iscell);
 
 parse(p, varargin{:})
 
