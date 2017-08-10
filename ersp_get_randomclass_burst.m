@@ -25,16 +25,17 @@
 %                [-1, 1]. default: [1]
 %       probabilities - row array of possible signal probabilities.
 %                       default: 1
-%       frequencyDvs, frequencySlopes, amplitudeDvs, amplitudeSlopes,
-%       modLatencyDvs, modLatencySlopes, modWidthDvs, modWidthSlopes,
-%       modTaperDvs, modTaperSlopes, modMinAmplitudeDvs,
-%       modMinAmplitudeSlopes, probabilitySlopes,
-%           - possible deviations and slopes for the base and modulation 
-%             values, and the signal probability. these are given as ratio
-%             of the actual value, e.g. a probability of .5 with a
-%             probabilitySlope of .5, will have a probability at the final 
-%             epoch of .25, and a frequency of 20 with a Dv of .1 will have
-%             an effective deviation of 2 Hz.
+%       frequencyRelDvs, frequencyRelSlopes, amplitudeRelDvs, 
+%       amplitudeRelSlopes, modLatencyRelDvs, modLatencyRelSlopes, 
+%       modWidthRelDvs, modWidthRelSlopes, modTaperRelDvs, 
+%       modTaperRelSlopes, modMinAmplitudeRelDvs, modMinAmplitudeRelSlopes,
+%       probabilityRelSlopes,
+%           - possible relative deviations and RelSlopes for the base and 
+%             modulation values, and the signal probability. these are 
+%             given as ratio of the actual value, e.g. a probability of .5 
+%             with a probabilitySlope of .5, will have a probability at the
+%             final epoch of .25, and a frequency of 20 with a Dv of .1 
+%             will have an effective deviation of 2 Hz.
 %       numClasses - the number of random classes to return. default: 1
 %
 % Out:
@@ -51,6 +52,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-08-10 lrk
+%   - Changed *Dvs/*Slopes argument names to *RelDvs/*RelSlopes for clarity
 % 2017-07-13 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -81,20 +84,20 @@ addRequired(p, 'modTapers', @isnumeric);
 addRequired(p, 'modMinAmplitudes', @isnumeric);
 
 addParameter(p, 'bursts', [1], @isnumeric);
-addParameter(p, 'frequencyDvs', 0, @isnumeric);
-addParameter(p, 'frequencySlopes', 0, @isnumeric);
-addParameter(p, 'amplitudeDvs', 0, @isnumeric);
-addParameter(p, 'amplitudeSlopes', 0, @isnumeric);
-addParameter(p, 'modLatencyDvs', 0, @isnumeric);
-addParameter(p, 'modLatencySlopes', 0, @isnumeric);
-addParameter(p, 'modWidthDvs', 0, @isnumeric);
-addParameter(p, 'modWidthSlopes', 0, @isnumeric);
-addParameter(p, 'modTaperDvs', 0, @isnumeric);
-addParameter(p, 'modTaperSlopes', 0, @isnumeric);
-addParameter(p, 'modMinAmplitudeDvs', 0, @isnumeric);
-addParameter(p, 'modMinAmplitudeSlopes', 0, @isnumeric);
+addParameter(p, 'frequencyRelDvs', 0, @isnumeric);
+addParameter(p, 'frequencyRelSlopes', 0, @isnumeric);
+addParameter(p, 'amplitudeRelDvs', 0, @isnumeric);
+addParameter(p, 'amplitudeRelSlopes', 0, @isnumeric);
+addParameter(p, 'modLatencyRelDvs', 0, @isnumeric);
+addParameter(p, 'modLatencyRelSlopes', 0, @isnumeric);
+addParameter(p, 'modWidthRelDvs', 0, @isnumeric);
+addParameter(p, 'modWidthRelSlopes', 0, @isnumeric);
+addParameter(p, 'modTaperRelDvs', 0, @isnumeric);
+addParameter(p, 'modTaperRelSlopes', 0, @isnumeric);
+addParameter(p, 'modMinAmplitudeRelDvs', 0, @isnumeric);
+addParameter(p, 'modMinAmplitudeRelSlopes', 0, @isnumeric);
 addParameter(p, 'probabilities', 1, @isnumeric);
-addParameter(p, 'probabilitySlopes', 0, @isnumeric);
+addParameter(p, 'probabilityRelSlopes', 0, @isnumeric);
 addParameter(p, 'numClasses', 1, @isnumeric);
 
 parse(p, frequencies, amplitudes, modLatencies, modWidths, modTapers, modMinAmplitudes, varargin{:})
@@ -106,20 +109,20 @@ modWidths = p.Results.modWidths;
 modTapers = p.Results.modTapers;
 modMinAmplitudes = p.Results.modMinAmplitudes;
 bursts = p.Results.bursts;
-frequencyDvs = p.Results.frequencyDvs;
-frequencySlopes = p.Results.frequencySlopes;
-amplitudeDvs = p.Results.amplitudeDvs;
-amplitudeSlopes = p.Results.amplitudeSlopes;
-modLatencyDvs = p.Results.modLatencyDvs;
-modLatencySlopes = p.Results.modLatencySlopes;
-modWidthDvs = p.Results.modWidthDvs;
-modWidthSlopes = p.Results.modWidthSlopes;
-modTaperDvs = p.Results.modTaperDvs;
-modTaperSlopes = p.Results.modTaperSlopes;
-modMinAmplitudeDvs = p.Results.modMinAmplitudeDvs;
-modMinAmplitudeSlopes = p.Results.modMinAmplitudeSlopes;
+frequencyRelDvs = p.Results.frequencyRelDvs;
+frequencyRelSlopes = p.Results.frequencyRelSlopes;
+amplitudeRelDvs = p.Results.amplitudeRelDvs;
+amplitudeRelSlopes = p.Results.amplitudeRelSlopes;
+modLatencyRelDvs = p.Results.modLatencyRelDvs;
+modLatencyRelSlopes = p.Results.modLatencyRelSlopes;
+modWidthRelDvs = p.Results.modWidthRelDvs;
+modWidthRelSlopes = p.Results.modWidthRelSlopes;
+modTaperRelDvs = p.Results.modTaperRelDvs;
+modTaperRelSlopes = p.Results.modTaperRelSlopes;
+modMinAmplitudeRelDvs = p.Results.modMinAmplitudeRelDvs;
+modMinAmplitudeRelSlopes = p.Results.modMinAmplitudeRelSlopes;
 probabilities = p.Results.probabilities;
-probabilitySlopes = p.Results.probabilitySlopes;
+probabilityRelSlopes = p.Results.probabilityRelSlopes;
 numClasses = p.Results.numClasses;
 
 for c = 1:numClasses
@@ -139,24 +142,24 @@ for c = 1:numClasses
     end
     
     % sampling randomly from given possible values
-    erspclass.frequencyDv = utl_randsample(frequencyDvs, 1) * erspclass.frequency;
-    erspclass.frequencySlope = utl_randsample(frequencySlopes, 1) * erspclass.frequency;
-    erspclass.amplitudeDv = utl_randsample(amplitudeDvs, 1) * erspclass.amplitude;
-    erspclass.amplitudeSlope = utl_randsample(amplitudeSlopes, 1) * erspclass.amplitude;
+    erspclass.frequencyDv = utl_randsample(frequencyRelDvs, 1) * erspclass.frequency;
+    erspclass.frequencySlope = utl_randsample(frequencyRelSlopes, 1) * erspclass.frequency;
+    erspclass.amplitudeDv = utl_randsample(amplitudeRelDvs, 1) * erspclass.amplitude;
+    erspclass.amplitudeSlope = utl_randsample(amplitudeRelSlopes, 1) * erspclass.amplitude;
     erspclass.probability = utl_randsample(probabilities, 1);
-    erspclass.probabilitySlope = utl_randsample(probabilitySlopes, 1) .* erspclass.probability;    
+    erspclass.probabilitySlope = utl_randsample(probabilityRelSlopes, 1) .* erspclass.probability;    
     erspclass.modLatency = utl_randsample(modLatencies, 1);
-    erspclass.modLatencyDv = utl_randsample(modLatencyDvs, 1) * erspclass.modLatency;
-    erspclass.modLatencySlope = utl_randsample(modLatencySlopes, 1) * erspclass.modLatency;
+    erspclass.modLatencyDv = utl_randsample(modLatencyRelDvs, 1) * erspclass.modLatency;
+    erspclass.modLatencySlope = utl_randsample(modLatencyRelSlopes, 1) * erspclass.modLatency;
     erspclass.modWidth = utl_randsample(modWidths, 1);
-    erspclass.modWidthDv = utl_randsample(modWidthDvs, 1) * erspclass.modWidth;
-    erspclass.modWidthSlope = utl_randsample(modWidthSlopes, 1) * erspclass.modWidth;
+    erspclass.modWidthDv = utl_randsample(modWidthRelDvs, 1) * erspclass.modWidth;
+    erspclass.modWidthSlope = utl_randsample(modWidthRelSlopes, 1) * erspclass.modWidth;
     erspclass.modTaper = utl_randsample(modTapers, 1);
-    erspclass.modTaperDv = utl_randsample(modTaperDvs, 1) * erspclass.modTaper;
-    erspclass.modTaperSlope = utl_randsample(modTaperSlopes, 1) * erspclass.modTaper;
+    erspclass.modTaperDv = utl_randsample(modTaperRelDvs, 1) * erspclass.modTaper;
+    erspclass.modTaperSlope = utl_randsample(modTaperRelSlopes, 1) * erspclass.modTaper;
     erspclass.modMinAmplitude = utl_randsample(modMinAmplitudes, 1);
-    erspclass.modMinAmplitudeDv = utl_randsample(modMinAmplitudeDvs, 1) * erspclass.modMinAmplitude;
-    erspclass.modMinAmplitudeSlope = utl_randsample(modMinAmplitudeSlopes, 1) * erspclass.modMinAmplitude;
+    erspclass.modMinAmplitudeDv = utl_randsample(modMinAmplitudeRelDvs, 1) * erspclass.modMinAmplitude;
+    erspclass.modMinAmplitudeSlope = utl_randsample(modMinAmplitudeRelSlopes, 1) * erspclass.modMinAmplitude;
     
     % validating ERSP class
     ersp(c) = utl_check_class(erspclass, 'type', 'ersp');

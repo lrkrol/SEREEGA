@@ -24,15 +24,16 @@
 %       modPrestimAmplitude - prestimPeriod amplitude; default: 0
 %       probabilities - row array of possible signal probabilities.
 %                       default: 1
-%       frequencyDvs, frequencySlopes, amplitudeDvs, amplitudeSlopes,
-%       modFrequencyDvs, modFrequencySlopes, modMinAmplitudeDvs,
-%       modMinAmplitudeSlopes, probabilitySlopes,
-%           - possible deviations and slopes for the base and modulation 
-%             values, and the signal probability. these are given as ratio
-%             of the actual value, e.g. a probability of .5 with a
-%             probabilitySlope of .5, will have a probability at the final 
-%             epoch of .25, and a frequency of 20 with a Dv of .1 will have
-%             an effective deviation of 2 Hz.
+%       frequencyRelDvs, frequencyRelSlopes, amplitudeRelDvs, 
+%       amplitudeRelSlopes, modFrequencyRelDvs, modFrequencyRelSlopes, 
+%       modMinAmplitudeRelDvs, modMinAmplitudeRelSlopes, 
+%       probabilityRelSlopes
+%           - possible relative deviations and RelSlopes for the base and 
+%             modulation values, and the signal probability. these are 
+%             given as ratio of the actual value, e.g. a probability of .5 
+%             with a probabilitySlope of .5, will have a probability at the 
+%             final epoch of .25, and a frequency of 20 with a Dv of .1 
+%             will have an effective deviation of 2 Hz.
 %       numClasses - the number of random classes to return. default: 1
 %
 % Out:
@@ -48,6 +49,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-08-10 lrk
+%   - Changed *Dvs/*Slopes argument names to *RelDvs/*RelSlopes for clarity
 % 2017-07-13 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -76,19 +79,19 @@ addRequired(p, 'modFrequencies', @isnumeric);
 addRequired(p, 'modMinAmplitudes', @isnumeric);
 
 addParameter(p, 'bursts', [1], @isnumeric);
-addParameter(p, 'frequencyDvs', 0, @isnumeric);
-addParameter(p, 'frequencySlopes', 0, @isnumeric);
-addParameter(p, 'amplitudeDvs', 0, @isnumeric);
-addParameter(p, 'amplitudeSlopes', 0, @isnumeric);
-addParameter(p, 'modFrequencyDvs', 0, @isnumeric);
-addParameter(p, 'modFrequencySlopes', 0, @isnumeric);
-addParameter(p, 'modMinAmplitudeDvs', 0, @isnumeric);
-addParameter(p, 'modMinAmplitudeSlopes', 0, @isnumeric);
+addParameter(p, 'frequencyRelDvs', 0, @isnumeric);
+addParameter(p, 'frequencyRelSlopes', 0, @isnumeric);
+addParameter(p, 'amplitudeRelDvs', 0, @isnumeric);
+addParameter(p, 'amplitudeRelSlopes', 0, @isnumeric);
+addParameter(p, 'modFrequencyRelDvs', 0, @isnumeric);
+addParameter(p, 'modFrequencyRelSlopes', 0, @isnumeric);
+addParameter(p, 'modMinAmplitudeRelDvs', 0, @isnumeric);
+addParameter(p, 'modMinAmplitudeRelSlopes', 0, @isnumeric);
 addParameter(p, 'modPrestimPeriod', 0, @isnumeric);
 addParameter(p, 'modPrestimTaper', 0, @isnumeric);
 addParameter(p, 'modPrestimAmplitude', 0, @isnumeric);
 addParameter(p, 'probabilities', 1, @isnumeric);
-addParameter(p, 'probabilitySlopes', 0, @isnumeric);
+addParameter(p, 'probabilityRelSlopes', 0, @isnumeric);
 addParameter(p, 'numClasses', 1, @isnumeric);
 
 parse(p, frequencies, amplitudes, modFrequencies, modMinAmplitudes, varargin{:})
@@ -97,19 +100,19 @@ frequencies = p.Results.frequencies;
 amplitudes = p.Results.amplitudes;
 modFrequencies = p.Results.modFrequencies;
 modMinAmplitudes = p.Results.modMinAmplitudes;
-frequencyDvs = p.Results.frequencyDvs;
-frequencySlopes = p.Results.frequencySlopes;
-amplitudeDvs = p.Results.amplitudeDvs;
-amplitudeSlopes = p.Results.amplitudeSlopes;
-modFrequencyDvs = p.Results.modFrequencyDvs;
-modFrequencySlopes = p.Results.modFrequencySlopes;
-modMinAmplitudeDvs = p.Results.modMinAmplitudeDvs;
-modMinAmplitudeSlopes = p.Results.modMinAmplitudeSlopes;
+frequencyRelDvs = p.Results.frequencyRelDvs;
+frequencyRelSlopes = p.Results.frequencyRelSlopes;
+amplitudeRelDvs = p.Results.amplitudeRelDvs;
+amplitudeRelSlopes = p.Results.amplitudeRelSlopes;
+modFrequencyRelDvs = p.Results.modFrequencyRelDvs;
+modFrequencyRelSlopes = p.Results.modFrequencyRelSlopes;
+modMinAmplitudeRelDvs = p.Results.modMinAmplitudeRelDvs;
+modMinAmplitudeRelSlopes = p.Results.modMinAmplitudeRelSlopes;
 modPrestimPeriod = p.Results.modPrestimPeriod;
 modPrestimTaper = p.Results.modPrestimTaper;
 modPrestimAmplitude = p.Results.modPrestimAmplitude;
 probabilities = p.Results.probabilities;
-probabilitySlopes = p.Results.probabilitySlopes;
+probabilityRelSlopes = p.Results.probabilityRelSlopes;
 numClasses = p.Results.numClasses;
 
 for c = 1:numClasses
@@ -125,18 +128,18 @@ for c = 1:numClasses
     erspclass.modulation = 'pac';
     
     % sampling randomly from given possible values
-    erspclass.frequencyDv = utl_randsample(frequencyDvs, 1) * erspclass.frequency;
-    erspclass.frequencySlope = utl_randsample(frequencySlopes, 1) * erspclass.frequency;
-    erspclass.amplitudeDv = utl_randsample(amplitudeDvs, 1) * erspclass.amplitude;
-    erspclass.amplitudeSlope = utl_randsample(amplitudeSlopes, 1) * erspclass.amplitude;
+    erspclass.frequencyDv = utl_randsample(frequencyRelDvs, 1) * erspclass.frequency;
+    erspclass.frequencySlope = utl_randsample(frequencyRelSlopes, 1) * erspclass.frequency;
+    erspclass.amplitudeDv = utl_randsample(amplitudeRelDvs, 1) * erspclass.amplitude;
+    erspclass.amplitudeSlope = utl_randsample(amplitudeRelSlopes, 1) * erspclass.amplitude;
     erspclass.probability = utl_randsample(probabilities, 1);
-    erspclass.probabilitySlope = utl_randsample(probabilitySlopes, 1) .* erspclass.probability;    
+    erspclass.probabilitySlope = utl_randsample(probabilityRelSlopes, 1) .* erspclass.probability;    
     erspclass.modFrequency = utl_randsample(modFrequencies, 1);
-    erspclass.modFrequencyDv = utl_randsample(modFrequencyDvs, 1) * erspclass.modFrequency;
-    erspclass.modFrequencySlope = utl_randsample(modFrequencySlopes, 1) * erspclass.modFrequency;
+    erspclass.modFrequencyDv = utl_randsample(modFrequencyRelDvs, 1) * erspclass.modFrequency;
+    erspclass.modFrequencySlope = utl_randsample(modFrequencyRelSlopes, 1) * erspclass.modFrequency;
     erspclass.modMinAmplitude = utl_randsample(modMinAmplitudes, 1);
-    erspclass.modMinAmplitudeDv = utl_randsample(modMinAmplitudeDvs, 1) * erspclass.modMinAmplitude;
-    erspclass.modMinAmplitudeSlope = utl_randsample(modMinAmplitudeSlopes, 1) * erspclass.modMinAmplitude;
+    erspclass.modMinAmplitudeDv = utl_randsample(modMinAmplitudeRelDvs, 1) * erspclass.modMinAmplitude;
+    erspclass.modMinAmplitudeSlope = utl_randsample(modMinAmplitudeRelSlopes, 1) * erspclass.modMinAmplitude;
     erspclass.modPrestimPeriod = modPrestimPeriod;
     erspclass.modPrestimTaper = modPrestimTaper;
     erspclass.modPrestimAmplitude = modPrestimAmplitude;

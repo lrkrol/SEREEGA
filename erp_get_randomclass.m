@@ -14,14 +14,14 @@
 % Optional (key-value pairs):
 %       probabilities - row array of possible signal probabilities.
 %                       default: 1
-%       latencyDvs, latencySlopes, widthDvs, widthSlopes, amplitudeDvs,
-%       amplitudeSlopes, probabilitySlopes
-%           - possible deviations and slopes for the peak latency, width,
-%             and amplitudes, and the signal probability. these are given
-%             as ratio of the actual value, e.g. a probability of .5 with a
-%             probabilitySlope of .5, will have a probability at the final 
-%             epoch of .25, and an amplitude of 2 with a Dv of .1 will have
-%             an effective deviation of .2.
+%       latencyRelDvs, latencyRelSlopes, widthRelDvs, widthRelSlopes, 
+%       amplitudeRelDvs, amplitudeRelSlopes, probabilityRelSlopes
+%           - possible relative deviations and RelSlopes for the peak latency, 
+%             width, and amplitudes, and the signal probability. these are 
+%             given as ratio of the actual value, e.g. a probability of .5 
+%             with a probabilitySlope of .5, will have a probability at the 
+%             final epoch of .25, and an amplitude of 2 with a Dv of .1 will 
+%             have an effective deviation of .2.
 %       numClasses - the number of random classes to return. default: 1
 %       
 % Out:
@@ -37,6 +37,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-08-10 lrk
+%   - Changed *Dvs/*Slopes argument names to *RelDvs/*RelSlopes for clarity
 % 2017-07-01 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -64,14 +66,14 @@ addRequired(p, 'latencies', @isnumeric);
 addRequired(p, 'widths', @isnumeric);
 addRequired(p, 'amplitudes', @isnumeric);
 
-addParameter(p, 'latencyDvs', 0, @isnumeric);
-addParameter(p, 'latencySlopes', 0, @isnumeric);
-addParameter(p, 'widthDvs', 0, @isnumeric);
-addParameter(p, 'widthSlopes', 0, @isnumeric);
-addParameter(p, 'amplitudeDvs', 0, @isnumeric);
-addParameter(p, 'amplitudeSlopes', 0, @isnumeric);
+addParameter(p, 'latencyRelDvs', 0, @isnumeric);
+addParameter(p, 'latencyRelSlopes', 0, @isnumeric);
+addParameter(p, 'widthRelDvs', 0, @isnumeric);
+addParameter(p, 'widthRelSlopes', 0, @isnumeric);
+addParameter(p, 'amplitudeRelDvs', 0, @isnumeric);
+addParameter(p, 'amplitudeRelSlopes', 0, @isnumeric);
 addParameter(p, 'probabilities', 1, @isnumeric);
-addParameter(p, 'probabilitySlopes', 0, @isnumeric);
+addParameter(p, 'probabilityRelSlopes', 0, @isnumeric);
 addParameter(p, 'numClasses', 1, @isnumeric);
 
 parse(p, numpeaks, latencies, widths, amplitudes, varargin{:})
@@ -80,14 +82,14 @@ numpeaks = p.Results.numpeaks;
 latencies = p.Results.latencies;
 widths = p.Results.widths;
 amplitudes = p.Results.amplitudes;
-latencyDvs = p.Results.latencyDvs;
-latencySlopes = p.Results.latencySlopes;
-widthDvs = p.Results.widthDvs;
-widthSlopes = p.Results.widthSlopes;
-amplitudeDvs = p.Results.amplitudeDvs;
-amplitudeSlopes = p.Results.amplitudeSlopes;
+latencyRelDvs = p.Results.latencyRelDvs;
+latencyRelSlopes = p.Results.latencyRelSlopes;
+widthRelDvs = p.Results.widthRelDvs;
+widthRelSlopes = p.Results.widthRelSlopes;
+amplitudeRelDvs = p.Results.amplitudeRelDvs;
+amplitudeRelSlopes = p.Results.amplitudeRelSlopes;
 probabilities = p.Results.probabilities;
-probabilitySlopes = p.Results.probabilitySlopes;
+probabilityRelSlopes = p.Results.probabilityRelSlopes;
 numClasses = p.Results.numClasses;
 
 for c = 1:numClasses
@@ -99,16 +101,16 @@ for c = 1:numClasses
     
     % sampling randomly from given possible values
     erpclass.peakLatency = utl_randsample(latencies, n);
-    erpclass.peakLatencyDv = utl_randsample(latencyDvs, n, 1) .* erpclass.peakLatency;
-    erpclass.peakLatencySlope = utl_randsample(latencySlopes, n, 1) .* erpclass.peakLatency;
+    erpclass.peakLatencyDv = utl_randsample(latencyRelDvs, n, 1) .* erpclass.peakLatency;
+    erpclass.peakLatencySlope = utl_randsample(latencyRelSlopes, n, 1) .* erpclass.peakLatency;
     erpclass.peakWidth = utl_randsample(widths, n, 1);
-    erpclass.peakWidthDv = utl_randsample(widthDvs, n, 1) .* erpclass.peakWidth;
-    erpclass.peakWidthSlope = utl_randsample(widthSlopes, n, 1) .* erpclass.peakWidth;
+    erpclass.peakWidthDv = utl_randsample(widthRelDvs, n, 1) .* erpclass.peakWidth;
+    erpclass.peakWidthSlope = utl_randsample(widthRelSlopes, n, 1) .* erpclass.peakWidth;
     erpclass.peakAmplitude = utl_randsample(amplitudes, n, 1);
-    erpclass.peakAmplitudeDv = utl_randsample(amplitudeDvs, n, 1) .* erpclass.peakAmplitude;
-    erpclass.peakAmplitudeSlope = utl_randsample(amplitudeSlopes, n, 1) .* erpclass.peakAmplitude;
+    erpclass.peakAmplitudeDv = utl_randsample(amplitudeRelDvs, n, 1) .* erpclass.peakAmplitude;
+    erpclass.peakAmplitudeSlope = utl_randsample(amplitudeRelSlopes, n, 1) .* erpclass.peakAmplitude;
     erpclass.probability = utl_randsample(probabilities, 1);
-    erpclass.probabilitySlope = utl_randsample(probabilitySlopes, 1) .* erpclass.probability;
+    erpclass.probabilitySlope = utl_randsample(probabilityRelSlopes, 1) .* erpclass.probability;
     
     % validating ERP class
     erp(c) = utl_check_class(erpclass, 'type', 'erp');
