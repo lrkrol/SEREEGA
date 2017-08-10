@@ -1,9 +1,9 @@
 % h = plot_component_projection(component, leadfield, varargin)
 %
-%       Plots a component's projection onto the scalp.
+%       Plots (a) component projection(s) onto the scalp.
 %
 % In:
-%       component - 1x1 struct, the component variable
+%       component - struct containing the component variable(s).
 %       leadfield - the leadfield from which to plot the projection
 %
 % Optional (key-value pairs):
@@ -25,6 +25,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-08-10 lrk
+%   - Added ability to plot multiple component projections in one figure
 % 2017-06-19 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -60,14 +62,25 @@ component = p.Results.component;
 newfig = p.Results.newfig;
 cmap = p.Results.colormap;
 
-% getting mean projection of all sources
-meanproj = [];
-for s = 1:length(component.source)
-    meanproj(:,s) = lf_get_projection(component.source(s), leadfield, 'orientation', component.orientation(s,:));
-end
-meanproj = mean(meanproj,2);
+if length(component) > 1
+    if newfig, h = figure; else h = NaN; end
+    % creating subplots
+    ncols = ceil(sqrt(length(component)));
+    nrows = ceil(length(component)/ncols);
+    for c = 1:length(component)
+        subplot(nrows, ncols, c);
+        plot_component_projection(component(c), leadfield, 'colormap', cmap, 'newfig', 0);
+    end
+else
+    % getting mean projection of all sources
+    meanproj = [];
+    for s = 1:length(component.source)
+        meanproj(:,s) = lf_get_projection(component.source(s), leadfield, 'orientation', component.orientation(s,:));
+    end
+    meanproj = mean(meanproj,2);
 
-if newfig, h = figure; else h = NaN; end
-topoplot(meanproj, leadfield.chanlocs, 'colormap', cmap);
+    if newfig, h = figure; else h = NaN; end
+    topoplot(meanproj, leadfield.chanlocs, 'colormap', cmap);
+end
 
 end
