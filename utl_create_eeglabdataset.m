@@ -57,11 +57,11 @@ addRequired(p, 'data', @isnumeric);
 addRequired(p, 'srate', @isnumeric);
 
 addParameter(p, 'chanlocs', [], @isstruct);
-addParameter(p, 'chanlabels', [], @iscell);
+addParameter(p, 'chanlabels', {}, @iscell);
 addParameter(p, 'xmin', 0, @isnumeric);
 addParameter(p, 'marker', 'event', @ischar);
 
-parse(p, data, srate, varargin{:})
+parse(p, data, srate, varargin{:});
 
 data = p.Results.data;
 srate = p.Results.srate;
@@ -113,7 +113,7 @@ else
 end
 
 EEG = eeg_checkset(EEG);
-% keyboard
+
 if EEG.trials > 1
     % adding markers
     EEG.event = struct('type', {}, 'latency', {}, 'duration', {}, 'epoch', {}, 'init_index', {}, 'init_time', {});
