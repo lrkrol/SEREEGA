@@ -1,5 +1,11 @@
 included files from different sources:
 
+noise_generate_signal_coloreduniform.m
+    original author: Miroslav Stoyanov, Oak Ridge National Laboratory,
+                     mkstoyanov@gmail.com. 
+    obtained from https://people.sc.fsu.edu/~jburkardt/m_src/cnoise/cnoise.html
+    this file is licensed under the GNU LGPL 3.
+
 standard_1005.elc
 	obtained from FieldTrip 170410.
 	http://www.fieldtriptoolbox.org

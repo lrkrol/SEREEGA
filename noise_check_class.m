@@ -34,8 +34,9 @@
 %
 %         .type:                 class type (must be 'noise')
 %         .color:                noise color, 'white', 'pink', 'brown', 
-%                                'blue' or 'purple' for gaussian noise, or
-%                                'white-unif' for uniform white noise
+%                                'blue' or 'purple' for gaussian noise. add
+%                                '-unif' (e.g. 'brown-unif' for uniform
+%                                noise.
 %         .peakAmplitude:        1-by-n matrix of peak amplitudes
 %         .peakAmplitudeDv:      1-by-n matrix of peak amplitude deviations
 %         .peakAmplitudeSlope:   1-by-n matrix of peak amplitude slopes
@@ -107,7 +108,8 @@ if ~isfield(class, 'probabilitySlope')
 class = orderfields(class);
 
 % checking values
-if ~ismember(class.color, {'white', 'pink', 'brown', 'blue', 'purple', 'white-unif'})
+if ~ismember(class.color, {'white', 'pink', 'brown', 'blue', 'purple', ...
+        'white-unif', 'pink-unif', 'brown-unif', 'blue-unif', 'purple-unif'})
     error('an unknown noise color is indicated in the given noise class variable'); end
 
 if verLessThan('dsp', '8.6')

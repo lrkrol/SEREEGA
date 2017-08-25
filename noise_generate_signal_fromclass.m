@@ -29,6 +29,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-08-10 lrk
+%   - Added colored uniform noise (using third-party generator).
 % 2017-07-06 lrk
 %   - Added uniform white noise and changed DSP syntax for backwards
 %     compatibility
@@ -77,9 +79,22 @@ if ~baseonly && rand() > class.probability + class.probabilitySlope * epochNumbe
     signal = zeros(1, samples);
 else
     
-    if strcmp(class.color, 'white-unif')
-        signal = rand(1, samples) - .5;
+    if strncmp(class.color(end-4:end), '-unif', 5)
+        % uniform colored noise
+        switch class.color(1:end-5)
+            case 'white'
+                signal = rand(1, samples) - .5;
+            case 'pink'
+                signal = noise_generate_signal_coloreduniform(samples, 1, 1);
+            case 'brown'
+                signal = noise_generate_signal_coloreduniform(samples, 1, 2);
+            case 'blue'
+                signal = noise_generate_signal_coloreduniform(samples, 1, -1);
+            case 'purple'
+                signal = noise_generate_signal_coloreduniform(samples, 1, -2);
+        end
     else
+        % gaussian colored noise
         if verLessThan('dsp', '8.6')
             warning(['your DSP version is lower than 8.6 (MATLAB R2014a); ' ...
                      'ignoring noise color settings; generating white noise using randn()']); 
