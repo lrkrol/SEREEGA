@@ -40,7 +40,7 @@
 % 2016-06-20 lrk
 %   - Changed variable names for consistency
 %   - Added prestimulus attenuation to PAC
-% 2017-06-16 First version by Fabien Lotte
+% 2017-06-16 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
 
