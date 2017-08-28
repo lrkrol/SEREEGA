@@ -138,25 +138,25 @@ function class = ersp_check_class(class)
 
 % checking for required variables
 if ~isfield(class, 'frequency')
-    error('field frequency is missing from given ERSP class variable');
+    error('SEREEGA:ersp_check_class:missingField', 'field ''frequency'' is missing from given ERSP class variable');
 elseif ~isfield(class, 'amplitude')
-    error('field amplitude is missing from given ERSP class variable');
+    error('SEREEGA:ersp_check_class:missingField', 'field ''amplitude'' is missing from given ERSP class variable');
 end
 
 if ismember(class.modulation, {'burst', 'invburst'})
     if ~isfield(class, 'modLatency')
-        error('field modLatency is missing from given burst-modulated ERSP class variable');
+        error('SEREEGA:ersp_check_class:missingField', 'field ''modLatency'' is missing from given burst-modulated ERSP class variable');
     elseif ~isfield(class, 'modWidth')
-        error('field modWidth is missing from given burst-modulated ERSP class variable');
+        error('SEREEGA:ersp_check_class:missingField', 'field ''modWidth'' is missing from given burst-modulated ERSP class variable');
     elseif ~isfield(class, 'modTaper')
-        error('field modTaper is missing from given burst-modulated ERSP class variable');
+        error('SEREEGA:ersp_check_class:missingField', 'field ''modTaper'' is missing from given burst-modulated ERSP class variable');
     end
     
     if ~isfield(class, 'modFrequency')
         class.modFrequency = NaN; end
 elseif strcmp(class.modulation, 'pac')
     if ~isfield(class, 'modFrequency')
-        error('field modFrequency is missing from given PAC-modulated ERSP class variable');
+        error('SEREEGA:ersp_check_class:missingField', 'field ''modFrequency'' is missing from given PAC-modulated ERSP class variable');
     end
     
     if ~isfield(class, 'modLatency')
@@ -206,7 +206,7 @@ if ~isfield(class, 'modulation')
     class.modulation = 'none'; end
 
 if ~ismember(class.modulation, {'none', 'burst', 'invburst', 'pac'})
-    error('unknown modulation type'); end
+    error('SEREEGA:ersp_check_class:unknownFieldValue', 'unknown modulation type ''%s''', class.modulation); end
    
 % burst modulation variables
 if ~isfield(class, 'modLatencyDv')
@@ -263,7 +263,7 @@ if class.modWidth - class.modWidthDv - class.modWidthSlope < 1
     warning('some burst widths may become zero or less due to the indicated deviation; this may lead to unexpected results'); end
 
 if class.modPrestimTaper < 0 || class.modPrestimTaper >= 1
-    error('prestimulus taper should be greater than or equal to 0, and less than 1'); end
+    error('SEREEGA:ersp_check_class:incorrectFieldValue', 'prestimulus taper should be greater than or equal to 0, and less than 1'); end
 
 class = orderfields(class);
 

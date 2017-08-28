@@ -72,7 +72,11 @@ labels = p.Results.labels;
 montage = p.Results.montage;
 
 % loading the NY Head leadfield
-load('sa_nyhead.mat', 'sa');
+if exist('sa_nyhead.mat') ~= 2
+    error('SEREEGA:lf_generate_fromnyhead:fileNotFound', 'Could not find ICBM-NY leadfield file in the path.\nThis should be available at http://www.parralab.org/nyhead/sa_nyhead.mat')
+else
+    load('sa_nyhead.mat', 'sa');
+end
 
 if ~isempty(montage)
     % taking channel labels from indicated montage

@@ -69,9 +69,9 @@ if numel(component) > 1
 else
     % checking for required variables
     if ~isfield(component, 'source') || isempty(component.source)
-        error('no source indicated'); 
+        error('SEREEGA:utl_check_component:missingFieldValue', 'no source indicated'); 
     elseif ~isfield(component, 'signal') || isempty(component.signal)
-        error('no signal indicated');
+        error('SEREEGA:utl_check_component:missingFieldValue', 'no signal indicated');
     end
 
     % adding fields / filling in defaults
@@ -82,7 +82,7 @@ else
         component.orientationDv = zeros(size(component.orientation)); end
 
     if any(component.source > size(leadfield.pos, 1))
-        error('indicated source(s) not present in the leadfield'); end
+        error('SEREEGA:utl_check_component:error', 'indicated source(s) not present in the leadfield'); end
 
     % checking values
     if ~all(size(component.orientation) == [numel(component.source), 3])
@@ -91,7 +91,7 @@ else
     end
 
     if ~iscell(component.signal)
-        error('component signals must be in a cell array'); end
+        error('SEREEGA:utl_check_component:error', 'component signals must be in a cell array'); end
 
     % checking signals
     for s = 1:length(component.signal)

@@ -65,7 +65,7 @@ class = utl_check_class(class);
 
 % calling type-specific plot function
 if ~exist(sprintf('%s_plot_signal_fromclass', class.type), 'file')
-    error('no plotting function found for class type ''%s''', class.type);
+    error('SEREEGA:plot_signal_fromclass:error', 'no plotting function found for class type ''%s''', class.type);
 else
     class_plot_signal_fromclass = str2func(sprintf('%s_plot_signal_fromclass', class.type));
     h = class_plot_signal_fromclass(class, epochs, 'newfig', newfig, 'baseonly', baseonly);

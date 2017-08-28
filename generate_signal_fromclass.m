@@ -66,7 +66,7 @@ baseonly = p.Results.baseonly;
 
 % calling type-specific generate function
 if ~exist(sprintf('%s_generate_signal_fromclass', class.type), 'file')
-    error('no signal generation function found for class type ''%s''', class.type);
+    error('SEREEGA:generate_signal_fromclass:error', 'no signal generation function found for class type ''%s''', class.type);
 else
     class_generate_signal_fromclass = str2func(sprintf('%s_generate_signal_fromclass', class.type));
     signal = class_generate_signal_fromclass(class, epochs, 'epochNumber', epochNumber, 'baseonly', baseonly);

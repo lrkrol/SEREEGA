@@ -37,7 +37,7 @@
 function [w, winv] = utl_get_icaweights(components, leadfield)
 
 if length(components) ~= length(leadfield.chanlocs)
-    error('cannot generate weights matrix: different number of components and channels');
+    error('SEREEGA:utl_get_icaweights:error', 'cannot generate weights matrix: different number of components and channels');
 end
 
 % generating winv by putting all components' projection patterns in one matrix

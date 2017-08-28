@@ -82,11 +82,11 @@ function class = noise_check_class(class)
 
 % checking for required variables
 if ~isfield(class, 'color')
-    error('field color is missing from given noise class variable');
+    error('SEREEGA:noise_check_class:missingField', 'field ''color'' is missing from given noise class variable');
 elseif ~isfield(class, 'amplitude')
-    error('field amplitude is missing from given noise class variable');
+    error('SEREEGA:noise_check_class:missingField', 'field ''amplitude'' is missing from given noise class variable');
 elseif isfield(class, 'type') && ~isempty(class.type) && ~strcmp(class.type, 'noise')
-    error('indicated type (''%s'') not set to ''noise''', class.type);
+    error('SEREEGA:noise_check_class:missingField', 'indicated type (''%s'') not set to ''noise''', class.type);
 end
 
 % adding fields / filling in defaults
@@ -110,7 +110,7 @@ class = orderfields(class);
 % checking values
 if ~ismember(class.color, {'white', 'pink', 'brown', 'blue', 'purple', ...
         'white-unif', 'pink-unif', 'brown-unif', 'blue-unif', 'purple-unif'})
-    error('an unknown noise color is indicated in the given noise class variable'); end
+    error('SEREEGA:noise_check_class:unknownFieldValue', 'an unknown noise color is indicated in the given noise class variable'); end
 
 if verLessThan('dsp', '8.6')
     warning(['your DSP version is lower than 8.6 (MATLAB R2014a); ' ...

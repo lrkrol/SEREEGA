@@ -58,14 +58,14 @@ class = p.Results.class;
 type = p.Results.type;
 % seeing if type can be determined
 if ~isfield(class, 'type') && isempty(type)
-    error('cannot determine class type.');
+    error('SEREEGA:utl_check_class:missingFieldValue', 'cannot determine class type.');
 elseif isfield(class, 'type')
     type = class.type;
 end
 
 % calling type-specific check function
 if ~exist(sprintf('%s_check_class', type) , 'file')
-    error('cannot check class ''%s'': cannot find function ''%s_check_class''', type, type);
+    error('SEREEGA:utl_check_class:error', 'cannot check class ''%s'': cannot find function ''%s_check_class''', type, type);
 else
     check_class = str2func(sprintf('%s_check_class', type));
     class = check_class(class);

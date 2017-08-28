@@ -78,11 +78,11 @@ function class = erp_check_class(class)
 
 % checking for required variables
 if ~isfield(class, 'peakLatency')
-    error('field peakLatency is missing from given ERP class variable');
+    error('SEREEGA:erp_check_class:missingField', 'field ''peakLatency'' is missing from given ERP class variable');
 elseif ~isfield(class, 'peakWidth')
-    error('field peakWidth is missing from given ERP class variable');
+    error('SEREEGA:erp_check_class:missingField', 'field ''peakWidth'' is missing from given ERP class variable');
 elseif ~isfield(class, 'peakAmplitude')
-    error('field peakAmplitude is missing from given ERP class variable');
+    error('SEREEGA:erp_check_class:missingField', 'field ''peakAmplitude'' is missing from given ERP class variable');
 elseif isfield(class, 'type') && ~isempty(class.type) && ~strcmp(class.type, 'erp')
     error('indicated type (''%s'') not set to ''erp''', class.type);
 end
@@ -127,13 +127,13 @@ end
 if ~isequal(numel(class.peakLatency), numel(class.peakLatencyDv), numel(class.peakLatencySlope), ...
             numel(class.peakWidth), numel(class.peakWidthDv), numel(class.peakWidthSlope), ...
             numel(class.peakAmplitude), numel(class.peakAmplitudeDv), numel(class.peakAmplitudeSlope))
-    error('all peak* fields must be of the same length'); end
+    error('SEREEGA:erp_check_class:incorrectFieldValue', 'all peak* fields must be of the same length'); end
     
 if any(class.peakLatency < 0)
-    error('ERP peak latencies cannot be less than zero'); end
+    error('SEREEGA:erp_check_class:incorrectFieldValue', 'ERP peak latencies cannot be less than zero'); end
 
 if any(class.peakWidth <= 0)
-    error('ERP peak widths cannot be zero or less'); end
+    error('SEREEGA:erp_check_class:incorrectFieldValue', 'ERP peak widths cannot be zero or less'); end
 
 if any(class.peakWidth - class.peakWidthDv < 1)
     warning('some peak widths may become zero or less due to the indicated deviation; this may lead to unexpected results'); end
