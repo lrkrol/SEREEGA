@@ -61,11 +61,13 @@ for p = 1:length(peakLatency)
     % generating separate peak
     peak = normpdf(1:epochLength, peakLatency(p), peakWidth(p)/3);
     
-    % normalising because otherwise sum(peak) == 1
-    peak = peakAmplitude(p) * peak / max(peak);
+    % if not a flatline, normalising because otherwise sum(peak) == 1
+    if any(peak), peak = peakAmplitude(p) * peak / max(peak); end
     
     % adding peak to signal
     signal = signal + peak;    
 end
+
+if any(isnan(signal)), keyboard, end
 
 end
