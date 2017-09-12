@@ -30,7 +30,7 @@
 %   - Now accepts both chanlocs structure and cell of channel labels
 %   - Added markers
 %   - Switched to inputParser to parse arguments
-%   - Modifications for inclusion in SAREEGA
+%   - Modifications for inclusion in SEREEGA
 % 2015-11-30 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
