@@ -10,6 +10,9 @@
 %       labels - cell of electrode labels to be used. default uses all 346
 %                available channels (including fiducials).
 %       montage - name of predefined channel montage. see utl_get_montage.
+%       chandef - channel definition variable as per ft_read_sens. by
+%                 default, the channel definitions contained in the file
+%                 standard_1005.elc are used, containing 346 electrodes.
 %       plotelecs - whether or not to plot electrodes in FieldTrip, e.g. to
 %                   check their alignment to the model (1|0, default 0)
 %
@@ -35,10 +38,12 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-09-29 lrk
+%   - Added manual channel definition argument
 % 2017-08-10 lrk
 %   - Added channel montage argument
 % 2017-04-21 lrk
-%   - Complete revision for inclusion in SAREEGA
+%   - Complete revision for inclusion in SEREEGA
 %   - Changed leadfield structure
 % 2016-04-15 lrk
 %   - Complete revision
@@ -66,6 +71,7 @@ p = inputParser;
 
 addParameter(p, 'labels', {}, @iscell);
 addParameter(p, 'montage', '', @ischar);
+addParameter(p, 'chandef', [], @isstruct);
 addParameter(p, 'resolution', 10, @isnumeric)
 addParameter(p, 'plotelecs', 0, @isnumeric)
 
@@ -73,6 +79,7 @@ parse(p, varargin{:})
 
 labels = p.Results.labels;
 montage = p.Results.montage;
+chandef = p.Results.chandef;
 resolution = p.Results.resolution;
 plotelecs = p.Results.plotelecs;
 
@@ -80,7 +87,11 @@ plotelecs = p.Results.plotelecs;
 load('standard_vol.mat');
 
 % loading channel positions
-elec = ft_read_sens('standard_1005.elc');
+if isempty(chandef)
+    elec = ft_read_sens('standard_1005.elc');
+else
+    elec = chandef;
+end
 
 if ~isempty(montage)
     % taking channel labels from indicated montage
