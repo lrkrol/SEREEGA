@@ -84,7 +84,7 @@ elseif ~isfield(class, 'peakWidth')
 elseif ~isfield(class, 'peakAmplitude')
     error('SEREEGA:erp_check_class:missingField', 'field ''peakAmplitude'' is missing from given ERP class variable');
 elseif isfield(class, 'type') && ~isempty(class.type) && ~strcmp(class.type, 'erp')
-    error('indicated type (''%s'') not set to ''erp''', class.type);
+    error('SEREEGA:erp_check_class:incorrectFieldValue', 'indicated type (''%s'') not set to ''erp''', class.type);
 end
 
 % adding fields / filling in defaults
