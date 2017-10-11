@@ -1,9 +1,10 @@
-% scalpdata = generate_scalpdata(component, leadfield, epochs, varargin)
+% [scalpdata, sourcedata] = generate_scalpdata(component, leadfield, epochs, varargin)
 %
 %       Generates simulated scalp data by simulating all signals in all
 %       components, projecting them through the leadfield using the given
 %       source and orientation, and summing them together, for all of the
-%       indicated epochs.
+%       indicated epochs. Also outputs the underlying component source
+%       activation.
 %
 % In:
 %       component - 1-by-n struct of components (see utl_check_component)
@@ -24,6 +25,8 @@
 % Out:
 %       scalpdata - channels x samples x epochs array of simulated scalp
 %                   data
+%       sourcedata - ncomponents x samples x epochs array of the component
+%                    source activations
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead;
@@ -38,6 +41,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-10-11 lrk
+%   - Added source activation output
 % 2017-08-03 lrk
 %   - Switched normalisation defaults to 0
 % 2017-06-14 First version
@@ -57,7 +62,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function scalpdata = generate_scalpdata(component, leadfield, epochs, varargin)
+function [scalpdata, sourcedata] = generate_scalpdata(component, leadfield, epochs, varargin)
 
 % parsing input
 p = inputParser;
@@ -82,6 +87,7 @@ showprogress = p.Results.showprogress;
 component = utl_check_component(component, leadfield);
 
 scalpdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), epochs.n);
+sourcedata = zeros(length(component), floor((epochs.length/1000)*epochs.srate), epochs.n);
 
 if showprogress
     w = waitbar(0, sprintf('Epoch 0 of %d', epochs.n), 'Name', 'Generating scalp data');
@@ -98,6 +104,7 @@ for e = 1:epochs.n
     
         % getting component's sum signal
         componentsignal = generate_signal_fromcomponent(component(c), epochs, 'epochNumber', e);
+        sourcedata(c,:,e) = componentsignal;
 
         % obtaining single source
         n = randperm(numel(component(c).source));
