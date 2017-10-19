@@ -29,6 +29,9 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-10-19 lrk
+%   - Fixed issue where only the oriented projection was returned when
+%     multiple sources were given
 % 2017-08-03 lrk
 %   - Switched normalisation defaults to 0
 %   - Added possibility to pass multiple source indices
@@ -76,7 +79,7 @@ end
 if numel(sourceIdx) > 1
     % iteratively calling this script, returning mean projection
     for s = 1:numel(sourceIdx)
-        projection(s,:) = lf_get_projection(sourceIdx(s), leadfield);
+        projection(s,:) = lf_get_projection(sourceIdx(s), leadfield, 'orientation', orientation, 'normaliseLeadfield', normaliseLeadfield, 'normaliseOrientation', normaliseOrientation);
     end
     projection = mean(projection, 1);
 else
