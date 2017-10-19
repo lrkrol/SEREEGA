@@ -29,7 +29,9 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
-% 2016-07-13 lrk
+% 2017-10-19 lrk
+%   - Added broadband base activation
+% 2017-07-13 lrk
 %   - Fixed bug where modMinAmplitude was ignored for burst/invburst
 %     baseonly signal
 % 2017-06-20 lrk
@@ -71,7 +73,10 @@ epochNumber = p.Results.epochNumber;
 baseonly = p.Results.baseonly;
 
 if baseonly
-    % generating base signal    
+    % generating base signal
+    if class.bandWidth > 0
+        class.frequency = [class.frequency - class.bandWidth / 2, class.frequency + class.bandWidth / 2]; end
+    
     if strcmp(class.modulation, 'none')
         signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length);
     elseif ismember(class.modulation, {'burst', 'invburst'})
@@ -89,9 +94,15 @@ else
         signal = zeros(1, floor((epochs.length/1000)*epochs.srate));
     else
 
-        % obtaining specific base frequency values
+        % obtaining specific base values
         frequency = utl_apply_dvslope(class.frequency, class.frequencyDv, class.frequencySlope, epochNumber, epochs.n);
+        if class.bandWidth > 0
+            bandWidth = utl_apply_dvslope(class.bandWidth, class.bandWidthDv, class.bandWidthSlope, epochNumber, epochs.n);
+            frequency = [frequency - bandWidth/2, frequency + bandWidth/2];
+        end
+        
         amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
+        
         if ~isempty(class.phase)
             phase = utl_apply_dvslope(class.phase, class.phaseDv, class.phaseSlope, epochNumber, epochs.n);
         else

@@ -11,7 +11,7 @@
 %       and ersp_get_randomclass_pac for random PAC-modulated classes.
 %       
 % In:
-%       frequencies - row array of possible frequencies
+%       frequencies - row array of possible base frequencies
 %       amplitudes - row array of possible amplitudes
 %       modLatencies - row array of possible burst centre latencies
 %       modWidths - row array of possible burst widths
@@ -20,18 +20,21 @@
 %                          percentage of the base amplitude
 %
 % Optional (key-value pairs):
+%       bandWidths - row array of possible frequency band widths. default:
+%                    [0]
 %       bursts - row array of possible burst modulation types, where 1 is
 %                burst and -1 is invburst; options are thus [1], [-1], or
 %                [-1, 1]. default: [1]
 %       probabilities - row array of possible signal probabilities.
 %                       default: 1
-%       frequencyRelDvs, frequencyRelSlopes, amplitudeRelDvs, 
-%       amplitudeRelSlopes, modLatencyRelDvs, modLatencyRelSlopes, 
-%       modWidthRelDvs, modWidthRelSlopes, modTaperRelDvs, 
-%       modTaperRelSlopes, modMinAmplitudeRelDvs, modMinAmplitudeRelSlopes,
+%       frequencyRelDvs, frequencyRelSlopes, bandWidthRelDvs,
+%       bandWidthRelSlopes, amplitudeRelDvs, amplitudeRelSlopes,
+%       modLatencyRelDvs, modLatencyRelSlopes, modWidthRelDvs,
+%       modWidthRelSlopes, modTaperRelDvs, modTaperRelSlopes,
+%       modMinAmplitudeRelDvs, modMinAmplitudeRelSlopes,
 %       probabilityRelSlopes,
-%           - possible relative deviations and RelSlopes for the base and 
-%             modulation values, and the signal probability. these are 
+%           - possible relative deviations and relative slopes for the base
+%             and modulation values, and the signal probability. these are 
 %             given as ratio of the actual value, e.g. a probability of .5 
 %             with a probabilitySlope of .5, will have a probability at the
 %             final epoch of .25, and a frequency of 20 with a Dv of .1 
@@ -52,6 +55,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-10-19 lrk
+%   - Added broadband base activation
 % 2017-08-10 lrk
 %   - Changed *Dvs/*Slopes argument names to *RelDvs/*RelSlopes for clarity
 % 2017-07-13 First version
@@ -86,6 +91,9 @@ addRequired(p, 'modMinAmplitudes', @isnumeric);
 addParameter(p, 'bursts', [1], @isnumeric);
 addParameter(p, 'frequencyRelDvs', 0, @isnumeric);
 addParameter(p, 'frequencyRelSlopes', 0, @isnumeric);
+addParameter(p, 'bandWidths', [0], @isnumeric);
+addParameter(p, 'bandWidthRelDvs', 0, @isnumeric);
+addParameter(p, 'bandWidthRelSlopes', 0, @isnumeric);
 addParameter(p, 'amplitudeRelDvs', 0, @isnumeric);
 addParameter(p, 'amplitudeRelSlopes', 0, @isnumeric);
 addParameter(p, 'modLatencyRelDvs', 0, @isnumeric);
@@ -111,6 +119,9 @@ modMinAmplitudes = p.Results.modMinAmplitudes;
 bursts = p.Results.bursts;
 frequencyRelDvs = p.Results.frequencyRelDvs;
 frequencyRelSlopes = p.Results.frequencyRelSlopes;
+bandWidths = p.Results.bandWidths;
+bandWidthRelDvs = p.Results.bandWidthRelDvs;
+bandWidthRelSlopes = p.Results.bandWidthRelSlopes;
 amplitudeRelDvs = p.Results.amplitudeRelDvs;
 amplitudeRelSlopes = p.Results.amplitudeRelSlopes;
 modLatencyRelDvs = p.Results.modLatencyRelDvs;
@@ -131,6 +142,7 @@ for c = 1:numClasses
     
     % setting base parameters
     erspclass.frequency = utl_randsample(frequencies, 1);
+    erspclass.bandWidth = utl_randsample(bandWidths, 1);
     erspclass.phase = [];
     erspclass.amplitude = utl_randsample(amplitudes, 1);
     
@@ -144,6 +156,8 @@ for c = 1:numClasses
     % sampling randomly from given possible values
     erspclass.frequencyDv = utl_randsample(frequencyRelDvs, 1) * erspclass.frequency;
     erspclass.frequencySlope = utl_randsample(frequencyRelSlopes, 1) * erspclass.frequency;
+    erspclass.bandWidthDv = utl_randsample(bandWidthRelDvs, 1) * erspclass.bandWidth;
+    erspclass.bandWidthSlope = utl_randsample(bandWidthRelSlopes, 1) * erspclass.bandWidth;
     erspclass.amplitudeDv = utl_randsample(amplitudeRelDvs, 1) * erspclass.amplitude;
     erspclass.amplitudeSlope = utl_randsample(amplitudeRelSlopes, 1) * erspclass.amplitude;
     erspclass.probability = utl_randsample(probabilities, 1);

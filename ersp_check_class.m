@@ -8,8 +8,13 @@
 %       window, or by coupling the signal's amplitude to the phase of
 %       another frequency.
 %
-%       The base frequency is defined by its frequency in Hz, its
-%       amplitude, and optionally, its phase. 
+%       The base frequency can be defined by a single frequency in Hz, its
+%       amplitude, and optionally, its phase. Alternatively, a frequency
+%       band can be indicated using the optional bandWidth parameter. With
+%       a frequency of 10 and a bandWidth of 0, a single sine wave will be
+%       the base signal. With a bandWidth of 4, however, the base signal
+%       will contain power between 8 and 12 Hz. In case a frequency band is
+%       indicated, phase will be ignored.
 %
 %       A burst can additionally be indicated using its latency (the burst
 %       window's centre) in ms, its width in ms, and its taper, where a
@@ -43,6 +48,12 @@
 %         .frequency:            base frequency in Hz
 %         .frequencyDv:          base frequency deviation in Hz
 %         .frequencySlope:       base frequency slope in Hz
+%         .bandWidth:            width of the frequency band. if non-zero,
+%                                white noise will be filtered around the
+%                                base frequency with the total band width
+%                                indicated here
+%         .bandWidthDv:          frequency band width deviation
+%         .bandWidthSlope:       frequency band width slope
 %         .phase:                base frequency phase at the start of the
 %                                epoch, between 0 and 1, or [] for a random
 %                                phase
@@ -114,6 +125,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-10-19 lrk
+%   - Added broadband base activation
 % 2016-06-20 lrk
 %   - Changed variable names for consistency
 %   - Added prestimulus attenuation to PAC
@@ -184,6 +197,13 @@ if ~isfield(class, 'frequencyDv')
     class.frequencyDv = 0; end
 if ~isfield(class, 'frequencySlope')
     class.frequencySlope = 0; end
+
+if ~isfield(class, 'bandWidth')
+    class.bandWidth = 0; end
+if ~isfield(class, 'bandWidthDv')
+    class.bandWidthDv = 0; end
+if ~isfield(class, 'bandWidthSlope')
+    class.bandWidthSlope = 0; end
 
 if ~isfield(class, 'phase')
     class.phase = []; end
@@ -259,6 +279,9 @@ if ~isfield(class, 'modPrestimAmplitude')
     class.modPrestimAmplitude = 0; end
     
 % checking values
+if class.frequency - class.bandWidth/2 - class.bandWidthDv - class.bandWidthSlope < 2
+    error('SEREEGA:ersp_check_class:incorrectFieldValue', 'lower edge of the frequency band must be at least 2 Hz'); end
+
 if class.modWidth - class.modWidthDv - class.modWidthSlope < 1
     warning('some burst widths may become zero or less due to the indicated deviation; this may lead to unexpected results'); end
 

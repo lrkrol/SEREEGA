@@ -4,7 +4,11 @@
 %       given base frequency and optional modulation.
 %
 % In:
-%       frequency - base frequency in Hz
+%       frequency - either a single base frequency in Hz, or a [low, high]
+%                   frequency band. in the latter case, a white noise
+%                   signal will be filtered around the given band, as long
+%                   as low >= 2 (due to a 2 Hz transition band); phase will
+%                   be ignored.
 %       amplitude - maximum amplitude in uV
 %       phase - phase of the base frequency, between 0 and 1, or [] for a
 %               random phase
@@ -37,7 +41,9 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
-% 2016-06-20 lrk
+% 2017-10-19 lrk
+%   - Added broadband base activation
+% 2017-06-20 lrk
 %   - Changed variable names for consistency
 %   - Added prestimulus attenuation to PAC
 % 2017-06-16 First version
@@ -102,8 +108,26 @@ samples = floor(srate * epochLength/1000);
 if isempty(phase), phase = rand(); end
 
 % generating the base signal
-t = (0:samples-1)/srate;
-signal = sin(phase*2*pi + 2*pi*frequency*t);
+if numel(frequency) == 1
+    % single frequency
+    t = (0:samples-1)/srate;
+    signal = sin(phase*2*pi + 2*pi*frequency*t);
+elseif numel(frequency) == 2
+    % bandpass-filtered white noise
+        % base white noise with two-second padding
+    signal = rand(1, samples + 2*srate) - .5;
+        % filtering
+    D = designfilt('bandpassiir', ...
+            'SampleRate', srate, ...
+            'StopbandFrequency1', frequency(1) - 2, ...
+            'PassbandFrequency1', frequency(1), ...
+            'PassbandFrequency2', frequency(2), ...
+            'StopbandFrequency2', frequency(2) + 2, ...
+            'DesignMethod', 'butter');
+    signal = filtfilt(D, signal);
+        % removing padding
+    signal = signal(srate+1:end-srate);
+end
 
 % normalising
 signal = amplitude .* (-1 + 2 .* (signal - min(signal)) ./ (max(signal) - min(signal)));
@@ -150,6 +174,7 @@ elseif strcmp(modulation, 'pac')
     if isempty(modPhase), modPhase = rand(); end
 
     % generating the modulating signal
+    t = (0:samples-1)/srate;
     ms = sin(modPhase*2*pi + 2*pi*modFrequency*t);
     
     % normalising between modMinAmplitude and 1
