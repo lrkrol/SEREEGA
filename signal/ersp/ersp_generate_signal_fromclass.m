@@ -73,10 +73,7 @@ epochNumber = p.Results.epochNumber;
 baseonly = p.Results.baseonly;
 
 if baseonly
-    % generating base signal
-    if class.bandWidth > 0
-        class.frequency = [class.frequency - class.bandWidth / 2, class.frequency + class.bandWidth / 2]; end
-    
+    % generating base signal    
     if strcmp(class.modulation, 'none')
         signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length);
     elseif ismember(class.modulation, {'burst', 'invburst'})
@@ -95,10 +92,11 @@ else
     else
 
         % obtaining specific base values
-        frequency = utl_apply_dvslope(class.frequency, class.frequencyDv, class.frequencySlope, epochNumber, epochs.n);
-        if class.bandWidth > 0
-            bandWidth = utl_apply_dvslope(class.bandWidth, class.bandWidthDv, class.bandWidthSlope, epochNumber, epochs.n);
-            frequency = [frequency - bandWidth/2, frequency + bandWidth/2];
+        if numel(class.frequency) == 1
+            frequency = utl_apply_dvslope(class.frequency, class.frequencyDv, class.frequencySlope, epochNumber, epochs.n);
+        else
+            frequency = [utl_apply_dvslope(class.frequency(1), class.frequencyDv(1), class.frequencySlope(1), epochNumber, epochs.n), ...
+                         utl_apply_dvslope(class.frequency(2), class.frequencyDv(2), class.frequencySlope(2), epochNumber, epochs.n)];
         end
         
         amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);

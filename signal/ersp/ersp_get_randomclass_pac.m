@@ -18,8 +18,10 @@
 %                          percentage of the base amplitude
 %
 % Optional (key-value pairs):
-%       bandWidths - row array of possible frequency band widths. default:
-%                    [0]
+%       bandWidths - row array of possible frequency band widths. if a non-
+%                    zero band with is selected, frequencyRelDvs and
+%                    frequencyRelSlopes will be applied to both the lower
+%                    and the higher passband frequencies. default: [0]
 %       modPrestimPeriod - length in ms of the prestimulus period;
 %                          default: 0
 %       modPrestimTaper - taper for the prestimPeriod window; default: 0
@@ -86,8 +88,6 @@ addParameter(p, 'bursts', [1], @isnumeric);
 addParameter(p, 'frequencyRelDvs', 0, @isnumeric);
 addParameter(p, 'frequencyRelSlopes', 0, @isnumeric);
 addParameter(p, 'bandWidths', [0], @isnumeric);
-addParameter(p, 'bandWidthRelDvs', 0, @isnumeric);
-addParameter(p, 'bandWidthRelSlopes', 0, @isnumeric);
 addParameter(p, 'amplitudeRelDvs', 0, @isnumeric);
 addParameter(p, 'amplitudeRelSlopes', 0, @isnumeric);
 addParameter(p, 'modFrequencyRelDvs', 0, @isnumeric);
@@ -110,8 +110,6 @@ modMinAmplitudes = p.Results.modMinAmplitudes;
 frequencyRelDvs = p.Results.frequencyRelDvs;
 frequencyRelSlopes = p.Results.frequencyRelSlopes;
 bandWidths = p.Results.bandWidths;
-bandWidthRelDvs = p.Results.bandWidthRelDvs;
-bandWidthRelSlopes = p.Results.bandWidthRelSlopes;
 amplitudeRelDvs = p.Results.amplitudeRelDvs;
 amplitudeRelSlopes = p.Results.amplitudeRelSlopes;
 modFrequencyRelDvs = p.Results.modFrequencyRelDvs;
@@ -130,8 +128,13 @@ for c = 1:numClasses
     erspclass = struct();
     
     % setting base parameters
-    erspclass.frequency = utl_randsample(frequencies, 1);
-    erspclass.bandWidth = utl_randsample(bandWidths, 1);
+    bandWidth = utl_randsample(bandWidths, 1);
+    frequency = utl_randsample(frequencies, 1);
+    if bandWidth == 0
+        erspclass.frequency = frequency;
+    else
+        erspclass.frequency = [frequency - bandWidth/2, frequency + bandWidth/2];
+    end
     erspclass.phase = [];
     erspclass.amplitude = utl_randsample(amplitudes, 1);
     
@@ -139,10 +142,8 @@ for c = 1:numClasses
     erspclass.modulation = 'pac';
     
     % sampling randomly from given possible values
-    erspclass.frequencyDv = utl_randsample(frequencyRelDvs, 1) * erspclass.frequency;
-    erspclass.frequencySlope = utl_randsample(frequencyRelSlopes, 1) * erspclass.frequency;
-    erspclass.bandWidthDv = utl_randsample(bandWidthRelDvs, 1) * erspclass.bandWidth;
-    erspclass.bandWidthSlope = utl_randsample(bandWidthRelSlopes, 1) * erspclass.bandWidth;
+    erspclass.frequencyDv = utl_randsample(frequencyRelDvs, numel(erspclass.frequency)) .* erspclass.frequency;
+    erspclass.frequencySlope = utl_randsample(frequencyRelSlopes, numel(erspclass.frequency)) .* erspclass.frequency;
     erspclass.amplitudeDv = utl_randsample(amplitudeRelDvs, 1) * erspclass.amplitude;
     erspclass.amplitudeSlope = utl_randsample(amplitudeRelSlopes, 1) * erspclass.amplitude;
     erspclass.probability = utl_randsample(probabilities, 1);

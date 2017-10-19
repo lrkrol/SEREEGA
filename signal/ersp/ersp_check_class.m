@@ -10,11 +10,9 @@
 %
 %       The base frequency can be defined by a single frequency in Hz, its
 %       amplitude, and optionally, its phase. Alternatively, a frequency
-%       band can be indicated using the optional bandWidth parameter. With
-%       a frequency of 10 and a bandWidth of 0, a single sine wave will be
-%       the base signal. With a bandWidth of 4, however, the base signal
-%       will contain power between 8 and 12 Hz. In case a frequency band is
-%       indicated, phase will be ignored.
+%       band can be indicated. A frequency of [8, 12] for example will
+%       result in a base signal with spectral power between 8 and 12 Hz. In
+%       case a frequency band is indicated, phase will be ignored.
 %
 %       A burst can additionally be indicated using its latency (the burst
 %       window's centre) in ms, its width in ms, and its taper, where a
@@ -45,21 +43,15 @@
 %       A complete ERSP class definition includes the following fields:
 %
 %         .type:                 class type (must be 'ersp')
-%         .frequency:            base frequency in Hz
-%         .frequencyDv:          base frequency deviation in Hz
-%         .frequencySlope:       base frequency slope in Hz
-%         .bandWidth:            width of the frequency band. if non-zero,
-%                                white noise will be filtered around the
-%                                base frequency with the total band width
-%                                indicated here
-%         .bandWidthDv:          frequency band width deviation
-%         .bandWidthSlope:       frequency band width slope
+%         .frequency:            base frequency, or [low, high] in Hz
+%         .frequencyDv:          frequency or [low, high] deviation in Hz
+%         .frequencySlope:       frequency or [low, high] slope in Hz
 %         .phase:                base frequency phase at the start of the
 %                                epoch, between 0 and 1, or [] for a random
 %                                phase
 %         .phaseDv:              base frequency phase deviation
 %         .phaseSlope:           base frequency phase slope
-%         .amplitude:            amplitude of the base frequency, in uV
+%         .amplitude:            amplitude of the base signal, in uV
 %         .amplitudeDv:          amplitude deviation
 %         .amplitudeSlope:       amplitude slope
 %         .probability:          probability of appearance, between 0 and 1
@@ -154,6 +146,8 @@ if ~isfield(class, 'frequency')
     error('SEREEGA:ersp_check_class:missingField', 'field ''frequency'' is missing from given ERSP class variable');
 elseif ~isfield(class, 'amplitude')
     error('SEREEGA:ersp_check_class:missingField', 'field ''amplitude'' is missing from given ERSP class variable');
+elseif ~isfield(class, 'amplitude')
+    error('SEREEGA:ersp_check_class:missingField', 'field ''modulation'' is missing from given ERSP class variable');
 end
 
 if ismember(class.modulation, {'burst', 'invburst'})
@@ -197,13 +191,6 @@ if ~isfield(class, 'frequencyDv')
     class.frequencyDv = 0; end
 if ~isfield(class, 'frequencySlope')
     class.frequencySlope = 0; end
-
-if ~isfield(class, 'bandWidth')
-    class.bandWidth = 0; end
-if ~isfield(class, 'bandWidthDv')
-    class.bandWidthDv = 0; end
-if ~isfield(class, 'bandWidthSlope')
-    class.bandWidthSlope = 0; end
 
 if ~isfield(class, 'phase')
     class.phase = []; end
@@ -279,8 +266,19 @@ if ~isfield(class, 'modPrestimAmplitude')
     class.modPrestimAmplitude = 0; end
     
 % checking values
-if class.frequency - class.bandWidth/2 - class.bandWidthDv - class.bandWidthSlope < 2
-    error('SEREEGA:ersp_check_class:incorrectFieldValue', 'lower edge of the frequency band must be at least 2 Hz'); end
+if numel(class.frequency) == 1
+    if class.frequency - class.frequencyDv - class.frequencySlope <= 0
+        warning('some frequencies may zero or less due to the indicated deviation; this may lead to unexpected results');
+    end
+elseif numel(class.frequency) == 2
+    if ~(numel(class.frequencyDv) == 2 && numel(class.frequencySlope) == 2)
+        class.frequencyDv = [class.frequencyDv, class.frequencyDv];
+        class.frequencySlope = [class.frequencySlope, class.frequencySlope];
+    end
+    if class.frequency(1) - class.frequencyDv(1) - class.frequencySlope(1) < 2
+        error('SEREEGA:ersp_check_class:incorrectFieldValue', 'lower edge of the frequency band must be at least 2 Hz');
+    end
+end
 
 if class.modWidth - class.modWidthDv - class.modWidthSlope < 1
     warning('some burst widths may become zero or less due to the indicated deviation; this may lead to unexpected results'); end
