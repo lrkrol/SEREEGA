@@ -45,20 +45,23 @@
 
 function h = plot_component(component, epochs, leadfield)
 
-n = numel(component);
+ncomponents = numel(component);
 
-h = figure; 
+if ncomponents > 10, nrows = 10; else, nrows = ncomponents; end
+
+h = figure;
 j = 0;
-for i = 1:n
-    if n > 10, m = 10; else, m = n; end
-    
-    subplot(m,3,(i-j-1)*3+1);
+for i = 1:ncomponents
+    % component projection, 1 column
+    subplot(nrows,3,(i-j-1)*3+1);
     plot_component_projection(component(i), leadfield, 'newfig', 0);
 
-    subplot(m,3,(i-j-1)*3+[2 3]);
+    % component signal, 2 columns
+    subplot(nrows,3,(i-j-1)*3+[2 3]);
     plot_component_signal(component(i), epochs, 'newfig', 0);
     
-    if mod(i, 10) == 0
+    if mod(i, 10) == 0 && i ~= ncomponents
+        % opening new figure
         h(end+1) = figure;
         j = j + 10;
     end
