@@ -25,6 +25,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-10-19 lrk
+%   - Changed the width parameter to mean full width, not half width
 % 2017-06-13 lrk
 %   - Complete revision for inclusion in SAREEGA
 %   - Width now represents three-sigma interval, not one-sigma
@@ -59,7 +61,7 @@ epochLength = floor((epochLength/1000)*srate);
 signal = zeros(1,epochLength);
 for p = 1:length(peakLatency)
     % generating separate peak
-    peak = normpdf(1:epochLength, peakLatency(p), peakWidth(p)/3);
+    peak = normpdf(1:epochLength, peakLatency(p), peakWidth(p)/6);
     
     % if not a flatline, normalising because otherwise sum(peak) == 1
     if any(peak), peak = peakAmplitude(p) * peak / max(peak); end

@@ -9,9 +9,9 @@
 %       the appearance of the signal as a whole.
 %
 %       For a peak at 400 ms latency, a width of 100 and a slope of 100, 
-%       99.7% (six sigma) of the peak will be between 300 and 500 ms on the 
+%       99.7% (six sigma) of the peak will be between 350 and 450 ms on the 
 %       first epoch. On the final epoch, due to the slope, the peak will be 
-%       100 ms later, between 400 and 600 ms. A slope of 0 means nothing
+%       100 ms later, between 450 and 550 ms. A slope of 0 means nothing
 %       will change over time (barring any indicated deviations).
 %
 %       Deviations represent the epoch-to-epoch (trial-to-trial) 
@@ -57,6 +57,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-10-19 lrk
+%   - Changed the width parameter to mean full width, not half width
 % 2017-06-13 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
