@@ -10,8 +10,10 @@ standard_1005.elc
     obtained from FieldTrip 170410.
     http://www.fieldtriptoolbox.org
     FieldTrip is licensed under the GNU GPL 3.
+    used by lf_generate_fromfieldtrip.m
 
 standard_vol.mat
     obtained from EEGLAB v13.6.5b.
     https://sccn.ucsd.edu/eeglab
     EEGLAB is licensed under the GNU GPL 2.
+    used by lf_generate_fromfieldtrip.m
