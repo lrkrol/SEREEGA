@@ -79,7 +79,7 @@ if ~baseonly && rand() > class.probability + class.probabilitySlope * epochNumbe
     signal = zeros(1, samples);
 else
     
-    if strncmp(class.color(end-4:end), '-unif', 5)
+    if strncmp(class.color(end-3:end), 'unif', 4)
         % uniform colored noise
         switch class.color(1:end-5)
             case 'white'
