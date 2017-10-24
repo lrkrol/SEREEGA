@@ -70,6 +70,4 @@ for p = 1:length(peakLatency)
     signal = signal + peak;    
 end
 
-if any(isnan(signal)), keyboard, end
-
 end
