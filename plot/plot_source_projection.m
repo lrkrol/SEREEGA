@@ -81,19 +81,19 @@ if ~orientedonly
     subplot(2,2,1); title('projection x'); 
     pos = get(gca, 'Position');
     set(gca, 'Position', [0, pos(2)-.05, .5, pos(4)+.05]);
-    projection = lf_get_projection(sourceIdx, leadfield, 'orientation', [1 0 0]);
+    projection = lf_get_projection(sourceIdx, leadfield, 'orientation', repmat([1 0 0], numel(sourceIdx), 1));
     topoplot(projection, lf.chanlocs, 'colormap', cmap);
     
     subplot(2,2,2); title('projection y');
     pos = get(gca, 'Position');
     set(gca, 'Position', [.5, pos(2)-.05, .5, pos(4)+.05]);
-    projection = lf_get_projection(sourceIdx, leadfield, 'orientation', [0 1 0]);
+    projection = lf_get_projection(sourceIdx, leadfield, 'orientation', repmat([0 1 0], numel(sourceIdx), 1));
     topoplot(projection, lf.chanlocs, 'colormap', cmap);
     
     subplot(2,2,3); title('projection z');
     pos = get(gca, 'Position');
     set(gca, 'Position', [0, pos(2)-.05, .5, pos(4)+.05]);
-    projection = lf_get_projection(sourceIdx, leadfield, 'orientation', [0 0 1]);
+    projection = lf_get_projection(sourceIdx, leadfield, 'orientation', repmat([0 0 1], numel(sourceIdx), 1));
     topoplot(projection, lf.chanlocs, 'colormap', cmap);
     
     subplot(2,2,4);

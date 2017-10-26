@@ -29,6 +29,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-10-26 lrk
+%   - Fixed issue where the wrong orientation was passed in recursive mode
 % 2017-10-19 lrk
 %   - Fixed issue where only the oriented projection was returned when
 %     multiple sources were given
@@ -79,7 +81,7 @@ end
 if numel(sourceIdx) > 1
     % iteratively calling this script, returning mean projection
     for s = 1:numel(sourceIdx)
-        projection(s,:) = lf_get_projection(sourceIdx(s), leadfield, 'orientation', orientation, 'normaliseLeadfield', normaliseLeadfield, 'normaliseOrientation', normaliseOrientation);
+        projection(s,:) = lf_get_projection(sourceIdx(s), leadfield, 'orientation', orientation(s,:), 'normaliseLeadfield', normaliseLeadfield, 'normaliseOrientation', normaliseOrientation);
     end
     projection = mean(projection, 1);
 else
