@@ -112,10 +112,13 @@ else
                 case 'purple'
                     cn = dsp.ColoredNoise(-2, samples);
             end
+            signal = step(cn)';
         end
-        signal = step(cn)';
     end
     
+    % centering around 0
+    signal = signal - mean(signal);
+        
     % normalising to have the maximum (or minimum) value be (-)amplitude
     if ~baseonly
         amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
