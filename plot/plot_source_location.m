@@ -19,6 +19,8 @@
 %              [ 0, 90] = axial
 %              [90,  0] = sagittal
 %              [ 0,  0] = coronal (default: [90, 0]
+%       projlines - (0|1) whether or not to plot lines connecting to the 2D
+%                   projection. default: 0
 %
 % Out:  
 %       h - handle of the generated figure
@@ -59,6 +61,7 @@ addRequired(p, 'leadfield', @isstruct);
 addParameter(p, 'newfig', 1, @isnumeric);
 addParameter(p, 'color', {}, @iscell);
 addParameter(p, 'view', [90, 0], @isnumeric);
+addParameter(p, 'projlines', 0, @isnumeric);
 
 parse(p, sourceIdx, leadfield, varargin{:})
 
@@ -67,6 +70,8 @@ sourceIdx = p.Results.sourceIdx;
 newfig = p.Results.newfig;
 color = p.Results.color;
 view = p.Results.view;
+if p.Results.projlines == 1, projlines = 'on';
+else projlines = 'off'; end
 
 if isempty(color)
     % setting default, somewhat varying "brainy" colours
@@ -84,6 +89,6 @@ end
 
 % calling dipplot
 if newfig, h = figure; else h = NaN; end
-dipplot(locs, 'coordformat', 'MNI', 'color', color, 'gui', 'off', 'dipolesize', 20, 'view', view);
+dipplot(locs, 'coordformat', 'MNI', 'color', color, 'gui', 'off', 'dipolesize', 20, 'view', view, 'projlines', projlines);
 
 end
