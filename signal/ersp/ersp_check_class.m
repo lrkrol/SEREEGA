@@ -66,7 +66,7 @@
 %         .modLatency:            latency in ms of the burst centre
 %         .modLatencyDv:          latency deviation
 %         .modLatencySlope:       latency slope
-%         .modWidth:              width of the width in ms (one-sided)
+%         .modWidth:              width of the width in ms
 %         .modWidthDv:            width deviation
 %         .modWidthSlope:         width slope
 %         .modTaper:              taper of the tukey window between 0 and 1

@@ -19,7 +19,7 @@
 %       modulation - type of modulation to apply; 'none', 'burst',
 %                    'invburst' or 'mod'
 %       modLatency - latency in ms of the burst centre
-%       modWidth - width of the burst in ms (one-sided)
+%       modWidth - width of the burst in ms
 %       modTaper - taper of the burst tukey window, between 0 and 1
 %       modFrequency - frequency of the pac modulating signal, in Hz
 %       modPhase - phase of the pac modulation frequency
@@ -41,6 +41,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-11-08 lrk
+%   - Changed width parameter to mean full width, not half width
 % 2017-10-19 lrk
 %   - Added broadband base activation
 % 2017-06-20 lrk
@@ -144,7 +146,7 @@ signal = amplitude .* (-1 + 2 .* (signal - min(signal)) ./ (max(signal) - min(si
 
 if ismember(modulation, {'burst', 'invburst'})
     latency = floor((modLatency/1000)*srate);
-    width = floor((modWidth/1000)*srate) * 2;
+    width = floor((modWidth/1000)*srate);
     taper = modTaper;
     
     % generating tukey window for burst
@@ -196,7 +198,7 @@ elseif strcmp(modulation, 'pac')
     % applying prestimulus attenuation
     if modPrestimPeriod
         latency = 0;
-        width = (modPrestimPeriod * 1/(1-modPrestimTaper))/1000 * srate * 2;
+        width = (modPrestimPeriod * 1/(1-modPrestimTaper))/1000 * srate;
         taper = modPrestimTaper;
 
         if width < 1; width = 0; end
