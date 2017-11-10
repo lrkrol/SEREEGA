@@ -123,8 +123,8 @@ elseif numel(frequency) == 2
         frequency = mean(frequency);
         signal = sin(phase*2*pi + 2*pi*frequency*t);
     else
-        % base white noise with two-second padding
-        signal = rand(1, samples + 2*srate) - .5;
+        % base white noise with padding, total thrice the epoch's length
+        signal = rand(1, 3*samples) - .5;
         
         % filtering
         D = designfilt('bandpassiir', ...
@@ -137,7 +137,7 @@ elseif numel(frequency) == 2
         signal = filtfilt(D, signal);
         
         % removing padding
-        signal = signal(srate+1:end-srate);
+        signal = signal(samples+1:end-samples);
     end
 end
 
