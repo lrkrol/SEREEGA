@@ -30,7 +30,8 @@
 %                    Berlin Institute of Technology
 
 % 2017-11-22 lrk
-%   - Renamed parameter modMinAmplitude to modMinRelAmplitude for clarity
+%   - Renamed parameters modMinAmplitude and modPrestimAmplitude to 
+%     modMinRelAmplitude and modPrestimRelAmplitude for clarity
 % 2017-10-19 lrk
 %   - Added broadband base activation
 % 2017-07-13 lrk
@@ -84,7 +85,7 @@ if baseonly
     elseif strcmp(class.modulation, 'pac')
         signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length, ...
                 'modulation', class.modulation, 'modFrequency', class.modFrequency, 'modPhase', class.modPhase, 'modMinRelAmplitude', class.modMinRelAmplitude, ...
-                'modPrestimPeriod', class.modPrestimPeriod, 'modPrestimTaper', class.modPrestimTaper, 'modPrestimAmplitude', class.modPrestimAmplitude);
+                'modPrestimPeriod', class.modPrestimPeriod, 'modPrestimTaper', class.modPrestimTaper, 'modPrestimRelAmplitude', class.modPrestimRelAmplitude);
     end
 else
     % checking probability
@@ -135,7 +136,7 @@ else
             % generating signal
             signal = ersp_generate_signal(frequency, amplitude, phase, epochs.srate, epochs.length, ...
                     'modulation', class.modulation, 'modFrequency', modFrequency, 'modPhase', modPhase, 'modMinRelAmplitude', minAmplitude, ...
-                    'modPrestimPeriod', class.modPrestimPeriod, 'modPrestimTaper', class.modPrestimTaper, 'modPrestimAmplitude', class.modPrestimAmplitude);
+                    'modPrestimPeriod', class.modPrestimPeriod, 'modPrestimTaper', class.modPrestimTaper, 'modPrestimRelAmplitude', class.modPrestimRelAmplitude);
         end
 
     end

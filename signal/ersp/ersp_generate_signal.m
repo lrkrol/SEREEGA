@@ -28,7 +28,7 @@
 %       modPrestimPeriod - prestimuls period length in ms
 %       modPrestimTaper - tapering of the tukey window used to apply a
 %                         prestimulus signal attenuation; 0 <= taper < 1
-%       modPrestimAmplitude - amplitude of the prestimulus signal as a
+%       modPrestimRelAmplitude - amplitude of the prestimulus signal as a
 %                             percentage of the base amplitude
 %
 % Out:  
@@ -45,7 +45,8 @@
 %   - Changed normalisation such that the signal is no longer fixed between
 %     -ampliude and +amplitude, but that the max absolute signal is
 %     +amplitude
-%   - Renamed parameter modMinAmplitude to modMinRelAmplitude for clarity
+%   - Renamed parameters modMinAmplitude and modPrestimAmplitude to 
+%     modMinRelAmplitude and modPrestimRelAmplitude for clarity
 % 2017-11-08 lrk
 %   - Changed width parameter to mean full width, not half width
 % 2017-10-19 lrk
@@ -90,7 +91,7 @@ addParameter(p, 'modPhase', 0, @isnumeric);
 addParameter(p, 'modMinRelAmplitude', 0, @isnumeric);
 addParameter(p, 'modPrestimPeriod', 0, @isnumeric);
 addParameter(p, 'modPrestimTaper', 0, @isnumeric);
-addParameter(p, 'modPrestimAmplitude', 0, @isnumeric);
+addParameter(p, 'modPrestimRelAmplitude', 0, @isnumeric);
 
 parse(p, frequency, amplitude, phase, srate, epochLength, varargin{:})
 
@@ -108,7 +109,7 @@ modPhase = p.Results.modPhase;
 modMinRelAmplitude = p.Results.modMinRelAmplitude;
 modPrestimPeriod = p.Results.modPrestimPeriod;
 modPrestimTaper = p.Results.modPrestimTaper;
-modPrestimAmplitude = p.Results.modPrestimAmplitude;
+modPrestimRelAmplitude = p.Results.modPrestimRelAmplitude;
 
 samples = floor(srate * epochLength/1000);
 
@@ -224,8 +225,8 @@ elseif strcmp(modulation, 'pac')
 
         win = 1 - win;
 
-        % normalising between modPrestimAmplitude and 1
-        win = modPrestimAmplitude + (1-modPrestimAmplitude) .* (win - min(win)) ./ (max(win) - min(win));
+        % normalising between modPrestimRelAmplitude and 1
+        win = modPrestimRelAmplitude + (1-modPrestimRelAmplitude) .* (win - min(win)) ./ (max(win) - min(win));
         
         signal = signal .* win;
     end

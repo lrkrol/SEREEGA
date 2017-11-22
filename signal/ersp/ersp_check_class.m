@@ -96,9 +96,9 @@
 %         .modPrestimTaper:       taper of the window to use to apply a
 %                                 prestimulus attenuation; 0 >= taper < 1;
 %                                 default: 0
-%         .modPrestimAmplitude:   amplitude during prestimulus period, as a
-%                                 percentage of the base amplitude;
-%                                 default: 0
+%         .modPrestimRelAmplitude:   amplitude during prestimulus period, 
+%                                    relative to the base amplitude;
+%                                    default: 0
 %
 % In:
 %       class - the class variable as a struct with at least the required
@@ -118,7 +118,8 @@
 %                    Berlin Institute of Technology
 
 % 2017-11-22 lrk
-%   - Renamed parameter modMinAmplitude to modMinRelAmplitude for clarity
+%   - Renamed parameters modMinAmplitude and modPrestimAmplitude to 
+%     modMinRelAmplitude and modPrestimRelAmplitude for clarity
 % 2017-10-19 lrk
 %   - Added broadband base activation
 % 2016-06-20 lrk
@@ -264,8 +265,8 @@ if ~isfield(class, 'modPrestimPeriod')
     class.modPrestimPeriod = 0; end
 if ~isfield(class, 'modPrestimTaper')
     class.modPrestimTaper = 0; end
-if ~isfield(class, 'modPrestimAmplitude')
-    class.modPrestimAmplitude = 0; end
+if ~isfield(class, 'modPrestimRelAmplitude')
+    class.modPrestimRelAmplitude = 0; end
     
 % checking values
 if numel(class.frequency) == 1

@@ -25,7 +25,7 @@
 %       modPrestimPeriod - length in ms of the prestimulus period;
 %                          default: 0
 %       modPrestimTaper - taper for the prestimPeriod window; default: 0
-%       modPrestimAmplitude - prestimPeriod amplitude; default: 0
+%       modPrestimRelAmplitude - prestimPeriod amplitude; default: 0
 %       probabilities - row array of possible signal probabilities.
 %                       default: 1
 %       frequencyRelDvs, frequencyRelSlopes, amplitudeRelDvs, 
@@ -54,7 +54,8 @@
 %                    Berlin Institute of Technology
 
 % 2017-11-22 lrk
-%   - Renamed parameter modMinAmplitude to modMinRelAmplitude for clarity
+%   - Renamed parameters modMinAmplitude and modPrestimAmplitude to 
+%     modMinRelAmplitude and modPrestimRelAmplitude for clarity
 % 2017-10-19 lrk
 %   - Added broadband base activation
 % 2017-08-10 lrk
@@ -98,7 +99,7 @@ addParameter(p, 'modMinRelAmplitudeRelDvs', 0, @isnumeric);
 addParameter(p, 'modMinRelAmplitudeRelSlopes', 0, @isnumeric);
 addParameter(p, 'modPrestimPeriod', 0, @isnumeric);
 addParameter(p, 'modPrestimTaper', 0, @isnumeric);
-addParameter(p, 'modPrestimAmplitude', 0, @isnumeric);
+addParameter(p, 'modPrestimRelAmplitude', 0, @isnumeric);
 addParameter(p, 'probabilities', 1, @isnumeric);
 addParameter(p, 'probabilityRelSlopes', 0, @isnumeric);
 addParameter(p, 'numClasses', 1, @isnumeric);
@@ -120,7 +121,7 @@ modMinRelAmplitudeRelDvs = p.Results.modMinRelAmplitudeRelDvs;
 modMinRelAmplitudeRelSlopes = p.Results.modMinRelAmplitudeRelSlopes;
 modPrestimPeriod = p.Results.modPrestimPeriod;
 modPrestimTaper = p.Results.modPrestimTaper;
-modPrestimAmplitude = p.Results.modPrestimAmplitude;
+modPrestimRelAmplitude = p.Results.modPrestimRelAmplitude;
 probabilities = p.Results.probabilities;
 probabilityRelSlopes = p.Results.probabilityRelSlopes;
 numClasses = p.Results.numClasses;
@@ -158,7 +159,7 @@ for c = 1:numClasses
     erspclass.modMinRelAmplitudeSlope = utl_randsample(modMinRelAmplitudeRelSlopes, 1) * erspclass.modMinRelAmplitude;
     erspclass.modPrestimPeriod = modPrestimPeriod;
     erspclass.modPrestimTaper = modPrestimTaper;
-    erspclass.modPrestimAmplitude = modPrestimAmplitude;
+    erspclass.modPrestimRelAmplitude = modPrestimRelAmplitude;
     
     % validating ERSP class
     ersp(c) = utl_check_class(erspclass, 'type', 'ersp');
