@@ -14,8 +14,8 @@
 %       frequencies - row array of possible frequencies
 %       amplitudes - row array of possible amplitudes
 %       modFrequencies - row array of possible modulating frequencies
-%       modMinAmplitudes - row array of possible minum amplitudes as a
-%                          percentage of the base amplitude
+%       modMinRelAmplitudes - row array of possible minum amplitudes as a
+%                             percentage of the base amplitude
 %
 % Optional (key-value pairs):
 %       bandWidths - row array of possible frequency band widths. if a non-
@@ -30,7 +30,7 @@
 %                       default: 1
 %       frequencyRelDvs, frequencyRelSlopes, amplitudeRelDvs, 
 %       amplitudeRelSlopes, modFrequencyRelDvs, modFrequencyRelSlopes, 
-%       modMinAmplitudeRelDvs, modMinAmplitudeRelSlopes, 
+%       modMinRelAmplitudeRelDvs, modMinRelAmplitudeRelSlopes, 
 %       probabilityRelSlopes
 %           - possible relative deviations and RelSlopes for the base and 
 %             modulation values, and the signal probability. these are 
@@ -53,6 +53,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-11-22 lrk
+%   - Renamed parameter modMinAmplitude to modMinRelAmplitude for clarity
 % 2017-10-19 lrk
 %   - Added broadband base activation
 % 2017-08-10 lrk
@@ -74,7 +76,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function ersp = ersp_get_randomclass_pac(frequencies, amplitudes, modFrequencies, modMinAmplitudes, varargin)
+function ersp = ersp_get_randomclass_pac(frequencies, amplitudes, modFrequencies, modMinRelAmplitudes, varargin)
 
 % parsing input
 p = inputParser;
@@ -82,7 +84,7 @@ p = inputParser;
 addRequired(p, 'frequencies', @isnumeric);
 addRequired(p, 'amplitudes', @isnumeric);
 addRequired(p, 'modFrequencies', @isnumeric);
-addRequired(p, 'modMinAmplitudes', @isnumeric);
+addRequired(p, 'modMinRelAmplitudes', @isnumeric);
 
 addParameter(p, 'bursts', [1], @isnumeric);
 addParameter(p, 'frequencyRelDvs', 0, @isnumeric);
@@ -92,8 +94,8 @@ addParameter(p, 'amplitudeRelDvs', 0, @isnumeric);
 addParameter(p, 'amplitudeRelSlopes', 0, @isnumeric);
 addParameter(p, 'modFrequencyRelDvs', 0, @isnumeric);
 addParameter(p, 'modFrequencyRelSlopes', 0, @isnumeric);
-addParameter(p, 'modMinAmplitudeRelDvs', 0, @isnumeric);
-addParameter(p, 'modMinAmplitudeRelSlopes', 0, @isnumeric);
+addParameter(p, 'modMinRelAmplitudeRelDvs', 0, @isnumeric);
+addParameter(p, 'modMinRelAmplitudeRelSlopes', 0, @isnumeric);
 addParameter(p, 'modPrestimPeriod', 0, @isnumeric);
 addParameter(p, 'modPrestimTaper', 0, @isnumeric);
 addParameter(p, 'modPrestimAmplitude', 0, @isnumeric);
@@ -101,12 +103,12 @@ addParameter(p, 'probabilities', 1, @isnumeric);
 addParameter(p, 'probabilityRelSlopes', 0, @isnumeric);
 addParameter(p, 'numClasses', 1, @isnumeric);
 
-parse(p, frequencies, amplitudes, modFrequencies, modMinAmplitudes, varargin{:})
+parse(p, frequencies, amplitudes, modFrequencies, modMinRelAmplitudes, varargin{:})
 
 frequencies = p.Results.frequencies;
 amplitudes = p.Results.amplitudes;
 modFrequencies = p.Results.modFrequencies;
-modMinAmplitudes = p.Results.modMinAmplitudes;
+modMinRelAmplitudes = p.Results.modMinRelAmplitudes;
 frequencyRelDvs = p.Results.frequencyRelDvs;
 frequencyRelSlopes = p.Results.frequencyRelSlopes;
 bandWidths = p.Results.bandWidths;
@@ -114,8 +116,8 @@ amplitudeRelDvs = p.Results.amplitudeRelDvs;
 amplitudeRelSlopes = p.Results.amplitudeRelSlopes;
 modFrequencyRelDvs = p.Results.modFrequencyRelDvs;
 modFrequencyRelSlopes = p.Results.modFrequencyRelSlopes;
-modMinAmplitudeRelDvs = p.Results.modMinAmplitudeRelDvs;
-modMinAmplitudeRelSlopes = p.Results.modMinAmplitudeRelSlopes;
+modMinRelAmplitudeRelDvs = p.Results.modMinRelAmplitudeRelDvs;
+modMinRelAmplitudeRelSlopes = p.Results.modMinRelAmplitudeRelSlopes;
 modPrestimPeriod = p.Results.modPrestimPeriod;
 modPrestimTaper = p.Results.modPrestimTaper;
 modPrestimAmplitude = p.Results.modPrestimAmplitude;
@@ -151,9 +153,9 @@ for c = 1:numClasses
     erspclass.modFrequency = utl_randsample(modFrequencies, 1);
     erspclass.modFrequencyDv = utl_randsample(modFrequencyRelDvs, 1) * erspclass.modFrequency;
     erspclass.modFrequencySlope = utl_randsample(modFrequencyRelSlopes, 1) * erspclass.modFrequency;
-    erspclass.modMinAmplitude = utl_randsample(modMinAmplitudes, 1);
-    erspclass.modMinAmplitudeDv = utl_randsample(modMinAmplitudeRelDvs, 1) * erspclass.modMinAmplitude;
-    erspclass.modMinAmplitudeSlope = utl_randsample(modMinAmplitudeRelSlopes, 1) * erspclass.modMinAmplitude;
+    erspclass.modMinRelAmplitude = utl_randsample(modMinRelAmplitudes, 1);
+    erspclass.modMinRelAmplitudeDv = utl_randsample(modMinRelAmplitudeRelDvs, 1) * erspclass.modMinRelAmplitude;
+    erspclass.modMinRelAmplitudeSlope = utl_randsample(modMinRelAmplitudeRelSlopes, 1) * erspclass.modMinRelAmplitude;
     erspclass.modPrestimPeriod = modPrestimPeriod;
     erspclass.modPrestimTaper = modPrestimTaper;
     erspclass.modPrestimAmplitude = modPrestimAmplitude;

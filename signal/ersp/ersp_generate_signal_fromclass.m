@@ -29,10 +29,12 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-11-22 lrk
+%   - Renamed parameter modMinAmplitude to modMinRelAmplitude for clarity
 % 2017-10-19 lrk
 %   - Added broadband base activation
 % 2017-07-13 lrk
-%   - Fixed bug where modMinAmplitude was ignored for burst/invburst
+%   - Fixed bug where modMinRelAmplitude was ignored for burst/invburst
 %     baseonly signal
 % 2017-06-20 lrk
 %   - Changed variable names for consistency
@@ -78,10 +80,10 @@ if baseonly
         signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length);
     elseif ismember(class.modulation, {'burst', 'invburst'})
         signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length, ...
-                'modulation', class.modulation, 'modLatency', class.modLatency, 'modWidth', class.modWidth, 'modTaper', class.modTaper, 'modMinAmplitude', class.modMinAmplitude);
+                'modulation', class.modulation, 'modLatency', class.modLatency, 'modWidth', class.modWidth, 'modTaper', class.modTaper, 'modMinRelAmplitude', class.modMinRelAmplitude);
     elseif strcmp(class.modulation, 'pac')
         signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length, ...
-                'modulation', class.modulation, 'modFrequency', class.modFrequency, 'modPhase', class.modPhase, 'modMinAmplitude', class.modMinAmplitude, ...
+                'modulation', class.modulation, 'modFrequency', class.modFrequency, 'modPhase', class.modPhase, 'modMinRelAmplitude', class.modMinRelAmplitude, ...
                 'modPrestimPeriod', class.modPrestimPeriod, 'modPrestimTaper', class.modPrestimTaper, 'modPrestimAmplitude', class.modPrestimAmplitude);
     end
 else
@@ -115,15 +117,15 @@ else
             latency = utl_apply_dvslope(class.modLatency, class.modLatencyDv, class.modLatencySlope, epochNumber, epochs.n);
             width = utl_apply_dvslope(class.modWidth, class.modWidthDv, class.modWidthSlope, epochNumber, epochs.n);
             taper = utl_apply_dvslope(class.modTaper, class.modTaperDv, class.modTaperSlope, epochNumber, epochs.n);
-            minAmplitude = utl_apply_dvslope(class.modMinAmplitude, class.modMinAmplitudeDv, class.modMinAmplitudeSlope, epochNumber, epochs.n);
+            minAmplitude = utl_apply_dvslope(class.modMinRelAmplitude, class.modMinRelAmplitudeDv, class.modMinRelAmplitudeSlope, epochNumber, epochs.n);
 
             % generating signal
             signal = ersp_generate_signal(frequency, amplitude, phase, epochs.srate, epochs.length, ...
-                    'modulation', class.modulation, 'modLatency', latency, 'modWidth', width, 'modTaper', taper, 'modMinAmplitude', minAmplitude);
+                    'modulation', class.modulation, 'modLatency', latency, 'modWidth', width, 'modTaper', taper, 'modMinRelAmplitude', minAmplitude);
         elseif strcmp(class.modulation, {'pac'})
             % obtaining specific pac values
             modFrequency = utl_apply_dvslope(class.modFrequency, class.modFrequencyDv, class.modFrequencySlope, epochNumber, epochs.n);
-            minAmplitude = utl_apply_dvslope(class.modMinAmplitude, class.modMinAmplitudeDv, class.modMinAmplitudeSlope, epochNumber, epochs.n);
+            minAmplitude = utl_apply_dvslope(class.modMinRelAmplitude, class.modMinRelAmplitudeDv, class.modMinRelAmplitudeSlope, epochNumber, epochs.n);
             if ~isempty(class.modPhase)
                 modPhase = utl_apply_dvslope(class.modPhase, class.modPhaseDv, class.modPhaseSlope, epochNumber, epochs.n);
             else
@@ -132,7 +134,7 @@ else
 
             % generating signal
             signal = ersp_generate_signal(frequency, amplitude, phase, epochs.srate, epochs.length, ...
-                    'modulation', class.modulation, 'modFrequency', modFrequency, 'modPhase', modPhase, 'modMinAmplitude', minAmplitude, ...
+                    'modulation', class.modulation, 'modFrequency', modFrequency, 'modPhase', modPhase, 'modMinRelAmplitude', minAmplitude, ...
                     'modPrestimPeriod', class.modPrestimPeriod, 'modPrestimTaper', class.modPrestimTaper, 'modPrestimAmplitude', class.modPrestimAmplitude);
         end
 

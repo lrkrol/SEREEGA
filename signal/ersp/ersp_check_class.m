@@ -72,10 +72,10 @@
 %         .modTaper:              taper of the tukey window between 0 and 1
 %         .modTaperDv:            taper deviation
 %         .modTaperSlope:         taper slope
-%         .modMinAmplitude:       minimum amplitude of the base signal as a
-%                                 percentage of the base amplitude
-%         .modMinAmplitudeDv:     minimum amplitude deviation
-%         .modMinAmplitudeSlope:  minimum amplitude slope
+%         .modMinRelAmplitude:       minimum amplitude of the base signal 
+%                                    relative to the base amplitude
+%         .modMinRelAmplitudeDv:     minimum amplitude deviation
+%         .modMinRelAmplitudeSlope:  minimum amplitude slope
 %
 %       In case modulation is set to 'pac', the following additional fields 
 %       are included:
@@ -86,10 +86,10 @@
 %         .modPhase:              phase of the modulation frequency
 %         .modPhaseDv:            modulating frequency phase deviation
 %         .modPhaseSlope:         modulating frequency phase slope
-%         .modMinAmplitude:       minimum amplitude of the base signal as a
-%                                 percentage of the base amplitude
-%         .modMinAmplitudeDv:     minimum amplitude deviation
-%         .modMinAmplitudeSlope:  minimum amplitude slope
+%         .modMinRelAmplitude:       minimum amplitude of the base signal 
+%                                    relative to the base amplitude
+%         .modMinRelAmplitudeDv:     minimum amplitude deviation
+%         .modMinRelAmplitudeSlope:  minimum amplitude slope
 %         .modPrestimPeriod:      length in ms of the prestimulus period
 %                                 during which to attenuate the signal;
 %                                 default 0 disables
@@ -110,13 +110,15 @@
 % Usage example:
 %       >> ersp.frequency = 20; ersp.amplitude = 1;
 %       >> ersp.modulation = 'pac'; ersp.modFrequency = 1;
-%       >> ersp.modPhase = -.25; ersp.modMinAmplitude = .1;
+%       >> ersp.modPhase = -.25; ersp.modMinRelAmplitude = .1;
 %       >> ersp = ersp_check_class(ersp)
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-11-22 lrk
+%   - Renamed parameter modMinAmplitude to modMinRelAmplitude for clarity
 % 2017-10-19 lrk
 %   - Added broadband base activation
 % 2016-06-20 lrk
@@ -231,12 +233,12 @@ if ~isfield(class, 'modTaperDv')
 if ~isfield(class, 'modTaperSlope')
     class.modTaperSlope = 0; end
 
-if ~isfield(class, 'modMinAmplitude')
-    class.modMinAmplitude = 0; end
-if ~isfield(class, 'modMinAmplitudeDv')
-    class.modMinAmplitudeDv = 0; end
-if ~isfield(class, 'modMinAmplitudeSlope')
-    class.modMinAmplitudeSlope = 0; end
+if ~isfield(class, 'modMinRelAmplitude')
+    class.modMinRelAmplitude = 0; end
+if ~isfield(class, 'modMinRelAmplitudeDv')
+    class.modMinRelAmplitudeDv = 0; end
+if ~isfield(class, 'modMinRelAmplitudeSlope')
+    class.modMinRelAmplitudeSlope = 0; end
     
 % PAC modulation variables
 if ~isfield(class, 'modFrequencyDv')
@@ -251,12 +253,12 @@ if ~isfield(class, 'modPhaseDv')
 if ~isfield(class, 'modPhaseSlope')
     class.modPhaseSlope = 0; end
 
-if ~isfield(class, 'modMinAmplitude')
-    class.modMinAmplitude = 0; end
-if ~isfield(class, 'modMinAmplitudeDv')
-    class.modMinAmplitudeDv = 0; end
-if ~isfield(class, 'modMinAmplitudeSlope')
-    class.modMinAmplitudeSlope = 0; end
+if ~isfield(class, 'modMinRelAmplitude')
+    class.modMinRelAmplitude = 0; end
+if ~isfield(class, 'modMinRelAmplitudeDv')
+    class.modMinRelAmplitudeDv = 0; end
+if ~isfield(class, 'modMinRelAmplitudeSlope')
+    class.modMinRelAmplitudeSlope = 0; end
 
 if ~isfield(class, 'modPrestimPeriod')
     class.modPrestimPeriod = 0; end

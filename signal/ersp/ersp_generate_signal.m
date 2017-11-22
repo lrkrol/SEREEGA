@@ -23,8 +23,8 @@
 %       modTaper - taper of the burst tukey window, between 0 and 1
 %       modFrequency - frequency of the pac modulating signal, in Hz
 %       modPhase - phase of the pac modulation frequency
-%       modMinAmplitude - minimum amplitude of the base signal as a
-%                         percentage of the base amplitude
+%       modMinRelAmplitude - minimum amplitude of the base signal relative
+%                            to the base amplitude
 %       modPrestimPeriod - prestimuls period length in ms
 %       modPrestimTaper - tapering of the tukey window used to apply a
 %                         prestimulus signal attenuation; 0 <= taper < 1
@@ -41,6 +41,11 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-11-22 lrk
+%   - Changed normalisation such that the signal is no longer fixed between
+%     -ampliude and +amplitude, but that the max absolute signal is
+%     +amplitude
+%   - Renamed parameter modMinAmplitude to modMinRelAmplitude for clarity
 % 2017-11-08 lrk
 %   - Changed width parameter to mean full width, not half width
 % 2017-10-19 lrk
@@ -82,7 +87,7 @@ addParameter(p, 'modWidth', 0, @isnumeric);
 addParameter(p, 'modTaper', 0, @isnumeric);
 addParameter(p, 'modFrequency', 0, @isnumeric);
 addParameter(p, 'modPhase', 0, @isnumeric);
-addParameter(p, 'modMinAmplitude', 0, @isnumeric);
+addParameter(p, 'modMinRelAmplitude', 0, @isnumeric);
 addParameter(p, 'modPrestimPeriod', 0, @isnumeric);
 addParameter(p, 'modPrestimTaper', 0, @isnumeric);
 addParameter(p, 'modPrestimAmplitude', 0, @isnumeric);
@@ -100,7 +105,7 @@ modWidth = p.Results.modWidth;
 modTaper = p.Results.modTaper;
 modFrequency = p.Results.modFrequency;
 modPhase = p.Results.modPhase;
-modMinAmplitude = p.Results.modMinAmplitude;
+modMinRelAmplitude = p.Results.modMinRelAmplitude;
 modPrestimPeriod = p.Results.modPrestimPeriod;
 modPrestimTaper = p.Results.modPrestimTaper;
 modPrestimAmplitude = p.Results.modPrestimAmplitude;
@@ -141,8 +146,9 @@ elseif numel(frequency) == 2
     end
 end
 
-% normalising
-signal = amplitude .* (-1 + 2 .* (signal - min(signal)) ./ (max(signal) - min(signal)));
+% normalising such that max absolute amplitude = amplitude
+[~, i] = max(abs(signal(:)));
+signal = signal .* (sign(signal(i)) / signal(i)) .* amplitude;
 
 if ismember(modulation, {'burst', 'invburst'})
     latency = floor((modLatency/1000)*srate);
@@ -172,11 +178,11 @@ if ismember(modulation, {'burst', 'invburst'})
         win = 1 - win; end
     
     if max(win) - min(win) ~= 0
-        % normalising between modMinAmplitude and 1
-        win = modMinAmplitude + (1-modMinAmplitude) .* (win - min(win)) ./ (max(win) - min(win));
+        % normalising between modMinRelAmplitude and 1
+        win = modMinRelAmplitude + (1-modMinRelAmplitude) .* (win - min(win)) ./ (max(win) - min(win));
     else
-        % window is flat; if all-zero, it should be modMinAmplitude instead
-        if ~win, win = repmat(modMinAmplitude, size(win)); end
+        % window is flat; if all-zero, it should be modMinRelAmplitude instead
+        if ~win, win = repmat(modMinRelAmplitude, size(win)); end
     end
 
     % applying modulation
@@ -189,8 +195,8 @@ elseif strcmp(modulation, 'pac')
     t = (0:samples-1)/srate;
     ms = sin(modPhase*2*pi + 2*pi*modFrequency*t);
     
-    % normalising between modMinAmplitude and 1
-    ms = modMinAmplitude + (1-modMinAmplitude) .* (ms - min(ms)) ./ (max(ms) - min(ms));
+    % normalising between modMinRelAmplitude and 1
+    ms = modMinRelAmplitude + (1-modMinRelAmplitude) .* (ms - min(ms)) ./ (max(ms) - min(ms));
     
     % applying the modulation
     signal = signal .* ms;
