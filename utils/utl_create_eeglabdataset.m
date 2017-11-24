@@ -1,4 +1,4 @@
-% EEG = utl_create_eeglabdataset(data, srate, varargin)
+% EEG = utl_create_eeglabdataset(data, epochs, leadfield, varargin)
 %
 % In:
 %       data - channels x samples x epochs matrix of data points
