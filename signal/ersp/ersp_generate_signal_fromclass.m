@@ -22,13 +22,16 @@
 % Usage example:
 %       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
 %       >> ersp.frequency = 20; ersp.amplitude = 1; ersp.phase = 0;
-%       >> ersp.modulation='pac'; ersp.modFrequency=2; ersp.modPhase= -.25;
+%       >> ersp.modulation='ampmod'; ersp.modFrequency=2;
+%       >> ersp.modPhase= -.25;
 %       >> signal = ersp_generate_signal_fromclass(ersp, epochs, 1);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-11-24 lrk
+%   - Renamed 'pac' to 'ampmod' and replaced references accordingly
 % 2017-11-22 lrk
 %   - Renamed parameters modMinAmplitude and modPrestimAmplitude to 
 %     modMinRelAmplitude and modPrestimRelAmplitude for clarity
@@ -82,7 +85,7 @@ if baseonly
     elseif ismember(class.modulation, {'burst', 'invburst'})
         signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length, ...
                 'modulation', class.modulation, 'modLatency', class.modLatency, 'modWidth', class.modWidth, 'modTaper', class.modTaper, 'modMinRelAmplitude', class.modMinRelAmplitude);
-    elseif strcmp(class.modulation, 'pac')
+    elseif strcmp(class.modulation, 'ampmod')
         signal = ersp_generate_signal(class.frequency, class.amplitude, class.phase, epochs.srate, epochs.length, ...
                 'modulation', class.modulation, 'modFrequency', class.modFrequency, 'modPhase', class.modPhase, 'modMinRelAmplitude', class.modMinRelAmplitude, ...
                 'modPrestimPeriod', class.modPrestimPeriod, 'modPrestimTaper', class.modPrestimTaper, 'modPrestimRelAmplitude', class.modPrestimRelAmplitude);
@@ -123,8 +126,8 @@ else
             % generating signal
             signal = ersp_generate_signal(frequency, amplitude, phase, epochs.srate, epochs.length, ...
                     'modulation', class.modulation, 'modLatency', latency, 'modWidth', width, 'modTaper', taper, 'modMinRelAmplitude', minAmplitude);
-        elseif strcmp(class.modulation, {'pac'})
-            % obtaining specific pac values
+        elseif strcmp(class.modulation, {'ampmod'})
+            % obtaining specific amplitude modulation values
             modFrequency = utl_apply_dvslope(class.modFrequency, class.modFrequencyDv, class.modFrequencySlope, epochNumber, epochs.n);
             minAmplitude = utl_apply_dvslope(class.modMinRelAmplitude, class.modMinRelAmplitudeDv, class.modMinRelAmplitudeSlope, epochNumber, epochs.n);
             if ~isempty(class.modPhase)

@@ -17,12 +17,12 @@
 %
 % Optional (key-value pairs):
 %       modulation - type of modulation to apply; 'none', 'burst',
-%                    'invburst' or 'mod'
+%                    'invburst' or 'ampmod'. default: 'none'
 %       modLatency - latency in ms of the burst centre
 %       modWidth - width of the burst in ms
 %       modTaper - taper of the burst tukey window, between 0 and 1
-%       modFrequency - frequency of the pac modulating signal, in Hz
-%       modPhase - phase of the pac modulation frequency
+%       modFrequency - frequency of the amplitude-modulating signal, in Hz
+%       modPhase - phase of the amplitude-modulation frequency
 %       modMinRelAmplitude - minimum amplitude of the base signal relative
 %                            to the base amplitude
 %       modPrestimPeriod - prestimuls period length in ms
@@ -41,6 +41,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-11-24 lrk
+%   - Renamed 'pac' to 'ampmod' and replaced references accordingly
 % 2017-11-22 lrk
 %   - Changed normalisation such that the signal is no longer fixed between
 %     -ampliude and +amplitude, but that the max absolute signal is
@@ -188,7 +190,7 @@ if ismember(modulation, {'burst', 'invburst'})
 
     % applying modulation
     signal = signal .* win;
-elseif strcmp(modulation, 'pac')
+elseif strcmp(modulation, 'ampmod')
     % phase-amplitude coupling
     if isempty(modPhase), modPhase = rand(); end
 

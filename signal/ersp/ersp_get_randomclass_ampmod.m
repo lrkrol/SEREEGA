@@ -6,7 +6,7 @@
 %       have a frequency of 10, 20, or 30 Hz.
 %
 %       Phases will always be set to random. This function only generates 
-%       classes with phase-amplitude coupling. See 
+%       classes with amplitude modulation. See 
 %       ersp_get_randomclass_nomod for non-modulated random ERSP classes,
 %       and ersp_get_randomclass_burst for burst-modulated classes.
 %       
@@ -45,7 +45,7 @@
 %
 % Usage example:
 %       >> epochs.srate = 1000; epochs.length = 1000; epochs.n = 1;
-%       >> ersp = ersp_get_randomclass_pac([10:30], [.1:.1:1], ...
+%       >> ersp = ersp_get_randomclass_ampmod([10:30], [.1:.1:1], ...
 %                 [.1:.5:3], [0:.1:.5]);
 %       >> plot_signal_fromclass(ersp(1), epochs);
 % 
@@ -53,6 +53,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-11-24 lrk
+%   - Renamed 'pac' to 'ampmod' and replaced references accordingly
 % 2017-11-22 lrk
 %   - Renamed parameters modMinAmplitude and modPrestimAmplitude to 
 %     modMinRelAmplitude and modPrestimRelAmplitude for clarity
@@ -77,7 +79,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function ersp = ersp_get_randomclass_pac(frequencies, amplitudes, modFrequencies, modMinRelAmplitudes, varargin)
+function ersp = ersp_get_randomclass_ampmod(frequencies, amplitudes, modFrequencies, modMinRelAmplitudes, varargin)
 
 % parsing input
 p = inputParser;
@@ -142,7 +144,7 @@ for c = 1:numClasses
     erspclass.amplitude = utl_randsample(amplitudes, 1);
     
     % setting modulation parameter
-    erspclass.modulation = 'pac';
+    erspclass.modulation = 'ampmod';
     
     % sampling randomly from given possible values
     erspclass.frequencyDv = utl_randsample(frequencyRelDvs, numel(erspclass.frequency)) .* erspclass.frequency;

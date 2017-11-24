@@ -7,8 +7,8 @@
 %
 %       Phases will always be set to random. This function only generates 
 %       classes without modulation. See ersp_get_randomclass_burst for
-%       random burst-modulated classes, and ersp_get_randomclass_pac for
-%       random PAC-modulated classes.
+%       random burst-modulated classes, and ersp_get_randomclass_ampmod 
+%       for random PAC-modulated classes.
 %       
 % In:
 %       frequencies - row array of possible frequencies
@@ -44,6 +44,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-11-24 lrk
+%   - Renamed 'pac' to 'ampmod' and replaced references accordingly
 % 2017-10-19 lrk
 %   - Added broadband base activation
 % 2017-08-10 lrk

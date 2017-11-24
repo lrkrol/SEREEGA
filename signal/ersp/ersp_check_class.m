@@ -5,7 +5,7 @@
 %       ERSPs (event-related spectral perturbation) here refer to signal
 %       activations that constitute one base frequency, and optionally
 %       modulate this frequency, either by applying an (inverse) tukey
-%       window, or by coupling the signal's amplitude to the phase of
+%       window, or by modulating the signal's amplitude with the phase of
 %       another frequency.
 %
 %       The base frequency can be defined by a single frequency in Hz, its
@@ -19,12 +19,12 @@
 %       taper of 0 indicates a rectangular window, and a taper of 1
 %       indicates a Hann window.
 %
-%       For phase-amplitude coupling, a second frequency and phase can be
+%       For amplitude modulation, a second frequency and phase can be
 %       indicated. The base frequency will have its maximum amplitude at
 %       90-degree phase (.25) of this second frequency. The base
 %       frequency's minimal amplitude (at .75 of the second frequency) can 
 %       be indicated separately as well.
-%       Additionally, a prestimulus period can be indicated to attenuate
+%       Additionally, a pre-stimulus period can be indicated to attenuate
 %       the signal during that time, using an inverse window as above.
 %
 %       Deviations and slopes can be indicated for all variables.
@@ -58,7 +58,7 @@
 %         .probabilitySlope:     probability slope
 %         .modulation:           type of modulation to apply to the base
 %                                frequency, 'none', 'burst', 'invburst', or
-%                                'pac'
+%                                'ampmod'
 %
 %       In case modulation is set to 'burst' or 'invburst', the following
 %       additional fields are included:
@@ -77,8 +77,8 @@
 %         .modMinRelAmplitudeDv:     minimum amplitude deviation
 %         .modMinRelAmplitudeSlope:  minimum amplitude slope
 %
-%       In case modulation is set to 'pac', the following additional fields 
-%       are included:
+%       In case modulation is set to 'ampmod', the following additional 
+%       fields are included:
 %
 %         .modFrequency:          frequency of the modulating signal, in Hz
 %         .modFrequencyDv:        modulating frequency deviation
@@ -109,7 +109,7 @@
 %
 % Usage example:
 %       >> ersp.frequency = 20; ersp.amplitude = 1;
-%       >> ersp.modulation = 'pac'; ersp.modFrequency = 1;
+%       >> ersp.modulation = 'ampmod'; ersp.modFrequency = 1;
 %       >> ersp.modPhase = -.25; ersp.modMinRelAmplitude = .1;
 %       >> ersp = ersp_check_class(ersp)
 % 
@@ -117,12 +117,14 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-11-24 lrk
+%   - Renamed 'pac' to 'ampmod' and replaced references accordingly
 % 2017-11-22 lrk
 %   - Renamed parameters modMinAmplitude and modPrestimAmplitude to 
 %     modMinRelAmplitude and modPrestimRelAmplitude for clarity
 % 2017-10-19 lrk
 %   - Added broadband base activation
-% 2016-06-20 lrk
+% 2017-06-20 lrk
 %   - Changed variable names for consistency
 %   - Added prestimulus attenuation to PAC
 % 2017-06-16 First version
@@ -164,9 +166,9 @@ if ismember(class.modulation, {'burst', 'invburst'})
     
     if ~isfield(class, 'modFrequency')
         class.modFrequency = NaN; end
-elseif strcmp(class.modulation, 'pac')
+elseif strcmp(class.modulation, 'ampmod')
     if ~isfield(class, 'modFrequency')
-        error('SEREEGA:ersp_check_class:missingField', 'field ''modFrequency'' is missing from given PAC-modulated ERSP class variable');
+        error('SEREEGA:ersp_check_class:missingField', 'field ''modFrequency'' is missing from given amplitude-modulated ERSP class variable');
     end
     
     if ~isfield(class, 'modLatency')
@@ -215,7 +217,7 @@ if ~isfield(class, 'probabilitySlope')
 if ~isfield(class, 'modulation')
     class.modulation = 'none'; end
 
-if ~ismember(class.modulation, {'none', 'burst', 'invburst', 'pac'})
+if ~ismember(class.modulation, {'none', 'burst', 'invburst', 'ampmod'})
     error('SEREEGA:ersp_check_class:unknownFieldValue', 'unknown modulation type ''%s''', class.modulation); end
    
 % burst modulation variables
@@ -241,7 +243,7 @@ if ~isfield(class, 'modMinRelAmplitudeDv')
 if ~isfield(class, 'modMinRelAmplitudeSlope')
     class.modMinRelAmplitudeSlope = 0; end
     
-% PAC modulation variables
+% amplitude modulation variables
 if ~isfield(class, 'modFrequencyDv')
     class.modFrequencyDv = 0; end
 if ~isfield(class, 'modFrequencySlope')
