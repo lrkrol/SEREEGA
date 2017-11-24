@@ -2,30 +2,32 @@
 %
 % In:
 %       data - channels x samples x epochs matrix of data points
-%       srate - the sampling rate of the data
+%       epochs - 1x1 struct, an epoch configuration struct, containing at
+%                least the field 'srate'. optionally, the field 'prestim'
+%                is recognised and applied as prestimulus periond in ms.
+%       leadfield - 1x1 struct, the leadfield with which the component data
+%                   was generated
 %
 % Optional (key-value pairs):
-%       chanlocs - an EEGLAB chanlocs structure
-%       chanlabels - a cell array of channel labels (ignored when chanlocs
-%                    is indicated)
-%       xmin - epoch start latency in seconds (for epoched data, relative
-%              to the time-locking event at time 0, i.e., should be <= 0)
-%              (default 0)
 %       marker - string to put at 0 time point for epoched data (default
-%                'event')
+%                'event'). if indicated and not manually overridden, 
+%                epochs.marker is used.
 %
 % Out:  
 %       EEG - dataset in EEGLAB format
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead();
-%       >> EEG = utl_create_eeglabdataset(rand(231, 512, 100), 512, ...
-%          'chanlocs', lf.chanlocs, 'xmin', -0.2)
+%       >> ep = struct('srate', 512, 'length', 1000, 'prestim', 200);
+%       >> EEG = utl_create_eeglabdataset(rand(228, 512, 100), ep, lf);
 % 
 %                    Copyright 2015-2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-11-24 lrk
+%   - Now takes epochs and leafield structs instead of separate values for
+%     srate, chanlocs, prestim, and marker.
 % 2017-06-14 lrk
 %   - Now accepts both chanlocs structure and cell of channel labels
 %   - Added markers
@@ -48,27 +50,38 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function EEG = utl_create_eeglabdataset(data, srate, varargin)
+function EEG = utl_create_eeglabdataset(data, epochs, leadfield, varargin)
 
 % parsing input
 p = inputParser;
 
 addRequired(p, 'data', @isnumeric);
-addRequired(p, 'srate', @isnumeric);
+addRequired(p, 'epochs', @isstruct);
+addRequired(p, 'leadfield', @isstruct);
 
-addParameter(p, 'chanlocs', [], @isstruct);
-addParameter(p, 'chanlabels', {}, @iscell);
-addParameter(p, 'xmin', 0, @isnumeric);
-addParameter(p, 'marker', 'event', @ischar);
+addParameter(p, 'marker', '', @ischar);
 
-parse(p, data, srate, varargin{:});
+parse(p, data, epochs, leadfield, varargin{:});
 
 data = p.Results.data;
-srate = p.Results.srate;
-chanlocs = p.Results.chanlocs;
-chanlabels = p.Results.chanlabels;
-xmin = p.Results.xmin;
+epochs = p.Results.epochs;
+leadfield = p.Results.leadfield;
 marker = p.Results.marker;
+
+if isempty(marker)
+    if isfield(epochs, 'marker') && ~isempty(epochs.marker)
+        marker = epochs.marker;
+    else
+        marker = 'event';
+    end
+end
+
+if isfield(epochs, 'prestim') && epochs.prestim ~= 0
+    % getting value in seconds
+    xmin = -epochs.prestim / 1000;
+else
+    xmin = 0;
+end
 
 % creating required fields and corresponding values where available
 EEG = struct(); 
@@ -78,7 +91,7 @@ EEG.filepath = '';
 EEG.nbchan = size(data, 1);
 EEG.trials = size(data, 3);
 EEG.pnts = size(data, 2);
-EEG.srate = srate;
+EEG.srate = epochs.srate;
 EEG.xmin = xmin;
 EEG.xmax = EEG.xmin + (EEG.pnts-1) / EEG.srate;
 EEG.data = data;
@@ -86,31 +99,7 @@ EEG.icaact = [];
 EEG.icawinv = [];
 EEG.icaweights = [];
 EEG.icasphere = [];
-
-% adding channel info
-if ~isempty(chanlocs)
-    EEG.chanlocs = chanlocs;
-else
-    EEG.chanlocs = struct();
-    for c = 1:EEG.nbchan
-        if ~isempty(chanlabels)
-            EEG.chanlocs(c).labels = chanlabels{c};
-        else
-            EEG.chanlocs(c).labels = num2str(c);
-        end
-        EEG.chanlocs(c).type = 'EEG';
-        EEG.chanlocs(c).X = [];
-        EEG.chanlocs(c).Y = [];
-        EEG.chanlocs(c).Z = [];
-        EEG.chanlocs(c).sph_theta = [];
-        EEG.chanlocs(c).sph_phi = [];
-        EEG.chanlocs(c).sph_radius = [];
-        EEG.chanlocs(c).theta = [];
-        EEG.chanlocs(c).radius = [];
-        EEG.chanlocs(c).urchan = c;
-        EEG.chanlocs(c).ref = '';
-    end
-end
+EEG.chanlocs = leadfield.chanlocs;
 
 EEG = eeg_checkset(EEG);
 
