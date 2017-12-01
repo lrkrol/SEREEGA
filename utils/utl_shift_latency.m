@@ -1,13 +1,13 @@
-% class = utl_shift_latency(class, shift)
+% class = utl_shift_latency(classorcomp, shift)
 %
-%       Takes a valid class struct and shifts all of its latency parameters
-%       by the indicated number.
+%       Takes a class or component struct and shifts all of its 
+%       latency parameters by the indicated number.
 %
-%       For example, when called a shift of 200, all latencies will be set
-%       to a value 200 higher than their current values.
+%       For example, when called with a shift of 200, all latencies will be
+%       set to a value 200 higher than their current values.
 %
 % In:
-%       class - 1x1 struct, the class variable
+%       classorcomp - 1-by-n struct, the class or component variable
 %       shift - number indicating the shift
 %
 % Out:  
@@ -17,6 +17,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-12-01 lrk
+%   - Function now also accepts components
 % 2017-11-09 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -34,7 +36,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function class = utl_shift_latency(class, shift)
+function classorcomp = utl_shift_latency(classorcomp, shift)
 
 % parsing input
 p = inputParser;
@@ -42,20 +44,36 @@ p = inputParser;
 addRequired(p, 'class', @isstruct);
 addRequired(p, 'shift', @isnumeric);
 
-parse(p, class, shift);
+parse(p, classorcomp, shift);
 
-class = p.Results.class;
+classorcomp = p.Results.class;
 shift = p.Results.shift;
 
-% finding all class fields that end with 'Latency'
-flds = fields(class);
-for f = 1:length(flds)
-    field = flds{f};
-    if length(field) > 6 && strncmp(field(end-6:end), 'Latency', 7)
-        class.(field) = class.(field) + shift;
+if utl_iscomponent(classorcomp)
+    if numel(classorcomp) > 1
+        % recursively calling self
+        for c = 1:numel(classorcomp)
+            classorcomp(c) = utl_shift_latency(classorcomp(c), shift);
+        end
+    else
+        % calling self on all signal activation classes
+        for s = 1:numel(classorcomp.signal)
+            classorcomp.signal{s} = utl_shift_latency(classorcomp.signal{s}, shift);
+        end
     end
+else
+
+    % finding all class fields that end with 'Latency'
+    flds = fields(classorcomp);
+    for f = 1:length(flds)
+        field = flds{f};
+        if length(field) > 6 && strncmp(field(end-6:end), 'Latency', 7)
+            classorcomp.(field) = classorcomp.(field) + shift;
+        end
+    end
+    
+    classorcomp = utl_check_class(classorcomp);
 end
 
-class = utl_check_class(class);
 
 end
