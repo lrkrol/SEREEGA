@@ -9,6 +9,10 @@
 %       different leadfields. In case of odd behaviour, see if e.g. the
 %       normaliseLeadfield option of generate_scalpdata makes a difference.
 %
+%       If you construct a new component for your project that may be of
+%       use to others as well, please feel free to extend the list of
+%       templates and share it with the project.
+%
 % In:
 %       componentname - string containing the desired component's name
 %       leadfield - the leadfield with which the component will be used
