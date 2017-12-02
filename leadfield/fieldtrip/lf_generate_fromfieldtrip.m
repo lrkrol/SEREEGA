@@ -153,7 +153,7 @@ leadfield = permute(leadfield, [2 1 3]);
 
 % preparing leadfield
 lf.leadfield = leadfield;
-lf.orientation = ones(size(leadfield, 2), 3);
+lf.orientation = zeros(size(leadfield, 2), 3);
 lf.pos = ftlf.pos(ftlf.inside,:);
 lf.chanlocs = readlocs('chanlocs-standard_1005.elp');
 lf.chanlocs = lf.chanlocs(chanidx);

@@ -14,7 +14,7 @@
 %
 % Optional inputs (key-value pairs):
 %       orientation - 1-by-3 matrix containing default xyz source
-%                     orientation. default: [1 1 1]
+%                     orientation. default: [0 0 0]
 %
 % Out:  
 %       lf - the leadfield with the new source added
@@ -54,7 +54,7 @@ addRequired(p, 'leadfield', @isstruct);
 addRequired(p, 'position', @isnumeric);
 addRequired(p, 'projection', @isnumeric);
 
-addOptional(p, 'orientation', [1 1 1], @isnumeric);
+addOptional(p, 'orientation', [0 0 0], @isnumeric);
 
 parse(p, leadfield, position, projection, varargin{:})
 
