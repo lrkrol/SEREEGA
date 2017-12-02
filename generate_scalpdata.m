@@ -115,6 +115,9 @@ for e = 1:epochs.n
         orientation = component(c).orientation(n,:);
         orientationDv = component(c).orientationDv(n,:);
         orientation = utl_apply_dvslope(orientation, orientationDv, zeros(size(orientation)), e, epochs.n);
+        if all(orientation == zeros(1,3))
+            warning('all-zero orientation for component %d', c);
+        end
 
         % projecting signal
         componentdata(:,:,c) = lf_project_signal(componentsignal, leadfield, source, orientation, ...
