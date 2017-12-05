@@ -1,4 +1,4 @@
-% ersp = ersp_get_randomclass_burst(frequencies, amplitudes, varargin)
+% ersp = ersp_get_class_randomburst(frequencies, amplitudes, varargin)
 % 
 %       Generates random ERSP classes using the given allowed values.
 %       Allowed values are given using an array of values, e.g., with
@@ -48,7 +48,7 @@
 %
 % Usage example:
 %       >> epochs.srate = 1000; epochs.length = 1000; epochs.n = 1;
-%       >> ersp = ersp_get_randomclass_burst([4:30], [.1:.1:1], ...
+%       >> ersp = ersp_get_class_randomburst([4:30], [.1:.1:1], ...
 %                 [300:1000], [50:300], [.5:.1:1], [0:.1:.5], ...
 %                 'bursts', [-1, 1], 'numClasses', 64);
 %       >> plot_signal_fromclass(ersp(1), epochs);
@@ -57,6 +57,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-12-05 lrk
+%   - Renamed file to be in line with SEREEGA recommended practices
 % 2017-11-24 lrk
 %   - Renamed 'pac' to 'ampmod' and replaced references accordingly
 % 2017-11-22 lrk
@@ -82,7 +84,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function ersp = ersp_get_randomclass_burst(frequencies, amplitudes, modLatencies, modWidths, modTapers, modMinRelAmplitudes, varargin)
+function ersp = ersp_get_class_randomburst(frequencies, amplitudes, modLatencies, modWidths, modTapers, modMinRelAmplitudes, varargin)
 
 % parsing input
 p = inputParser;

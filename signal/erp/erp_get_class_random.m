@@ -1,4 +1,4 @@
-% erp = erp_get_randomclass(numpeaks, latencies, widths, amplitudes, varargin)
+% erp = erp_get_class_random(numpeaks, latencies, widths, amplitudes, varargin)
 % 
 %       Generates random ERP classes using the given allowed values.
 %       Allowed values are given using an array of values, e.g., with an
@@ -29,7 +29,7 @@
 %
 % Usage example:
 %       >> epochs.srate = 1000; epochs.length = 1000; epochs.n = 1;
-%       >> erp = erp_get_randomclass([1:3], [200:1000], [25:200], ...
+%       >> erp = erp_get_class_random([1:3], [200:1000], [25:200], ...
 %          [-1:.1:-.5, .5:.1:1], 'numClasses', 64);
 %       >> plot_signal_fromclass(erp(1), epochs);
 % 
@@ -37,6 +37,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-12-05 lrk
+%   - Renamed file to be in line with SEREEGA recommended practices
 % 2017-08-10 lrk
 %   - Changed *Dvs/*Slopes argument names to *RelDvs/*RelSlopes for clarity
 % 2017-07-01 First version
@@ -56,7 +58,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function erp = erp_get_randomclass(numpeaks, latencies, widths, amplitudes, varargin)
+function erp = erp_get_class_random(numpeaks, latencies, widths, amplitudes, varargin)
 
 % parsing input
 p = inputParser;
