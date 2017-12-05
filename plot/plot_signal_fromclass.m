@@ -5,7 +5,9 @@
 %
 % In:
 %       class - 1x1 struct, the class variable
-%       epochs - 1x1 struct, an epoch configuration struct
+%       epochs - single epoch configuration struct containing at least
+%                sampling rate in Hz (field name 'srate'), epoch length in ms
+%                 ('length'), and the total number of epochs ('n')
 %
 % Optional (key-value pairs):
 %       newfig - (0|1) whether or not to open a new figure window.

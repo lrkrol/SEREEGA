@@ -3,8 +3,9 @@
 % In:
 %       data - channels x samples x epochs matrix of data points
 %       epochs - 1x1 struct, an epoch configuration struct, containing at
-%                least the field 'srate'. optionally, the field 'prestim'
-%                is recognised and applied as prestimulus periond in ms.
+%                least the field 'srate' containing the sampling rate in Hz. 
+%                optionally, the field 'prestim' is recognised and applied as
+%                prestimulus period in ms.
 %       leadfield - 1x1 struct, the leadfield with which the component data
 %                   was generated
 %

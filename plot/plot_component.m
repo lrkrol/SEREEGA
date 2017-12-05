@@ -5,8 +5,8 @@
 % In:
 %       component - 1xn struct, the component variables
 %       epochs - single epoch configuration struct containing at least
-%                sampling rate (srate), epoch length (length), and total
-%                number of epochs (n)
+%                sampling rate in Hz (field name 'srate'), epoch length in ms
+%                 ('length'), and the total number of epochs ('n')
 %       leadfield - the leadfield from which to plot the projection
 %
 % Out:  

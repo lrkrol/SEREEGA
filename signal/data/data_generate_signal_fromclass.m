@@ -7,8 +7,8 @@
 % In:
 %       class - 1x1 struct, the class variable
 %       epochs - single epoch configuration struct containing at least
-%                sampling rate (srate), epoch length (length), and total
-%                number of epochs (n)
+%                sampling rate in Hz (field name 'srate'), epoch length in ms
+%                 ('length'), and the total number of epochs ('n')
 %
 % Optional (key-value pairs):
 %       epochNumber - current epoch number. this is required for slope
