@@ -3,6 +3,10 @@
 %       Returns an frequency-based activation signal generated using the 
 %       given base frequency and optional modulation.
 %
+%       Note: If a tukeywin warning appears, it is most likely due to FieldTrip
+%       being in the path, which comes with its own tukeywin version and
+%       overrides MATLAB's version. It is recommended to use MATLAB's version.
+%
 % In:
 %       frequency - either a single base frequency in Hz, or a [low, high]
 %                   frequency band. in the latter case, a white noise
