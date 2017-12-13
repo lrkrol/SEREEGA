@@ -66,7 +66,7 @@ switch componentname
             'source', lf_get_source_nearest(leadfield, [0, -70, 0]), ...
             'signal', {{erp_n70}}, ...
             'orientation', [0 -1 0]);
-        component = utl_check_component(comp_n70, lf);
+        component = utl_check_component(comp_n70, leadfield);
                 
     case 'visual_p100_erp'
         % visual evoked potential as per
@@ -87,11 +87,11 @@ switch componentname
         
         % projecting bilaterally from BA 17
         comp_p100 = struct( ...
-            'source', {lf_get_source_nearest(lf, [-20, -78, -10]), ...  % left
-                       lf_get_source_nearest(lf, [ 20, -78, -10])}, ... % right
+            'source', {lf_get_source_nearest(leadfield, [-20, -78, -10]), ...  % left
+                       lf_get_source_nearest(leadfield, [ 20, -78, -10])}, ... % right
             'signal', {{erp_p100}, {erp_p100}}, ...
             'orientation', {[-.5, .75, 0], [.5, .75, 0]});
-        component = utl_check_component(comp_p100, lf);
+        component = utl_check_component(comp_p100, leadfield);
                 
     case 'visual_n135_erp'
         % visual evoked potential as per
@@ -112,11 +112,11 @@ switch componentname
         
         % projecting bilaterally from BA 18
         comp_n135 = struct( ...
-            'source', {lf_get_source_nearest(lf, [-10, -88, 6]), ...    % left
-                       lf_get_source_nearest(lf, [ 10, -88, 6])}, ...   % right
+            'source', {lf_get_source_nearest(leadfield, [-10, -88, 6]), ...    % left
+                       lf_get_source_nearest(leadfield, [ 10, -88, 6])}, ...   % right
             'signal', {{erp_n135}, {erp_n135}}, ...
             'orientation', {[.5, .75, .25], [-.5, .75, .25]});
-        component = utl_check_component(comp_n135, lf);
+        component = utl_check_component(comp_n135, leadfield);
         
     case 'p300_erp'
         % P300, split into frontal P3a and parietal P3b  as mentioned in
@@ -128,8 +128,8 @@ switch componentname
         %   significance of the novelty P3 event-related potential as 
         %   revealed by independent component analysis. Cognitive Brain 
         %   Research, 22(3), 309–321.
-        comp_p3a = utl_get_component('p3a_erp', leadfield);
-        comp_p3b = utl_get_component('p3b_erp', leadfield);
+        comp_p3a = utl_get_component_fromtemplate('p3a_erp', leadfield);
+        comp_p3b = utl_get_component_fromtemplate('p3b_erp', leadfield);
         component = [comp_p3a, comp_p3b];
         
     case 'p3a_erp'
@@ -153,10 +153,10 @@ switch componentname
         erp_p3a = utl_set_dvslope(erp_p3a, 'dv', .2);
         
         comp_p3a = struct( ...
-            'source', {lf_get_source_nearest(lf, [0, 5, 20])}, ...
+            'source', {lf_get_source_nearest(leadfield, [0, 5, 20])}, ...
             'signal', {{erp_p3a}}, ...
             'orientation', {[0 .5 1]});
-        component = utl_check_component(comp_p3a, lf);
+        component = utl_check_component(comp_p3a, leadfield);
         
     case 'p3b_erp'
         % P300, split into frontal P3a and parietal P3b  as mentioned in
@@ -179,10 +179,10 @@ switch componentname
         erp_p3b = utl_set_dvslope(erp_p3b, 'dv', .2);
         
         comp_p3b = struct( ...
-            'source', {lf_get_source_nearest(lf, [0, -50, 40])}, ...
+            'source', {lf_get_source_nearest(leadfield, [0, -50, 40])}, ...
             'signal', {{erp_p3b}}, ...
             'orientation', {[0 -.5 1]});
-        component = utl_check_component(comp_p3b, lf);
+        component = utl_check_component(comp_p3b, leadfield);
         
     case 'motorcortex_left_mu_rest_ersp'
         % continuous mu-band activity over left motor cortex
@@ -195,10 +195,10 @@ switch componentname
         ersp_mcl_mu = utl_set_dvslope(ersp_mcl_mu, 'dv', .1);
 
         comp_mcl = struct( ...
-            'source', lf_get_source_nearest(lf, [-15, -10, 60]), ...
+            'source', lf_get_source_nearest(leadfield, [-15, -10, 60]), ...
             'signal', {{ersp_mcl_mu}}, ...
             'orientation', [-1, 0, .5]);
-        component = utl_check_component(comp_mcl, lf);
+        component = utl_check_component(comp_mcl, leadfield);
         
     case 'motorcortex_left_mu_desynch_ersp'
         % mu-band activity over left motor cortex with a 600 ms desynch
@@ -217,10 +217,10 @@ switch componentname
         ersp_mcl_mu.modLatencyDv = 100;
 
         comp_mcl = struct( ...
-            'source', lf_get_source_nearest(lf, [-15, -10, 60]), ...
+            'source', lf_get_source_nearest(leadfield, [-15, -10, 60]), ...
             'signal', {{ersp_mcl_mu}}, ...
             'orientation', [-1, 0, .5]);
-        component = utl_check_component(comp_mcl, lf);
+        component = utl_check_component(comp_mcl, leadfield);
         
     case 'motorcortex_right_mu_rest_ersp'
         % continuous mu-band activity over right motor cortex
@@ -233,10 +233,10 @@ switch componentname
         ersp_mcr_mu = utl_set_dvslope(ersp_mcr_mu, 'dv', .1);
 
         comp_mcr = struct( ...
-            'source', lf_get_source_nearest(lf, [15, -10, 60]), ...
+            'source', lf_get_source_nearest(leadfield, [15, -10, 60]), ...
             'signal', {{ersp_mcr_mu}}, ...
             'orientation', [1, 0, .5]);
-        component = utl_check_component(comp_mcr, lf);
+        component = utl_check_component(comp_mcr, leadfield);
         
     case 'motorcortex_right_mu_desynch_ersp'
         % mu-band activity over right motor cortex with a 600 ms desynch
@@ -255,10 +255,10 @@ switch componentname
         ersp_mcr_mu.modLatencyDv = 100;
 
         comp_mcr = struct( ...
-            'source', lf_get_source_nearest(lf, [15, -10, 60]), ...
+            'source', lf_get_source_nearest(leadfield, [15, -10, 60]), ...
             'signal', {{ersp_mcr_mu}}, ...
             'orientation', [1, 0, .5]);
-        component = utl_check_component(comp_mcr, lf);
+        component = utl_check_component(comp_mcr, leadfield);
         
     otherwise
         error('component ''%s'' not found', componentname);
