@@ -90,6 +90,7 @@ component = utl_check_component(component, leadfield);
 scalpdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), epochs.n);
 sourcedata = zeros(length(component), floor((epochs.length/1000)*epochs.srate), epochs.n);
 
+fprintf('Generating scalp data... ');
 if showprogress
     w = waitbar(0, sprintf('Epoch 0 of %d', epochs.n), 'Name', 'Generating scalp data');
     maxwait = epochs.n * numel(component);
@@ -130,6 +131,7 @@ for e = 1:epochs.n
     scalpdata(:,:,e) = sum(componentdata, 3);
 end
 
+fprintf('Done.\n');
 if showprogress, delete(w); end
 
 end
