@@ -10,9 +10,11 @@
 %
 %       The base frequency can be defined by a single frequency in Hz, its
 %       amplitude, and optionally, its phase. Alternatively, a frequency
-%       band can be indicated. A frequency of [8, 12] for example will
-%       result in a base signal with spectral power between 8 and 12 Hz. In
-%       case a frequency band is indicated, phase will be ignored.
+%       band can be indicated using its band edge frequencies. A frequency 
+%       of [6, 8, 12, 14] for example will result in a base signal with 
+%       maximum spectral power between 8 and 12 Hz, with transitions 
+%       between 6-8 and 12-14. In case a frequency band is indicated, phase
+%       will be ignored.
 %
 %       A burst can additionally be indicated using its latency (the burst
 %       window's centre) in ms, its width in ms, and its taper, where a
@@ -117,6 +119,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-12-30 lrk
+%   - Changed bandpass filter method
 % 2017-11-24 lrk
 %   - Renamed 'pac' to 'ampmod' and replaced references accordingly
 % 2017-11-22 lrk
@@ -273,16 +277,26 @@ if ~isfield(class, 'modPrestimRelAmplitude')
 % checking values
 if numel(class.frequency) == 1
     if class.frequency - class.frequencyDv - class.frequencySlope <= 0
-        warning('some frequencies may zero or less due to the indicated deviation; this may lead to unexpected results');
+        warning('some frequencies may be zero or less due to the indicated deviation and slope; this may lead to unexpected results');
     end
-elseif numel(class.frequency) == 2
-    if ~(numel(class.frequencyDv) == 2 && numel(class.frequencySlope) == 2)
-        class.frequencyDv = [class.frequencyDv, class.frequencyDv];
-        class.frequencySlope = [class.frequencySlope, class.frequencySlope];
+elseif numel(class.frequency) == 4
+    if ~(numel(class.frequencyDv) == 4 && numel(class.frequencySlope) == 4)
+        class.frequencyDv = repmat(class.frequencyDv, 1, 4);
+        class.frequencySlope = repmat(class.frequencySlope, 1, 4);
     end
-    if class.frequency(1) - class.frequencyDv(1) - class.frequencySlope(1) < 2
-        error('SEREEGA:ersp_check_class:incorrectFieldValue', 'lower edge of the frequency band must be at least 2 Hz');
+    if class.frequency(1) - class.frequencyDv(1) - class.frequencySlope(1) <= 0 || ...
+       class.frequency(2) - class.frequencyDv(2) - class.frequencySlope(2) <= 0 || ...
+       class.frequency(3) - class.frequencyDv(3) - class.frequencySlope(3) <= 0 || ...
+       class.frequency(4) - class.frequencyDv(4) - class.frequencySlope(4) <= 0
+        error('SEREEGA:ersp_check_class:incorrectFieldValue', 'lowest possible edge of the frequency bands must always be >0 Hz; keep deviations and slopes in mind');
     end
+    if class.frequency(1) + class.frequencyDv(1) + class.frequencySlope(1) > class.frequency(2) - class.frequencyDv(2) - class.frequencySlope(2) || ...
+       class.frequency(2) + class.frequencyDv(2) + class.frequencySlope(2) > class.frequency(3) - class.frequencyDv(3) - class.frequencySlope(3) || ...
+       class.frequency(3) + class.frequencyDv(3) + class.frequencySlope(3) > class.frequency(4) - class.frequencyDv(4) - class.frequencySlope(4)
+        error('SEREEGA:ersp_check_class:incorrectFieldValue', 'band edge frequencies must always be in ascending order; keep deviations and slopes in mind');
+    end
+else
+    error('SEREEGA:ersp_check_class:incorrectFieldValue', 'frequency must be either single frequency value or 1x4 matrix band edge frequencies');
 end
 
 if class.modWidth - class.modWidthDv - class.modWidthSlope < 1

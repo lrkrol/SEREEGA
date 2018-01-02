@@ -3,16 +3,18 @@
 %       Returns an frequency-based activation signal generated using the 
 %       given base frequency and optional modulation.
 %
-%       Note: If a tukeywin warning appears, it is most likely due to FieldTrip
-%       being in the path, which comes with its own tukeywin version and
-%       overrides MATLAB's version. It is recommended to use MATLAB's version.
+%       Note: If a tukeywin warning appears, it is most likely due to
+%       FieldTrip being in the path, which comes with its own tukeywin
+%       version and overrides MATLAB's version. It is recommended to use
+%       MATLAB's version.
 %
 % In:
-%       frequency - either a single base frequency in Hz, or a [low, high]
-%                   frequency band. in the latter case, a white noise
-%                   signal will be filtered around the given band, as long
-%                   as low >= 2 (due to a 2 Hz transition band); phase will
-%                   be ignored.
+%       frequency - either a single base frequency in Hz, or a frequency
+%                   band in the following form: [low transition start, low 
+%                   transition end, high transition start, high transition
+%                   end] in Hz. in the latter case, a white noise
+%                   signal will be filtered using a FIR filter with the
+%                   given band edge frequencies; phase will be ignored.
 %       amplitude - maximum amplitude in uV
 %       phase - phase of the base frequency, between 0 and 1, or [] for a
 %               random phase
@@ -39,12 +41,17 @@
 %       signal - row array containing the simulated noise activation signal
 %
 % Usage example:
-%       >> ersp_generate_signal(25, 1, [], 500, 1000)
+%       >> ersp_generate_signal(25, 1, [], 500, 1000);
+%       >> ersp_generate_signal([8 10 15 17], 1, [], 500, 1000);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2017-12-30 lrk
+%   - Changed bandpass filter method as designfilt was blowing out the
+%     signal under certain conditions; thanks to Mahta Mousavi for the 
+%     filter design. Now takes four edge frequencies instead of two.
 % 2017-11-24 lrk
 %   - Renamed 'pac' to 'ampmod' and replaced references accordingly
 % 2017-11-22 lrk
@@ -126,31 +133,20 @@ if numel(frequency) == 1
     % single frequency
     t = (0:samples-1)/srate;
     signal = sin(phase*2*pi + 2*pi*frequency*t);
-elseif numel(frequency) == 2
-    % bandpass-filtered white noise
-    if verLessThan('dsp', '8.6')
-        warning(['your DSP version is lower than 8.6 (MATLAB R2014a); ' ...
-                 'cannot produce broadband activation, taking mean instead']);
-        t = (0:samples-1)/srate;
-        frequency = mean(frequency);
-        signal = sin(phase*2*pi + 2*pi*frequency*t);
-    else
-        % base white noise with padding, total thrice the epoch's length
-        signal = rand(1, 3*samples) - .5;
-        
-        % filtering
-        D = designfilt('bandpassiir', ...
-                'SampleRate', srate, ...
-                'StopbandFrequency1', frequency(1) - 2, ...
-                'PassbandFrequency1', frequency(1), ...
-                'PassbandFrequency2', frequency(2), ...
-                'StopbandFrequency2', frequency(2) + 2, ...
-                'DesignMethod', 'butter');
-        signal = filtfilt(D, signal);
-        
-        % removing padding
-        signal = signal(samples+1:end-samples);
-    end
+elseif numel(frequency) == 4
+    % designing filter
+    c = kaiserord(frequency, [0 1 0], [0.05 0.01 0.05], srate, 'cell');
+    b = fir1(c{:});
+    
+    % taking initial signal length of five times the filter order, but at
+    % least as long as samples
+    signal = rand(1, max([samples, 5*length(b)])) - .5;
+
+    % filtering signal
+    signal = filter(b, 1, signal);
+    
+    % removing padding (taking the middle segment)
+    signal = signal(floor(length(signal)/2-samples/2)+1:floor(length(signal)/2+samples/2));
 end
 
 % normalising such that max absolute amplitude = amplitude

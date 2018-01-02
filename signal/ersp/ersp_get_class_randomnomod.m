@@ -18,7 +18,10 @@
 %       bandWidths - row array of possible frequency band widths. if a non-
 %                    zero band with is selected, frequencyRelDvs and
 %                    frequencyRelSlopes will be applied to both the lower
-%                    and the higher passband frequencies. default: [0]
+%                    and the higher passband frequencies. the edges of the
+%                    transition bands will be 25% larger. i.e., a frequency
+%                    of 20 with a width of 4 will result in edge bands of
+%                    [17 18 22 23]. default: [0]
 %       probabilities - row array of possible signal probabilities.
 %                       default: 1
 %       frequencyRelDvs, frequencyRelSlopes, amplitudeRelDvs, 
@@ -44,6 +47,9 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-01-02 lrk
+%   - Adapted to new bandpass filter method (see ersp_generate_signal 
+%     2017-12-30)
 % 2017-12-05 lrk
 %   - Renamed file to be in line with SEREEGA recommended practices
 % 2017-11-24 lrk
@@ -109,7 +115,7 @@ for c = 1:numClasses
     if bandWidth == 0
         erspclass.frequency = frequency;
     else
-        erspclass.frequency = [frequency - bandWidth/2, frequency + bandWidth/2];
+        erspclass.frequency = [frequency - 3*bandWidth/4, frequency - bandWidth/2, frequency + bandWidth/2, frequency + 3*bandWidth/4];
     end
     erspclass.phase = [];
     erspclass.amplitude = utl_randsample(amplitudes, 1);
