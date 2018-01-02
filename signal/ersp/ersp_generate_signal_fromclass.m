@@ -98,12 +98,7 @@ else
     else
 
         % obtaining specific base values
-        if numel(class.frequency) == 1
-            frequency = utl_apply_dvslope(class.frequency, class.frequencyDv, class.frequencySlope, epochNumber, epochs.n);
-        else
-            frequency = [utl_apply_dvslope(class.frequency(1), class.frequencyDv(1), class.frequencySlope(1), epochNumber, epochs.n), ...
-                         utl_apply_dvslope(class.frequency(2), class.frequencyDv(2), class.frequencySlope(2), epochNumber, epochs.n)];
-        end
+        frequency = utl_apply_dvslope(class.frequency, class.frequencyDv, class.frequencySlope, epochNumber, epochs.n);
         
         amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
         
