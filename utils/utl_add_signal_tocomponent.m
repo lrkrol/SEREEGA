@@ -9,7 +9,7 @@
 %                components. When n=m, each signal n(i) will be added to
 %                component m(i).
 %       component - 1-by-m struct containing the component(s) to which the
-%                   signal should be added
+%                   signal(s) should be added
 %
 % Out:  
 %       component - the updated component(s)
