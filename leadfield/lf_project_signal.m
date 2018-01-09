@@ -77,14 +77,12 @@ leadfield = squeeze(leadfield.leadfield(:,sourceIdx,:));
 
 if normaliseLeadfield
     % normalising to have the maximum (or minimum) value be 1 (or -1)
-    [~, i] = max(abs(leadfield(:)));
-    leadfield = leadfield .* (sign(leadfield(i)) / leadfield(i));
+    leadfield = utl_normalise(leadfield);
 end
 
 if normaliseOrientation
     % normalising to have the maximum (or minimum) value be 1 (or -1)
-    [~, i] = max(abs(orientation(:)));
-    orientation = orientation .* (sign(orientation(i)) / orientation(i));
+    orientation = utl_normalise(orientation);
 end
 
 scalpdata = leadfield * [signal * orientation(1); ...
