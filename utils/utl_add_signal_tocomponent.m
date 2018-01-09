@@ -4,8 +4,11 @@
 %       component(s) and returns the updated component variable.
 %
 % In:
-%       signal - single struct, the signal activation class variable
-%       component - 1-by-n struct containing the component(s) to which the
+%       signal - 1-by-n struct containing either single signal activation
+%                class(es). When n=1, the same signal will be added to all
+%                components. When n=m, each signal n(i) will be added to
+%                component m(i).
+%       component - 1-by-m struct containing the component(s) to which the
 %                   signal should be added
 %
 % Out:  
@@ -15,6 +18,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-01-09 lrk
+%   - Extended to support multiple signals, one for each component
 % 2017-12-12 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -34,8 +39,18 @@
 
 function component = utl_add_signal_tocomponent(signal, component)
 
-for c = 1:length(component)
-    component(c).signal = [component(c).signal, {signal}];
+if length(signal) == 1
+    % all components get same signal
+    for c = 1:length(component)
+        component(c).signal = [component(c).signal, {signal}];
+    end
+elseif length(signal) == length(component)
+    % each component gets one signal
+    for c = 1:length(component)
+        component(c).signal = [component(c).signal, {signal(c)}];
+    end
+else
+    error('SEREEGA:utl_add_signal_tocomponent:invalidFunctionArguments', 'length(signal) must be either 1 or equal to length(component)');
 end
 
 end
