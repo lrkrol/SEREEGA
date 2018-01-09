@@ -64,7 +64,7 @@ for p = 1:length(peakLatency)
     peak = normpdf(1:epochLength, peakLatency(p), peakWidth(p)/6);
     
     % if not a flatline, normalising because otherwise sum(peak) == 1
-    if any(peak), peak = peakAmplitude(p) * peak / max(peak); end
+    if any(peak), peak = utl_normalise(peak, peakAmplitude(p)); end
     
     % adding peak to signal
     signal = signal + peak;    

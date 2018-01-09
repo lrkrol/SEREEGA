@@ -98,7 +98,6 @@ end
 
 % scaling data to indicated (variable) amplitude
 amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
-m = max(abs(signal(:)));
-if m ~= 0, signal = signal .* (sign(m) / m) .* amplitude; end
+signal = utl_normalise(signal, amplitude);
 
 end

@@ -150,8 +150,7 @@ elseif numel(frequency) == 4
 end
 
 % normalising such that max absolute amplitude = amplitude
-[~, i] = max(abs(signal(:)));
-signal = signal .* (sign(signal(i)) / signal(i)) .* amplitude;
+signal = utl_normalise(signal, amplitude);
 
 if ismember(modulation, {'burst', 'invburst'})
     latency = floor((modLatency/1000)*srate);

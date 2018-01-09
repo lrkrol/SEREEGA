@@ -125,8 +125,7 @@ else
     else 
         amplitude = class.amplitude;
     end
-    [~, i] = max(abs(signal(:)));
-    signal = signal .* (sign(signal(i)) / signal(i)) .* amplitude;
+    signal = utl_normalise(signal, amplitude);
     
 end
 
