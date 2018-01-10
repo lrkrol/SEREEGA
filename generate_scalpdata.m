@@ -20,6 +20,8 @@
 %                            have the most extreme value be either 1 or -1,
 %                            depending on its sign. default: 0
 %       normaliseOrientation - 1|0, as above, except for orientation
+%       sensorNoise - maximum absolute amplitude of uncorrelated uniform 
+%                     white noise added to the final scalp data. default: 0
 %       showprogress - 1|0, whether or not to show a progress bar
 %                      (default 1)
 %
@@ -38,10 +40,12 @@
 %       >> c = utl_check_component(c, lf);
 %       >> scalpdata = generate_scalpdata(c, lf, epochs);
 % 
-%                    Copyright 2017 Laurens R Krol
+%                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-01-10 lrk
+%   - Added sensor noise
 % 2017-10-11 lrk
 %   - Added source activation output
 % 2017-08-03 lrk
@@ -74,6 +78,7 @@ addRequired(p, 'epochs', @isstruct);
 
 addParameter(p, 'normaliseLeadfield', 0, @isnumeric);
 addParameter(p, 'normaliseOrientation', 0, @isnumeric);
+addParameter(p, 'sensorNoise', 0, @isnumeric);
 addParameter(p, 'showprogress', 1, @isnumeric);
 
 parse(p, component, leadfield, epochs, varargin{:})
@@ -83,6 +88,7 @@ leadfield = p.Results.leadfield;
 epochs = p.Results.epochs;
 normaliseLeadfield = p.Results.normaliseLeadfield;
 normaliseOrientation = p.Results.normaliseOrientation;
+sensorNoise = p.Results.sensorNoise;
 showprogress = p.Results.showprogress;
 
 component = utl_check_component(component, leadfield);
@@ -130,6 +136,9 @@ for e = 1:epochs.n
     % combining projected component signals into single epoch
     scalpdata(:,:,e) = sum(componentdata, 3);
 end
+
+% adding sensor noise
+scalpdata = scalpdata + utl_normalise(rand(scalpdata)*2-1, sensorNoise);
 
 fprintf('Done.\n');
 if showprogress, delete(w); end
