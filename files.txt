@@ -1,5 +1,11 @@
 included files from different sources:
 
+arm_generate_signal
+    original authors: Guido Nolte and Stefan Haufe
+    obtained through private communication
+    this file is licensed under the MIT Licence
+    used by arm_generate_signal_fromclass, arm_get_class_interacting
+
 noise_generate_signal_coloreduniform.m
     original author: Miroslav Stoyanov, Oak Ridge National Laboratory,
                      mkstoyanov@gmail.com. 
