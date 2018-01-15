@@ -138,7 +138,7 @@ for e = 1:epochs.n
 end
 
 % adding sensor noise
-scalpdata = scalpdata + utl_normalise(rand(scalpdata)*2-1, sensorNoise);
+scalpdata = scalpdata + utl_normalise(rand(size(scalpdata))*2-1, sensorNoise);
 
 fprintf('Done.\n');
 if showprogress, delete(w); end
