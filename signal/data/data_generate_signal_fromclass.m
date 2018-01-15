@@ -100,4 +100,7 @@ end
 amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
 signal = utl_normalise(signal, amplitude);
 
+% ensuring row vector
+if iscolumn(signal), signal = signal'; end
+
 end
