@@ -18,6 +18,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-01-15 lrk
+%   - Added support for component structs that had no signal field yet
 % 2018-01-09 lrk
 %   - Extended to support multiple signals, one for each component
 % 2017-12-12 First version
@@ -42,12 +44,20 @@ function component = utl_add_signal_tocomponent(signal, component)
 if length(signal) == 1
     % all components get same signal
     for c = 1:length(component)
-        component(c).signal = [component(c).signal, {signal}];
+        if ~isfield(component(c), 'signal')
+            component(c).signal = {signal};
+        else
+            component(c).signal = [component(c).signal, {signal}];
+        end
     end
 elseif length(signal) == length(component)
     % each component gets one signal
     for c = 1:length(component)
-        component(c).signal = [component(c).signal, {signal(c)}];
+        if ~isfield(component, 'signal')
+            component(c).signal = {signal(c)};
+        else
+            component(c).signal = [component(c).signal, {signal(c)}];
+        end
     end
 else
     error('SEREEGA:utl_add_signal_tocomponent:invalidFunctionArguments', 'length(signal) must be either 1 or equal to length(component)');
