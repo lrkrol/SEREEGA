@@ -1,4 +1,4 @@
-% signal = noise_generate_signal_fromclass(class, epochs, epochNumber)
+% signal = noise_generate_signal_fromclass(class, epochs, varargin)
 %
 %       Takes a noise activation class, determines single parameters given
 %       the deviations/slopes in the class, and returns a signal generated
