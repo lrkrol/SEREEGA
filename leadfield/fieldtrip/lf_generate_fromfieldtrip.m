@@ -7,12 +7,12 @@
 %
 % Optional inputs (key-value pairs):
 %       resolution - the resolution of the grid in mm (default: 10)
-%       labels - cell of electrode labels to be used. default uses all 346
-%                available channels (including fiducials).
+%       labels - cell of electrode labels to be used. default uses all 343
+%                available EEG channels.
 %       montage - name of predefined channel montage. see utl_get_montage.
 %       chandef - channel definition variable as per ft_read_sens. by
 %                 default, the channel definitions contained in the file
-%                 standard_1005.elc are used, containing 346 electrodes.
+%                 standard_1005.elc are used, containing 343 electrodes.
 %       plotelecs - whether or not to plot electrodes in FieldTrip, e.g. to
 %                   check their alignment to the model (1|0, default 0)
 %
@@ -38,6 +38,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-01-25 lrk
+%   - Removed fiducials from automatically loaded channel labels
 % 2017-09-29 lrk
 %   - Added manual channel definition argument
 % 2017-08-10 lrk
@@ -96,18 +98,17 @@ end
 if ~isempty(montage)
     % taking channel labels from indicated montage
     labels = utl_get_montage(montage);
+else
+    % taking all available EEG electrodes, i.e., excluding fiducials
+    labels = setdiff(elec.label, {'RPA', 'LPA', 'Nz'});
 end
 
 % obtaining indices of indicated electrodes
-if ~isempty(labels)
-    [~, chanidx] = ismember(labels, elec.label);
-    if any(~chanidx)
-        missingchans = find(~chanidx);
-        warning('\nElectrode %s not available', labels{missingchans});
-        chanidx(missingchans) = [];
-    end
-else
-    chanidx = 1:length(elec.label);
+[~, chanidx] = ismember(labels, elec.label);
+if any(~chanidx)
+    missingchans = find(~chanidx);
+    warning('\nElectrode %s not available', labels{missingchans});
+    chanidx(missingchans) = [];
 end
 
 % keeping only the indicated electrodes
