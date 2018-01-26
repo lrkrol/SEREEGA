@@ -28,6 +28,10 @@
 %       amplitudeSlope - the amplitude slope of the resulting signals
 %       probability - the probability of the resulting signals
 %       probabilitySlope - the probability slope of the resulting signals
+%       plotInteractions - whether or not to plot the modelled interactions.
+%                          each off-diagonal non-zero value represents an
+%                          interaction. symmetry indicates a bidirectional
+%                          influence.
 %
 % Out:  
 %       signal - row array containing the data classes
