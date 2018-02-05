@@ -1,4 +1,4 @@
-% lf = lf_generate_nyhead(varargin)
+% lf = lf_generate_fromnyhead(varargin)
 %
 %       Generates a leadfield based on the New York Head (ICBM-NY),
 %       containing the electrodes indicated.
@@ -23,7 +23,8 @@
 % Out:  
 %       lf - the leadfield containing the following fields
 %            .leadfield   - the leadfield, containing projections in three
-%                           directions (xyz) for each source
+%                           directions (xyz) for each source, in a 
+%                           nchannels x nsources x 3 matrix
 %            .orientation - a default orientation for each soure. for the
 %                           New York Head, this gives dipole orientations
 %                           perpendicular to the cortical surface
@@ -94,7 +95,8 @@ if any(~chanidx)
     chanidx(missingchans) = [];
 end
 
-% preparing leadfield
+% preparing output
+lf = struct();
 lf.leadfield = sa.cortex75K.V_fem(chanidx,:,:);
 lf.orientation = sa.cortex75K.normals;
 lf.pos = sa.cortex75K.vc;
