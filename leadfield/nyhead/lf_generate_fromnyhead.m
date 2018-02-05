@@ -10,7 +10,7 @@
 %       NY Head publication:
 %           Huang, Y., Parra, L. C., & Haufe, S. (2016). The New York Head:
 %           precise standardized volume conductor model for EEG source
-%           localization and tES targeting. NeuroImage, 140, 150–162.
+%           localization and tES targeting. NeuroImage, 140, 150-162.
 %
 %       The New York Head (ICBM-NY) is copyright (C) 2015 Yu Huang (Andy),
 %       Lucas C. Parra and Stefan Haufe and licensed under GNU GPL 3.
@@ -74,7 +74,7 @@ montage = p.Results.montage;
 
 % loading the NY Head leadfield
 if exist('sa_nyhead.mat') ~= 2
-    error('SEREEGA:lf_generate_fromnyhead:fileNotFound', 'Could not find ICBM-NY leadfield file in the path.\nThis should be available at http://www.parralab.org/nyhead/sa_nyhead.mat')
+    error('SEREEGA:lf_generate_fromnyhead:fileNotFound', 'Could not find ICBM-NY leadfield file (sa_nyhead.mat) in the path.\nMake sure you have obtained the file, and that MATLAB can find it.\nIt should be available at https://parralab.org/nyhead')
 else
     load('sa_nyhead.mat', 'sa');
 end
