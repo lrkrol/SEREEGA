@@ -1,4 +1,4 @@
-% lf = lf_generate_fieldtrip(varargin)
+% lf = lf_generate_fromfieldtrip(varargin)
 %
 %       Generates a leadfield of a given resolution using FieldTrip,
 %       containing the electrodes indicated.
@@ -19,7 +19,8 @@
 % Out:  
 %       lf - the leadfield containing the following fields
 %            .leadfield   - the leadfield, containing projections in three
-%                           directions (xyz) for each source
+%                           directions (xyz) for each source, in a 
+%                           nchannels x nsources x 3 matrix
 %            .orientation - a default orientation for each soure. since
 %                           FieldTrip does not provide this, it is [1 1 1]
 %                           for each source.
@@ -98,7 +99,7 @@ end
 if ~isempty(montage)
     % taking channel labels from indicated montage
     labels = utl_get_montage(montage);
-else
+elseif isempty(labels)
     % taking all available EEG electrodes, i.e., excluding fiducials
     labels = setdiff(elec.label, {'RPA', 'LPA', 'Nz'});
 end
@@ -152,7 +153,8 @@ for i = 1:length(ftlf.leadfield)
 end
 leadfield = permute(leadfield, [2 1 3]);
 
-% preparing leadfield
+% preparing output
+lf = struct();
 lf.leadfield = leadfield;
 lf.orientation = zeros(size(leadfield, 2), 3);
 lf.pos = ftlf.pos(ftlf.inside,:);
