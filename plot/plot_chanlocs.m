@@ -1,13 +1,18 @@
 % h = plot_chanlocs(leadfield, varargin)
 %
-%       Plots the location of the given sources using EEGLAB's dipfit plot.
+%       Plots the location of the given sources using one of EEGLAB's 
+%       plotting functions. Note that in EEGLAB format, the nose points
+%       towards +x.
 %
 % In:
 %       leadfield - the leadfield from which to plot the sources
 %
 % Optional (key-value pairs):
+%       style - 'dipplot' or 'plain': wether to use EEGLAB's dipplot
+%               function for plotting, or plotchans3d. default: 'dipplot'
 %       newfig - (0|1) whether or not to open a new figure window.
-%                default: 1
+%                default: 1. note: 'plain' style always opens a new figure
+%                window.
 %       color - cell of color specifications, e.g. {'r', [0 1 0]}. source 
 %               colors will rotate through the given colors if the number
 %               given is less than the number of sources to plot. default
@@ -25,10 +30,12 @@
 %       >> lf = lf_generate_fromnyhead;
 %       >> plot_chanlocs(lf);
 % 
-%                    Copyright 2017 Laurens R Krol
+%                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-02-06 lrk
+%   - Added 'style' argument and plotchans3d call
 % 2017-04-27 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -53,6 +60,7 @@ p = inputParser;
 
 addRequired(p, 'leadfield', @isstruct);
 
+addParameter(p, 'style', 'dipplot', @ischar);
 addParameter(p, 'newfig', 1, @isnumeric);
 addParameter(p, 'color', {}, @iscell);
 addParameter(p, 'view', [90, 0], @isnumeric);
@@ -60,24 +68,31 @@ addParameter(p, 'view', [90, 0], @isnumeric);
 parse(p, leadfield, varargin{:})
 
 lf = p.Results.leadfield;
+style = p.Results.style;
 newfig = p.Results.newfig;
 color = p.Results.color;
-view = p.Results.view;
+viewpoint = p.Results.view;
+    
+if strcmp(style, 'dipplot')
+    if isempty(color)
+        color = {[1 1 1]};
+    end
 
-if isempty(color)
-    color = {[1 1 1]};
+    % getting location struct for call to dipplot
+    locs = struct();
+    for i = 1:length(lf.chanlocs)
+        locs(i).posxyz = [-lf.chanlocs(i).Y, lf.chanlocs(i).X, lf.chanlocs(i).Z];
+        locs(i).momxyz = [0 0 0];
+        locs(i).rv = 0;
+    end
+
+    % calling dipplot
+    if newfig, h = figure; else h = NaN; end
+    dipplot(locs, 'coordformat', 'MNI', 'color', color, 'gui', 'off', 'dipolesize', 20, 'view', viewpoint);
+elseif strcmp(style, 'plain')
+    % calling plotchans3d
+    plotchans3d([[lf.chanlocs.X ]' [lf.chanlocs.Y ]' [lf.chanlocs.Z ]'], {lf.chanlocs.labels}); 
+    view(viewpoint);
 end
-
-% getting location struct for call to dipplot
-locs = struct();
-for i = 1:length(lf.chanlocs)
-    locs(i).posxyz = [-lf.chanlocs(i).Y, lf.chanlocs(i).X, lf.chanlocs(i).Z];
-    locs(i).momxyz = [0 0 0];
-    locs(i).rv = 0;
-end
-
-% calling dipplot
-if newfig, h = figure; else h = NaN; end
-dipplot(locs, 'coordformat', 'MNI', 'color', color, 'gui', 'off', 'dipolesize', 20, 'view', view);
 
 end
