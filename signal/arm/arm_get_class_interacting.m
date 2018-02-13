@@ -39,22 +39,20 @@
 % Usage example:
 %       The following produces an EEGLAB dataset with 2 autoregressive
 %       source activations, one influencing the other, 10 cm apart, and 62
-%       pink noise sources.
+%       pink noise sources. This code roughly mimics the the connectivity
+%       benchmarking simulation framework proposed by Haufe and Ewald
+%       (2016), doi:10.1007/s10548-016-0498-y.
 %       >> epochs = struct('n', 10, 'srate', 1000, 'length', 1000);
 %       >> lf = lf_generate_fromnyhead('montage', 'BioSemi64');
 %       >> arm = arm_get_class_interacting(2, 10, 1, epochs, 1);
 %       >> armsourcelocs = lf_get_source_spaced(lf, 2, 100);
-%       >> armcomps = struct('source', num2cell(armsourcelocs));
-%       >> armcomps = utl_add_signal_tocomponent(arm, armcomps);
+%       >> armcomps = utl_create_component(armsourcelocs, arm, lf);
 %       >> noise = struct('color', 'pink', 'amplitude', 1);
 %       >> noise = utl_check_class(noise, 'type', 'noise');
-%       >> noisesourcelocs = lf_get_source_spaced(lf, 62, 25);
-%       >> noisecomps = struct('source', num2cell(noisesourcelocs));
-%       >> noisecomps = utl_add_signal_tocomponent(noise, noisecomps);
-%       >> components  = utl_check_component([armcomps, noisecomps], lf);
-%       >> data = generate_scalpdata(components, lf, epochs);
+%       >> noisesourcelocs = lf_get_source_random(lf, 500);
+%       >> noisecomps = utl_create_component(noisesourcelocs, noise, lf);
+%       >> data = generate_scalpdata([armcomps, noisecomps], lf, epochs);
 %       >> EEG = utl_create_eeglabdataset(data, epochs, lf);
-%       >> EEG = utl_add_icaweights_toeeglabdataset(EEG, components, lf);
 % 
 %                    Copyright 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

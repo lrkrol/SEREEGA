@@ -23,11 +23,10 @@
 %       EEG - reordered EEGLAB dataset structure
 %
 % Usage example:
-%       >> lf = lf_generate_fromnyhead();
-%       >> EEG1 = utl_create_eeglabdataset(rand(231, 512, 100), 512, ...
-%          'chanlocs', lf.chanlocs, 'xmin', -0.2, 'marker', 'event1');
-%       >> EEG2 = utl_create_eeglabdataset(rand(231, 512, 100), 512, ...
-%          'chanlocs', lf.chanlocs, 'xmin', -0.2, 'marker', 'event2');
+%       >> EEG1 = utl_create_eeglabdataset(rand(64, 512, 100), epochs, ...
+%                 leadfield, 'marker', 'event1');
+%       >> EEG2 = utl_create_eeglabdataset(rand(64, 512, 100), epochs, ...
+%                 leadfield, 'marker', 'event2');
 %       >> EEG = utl_reorder_eeglabdataset(pop_mergeset(EEG1, EEG2));
 % 
 %                    Copyright 2017 Laurens R Krol
