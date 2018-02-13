@@ -7,19 +7,22 @@
 %       signal - single struct containing an activation class, or 1-by-n 
 %                struct or cell containing n activation classes. When n=1,
 %                the same signal will be added to all components. When n=m,
-%                each signal n(i) will be added to component m(i). 
+%                each signal n(i) will be added to component m(i).
+%                alternatively, if m=1 and n>1, all signals will be added
+%                to the one component.
 %       component - 1-by-m struct containing the component(s) to which the
 %                   signal(s) should be added
 %
 % Out:  
 %       component - the updated component(s)
 % 
-%                    Copyright 2017 Laurens R Krol
+%                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
-% 2018-02-12 lrk
+% 2018-02-13 lrk
 %   - Added support for different signal types in cell array
+%   - Can now also add multiple signals to a single component
 % 2018-01-15 lrk
 %   - Added support for component structs that had no signal field yet
 % 2018-01-09 lrk
@@ -69,8 +72,24 @@ elseif length(signal) == length(component)
             end
         end
     end
+elseif length(signal) > 1 && length(component) == 1
+    for s = 1:length(signal)
+        if iscell(signal)
+            if ~isfield(component, 'signal')
+                component.signal = signal(s);
+            else
+                component.signal = [component.signal, signal(s)];
+            end
+        else
+            if ~isfield(component, 'signal')
+                component.signal = {signal(s)};
+            else
+                component.signal = [component.signal, {signal(s)}];
+            end
+        end
+    end
 else
-    error('SEREEGA:utl_add_signal_tocomponent:invalidFunctionArguments', 'length(signal) must be either 1 or equal to length(component)');
+    error('SEREEGA:utl_add_signal_tocomponent:invalidFunctionArguments', 'incompatible number of signals and components');
 end
 
 end
