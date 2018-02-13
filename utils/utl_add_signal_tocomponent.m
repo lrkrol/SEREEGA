@@ -4,10 +4,10 @@
 %       component(s) and returns the updated component variable.
 %
 % In:
-%       signal - 1-by-n struct containing either single signal activation
-%                class(es). When n=1, the same signal will be added to all
-%                components. When n=m, each signal n(i) will be added to
-%                component m(i).
+%       signal - single struct containing an activation class, or 1-by-n 
+%                struct or cell containing n activation classes. When n=1,
+%                the same signal will be added to all components. When n=m,
+%                each signal n(i) will be added to component m(i). 
 %       component - 1-by-m struct containing the component(s) to which the
 %                   signal(s) should be added
 %
@@ -18,6 +18,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-02-12 lrk
+%   - Added support for different signal types in cell array
 % 2018-01-15 lrk
 %   - Added support for component structs that had no signal field yet
 % 2018-01-09 lrk
@@ -54,9 +56,17 @@ elseif length(signal) == length(component)
     % each component gets one signal
     for c = 1:length(component)
         if ~isfield(component, 'signal')
-            component(c).signal = {signal(c)};
+            if iscell(signal)
+                component(c).signal = signal(c);
+            else
+                component(c).signal = {signal(c)};
+            end
         else
-            component(c).signal = [component(c).signal, {signal(c)}];
+            if iscell(signal)
+                component(c).signal = [component(c).signal, signal(c)];
+            else
+                component(c).signal = [component(c).signal, {signal(c)}];
+            end
         end
     end
 else
