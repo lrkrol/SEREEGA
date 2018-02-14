@@ -15,14 +15,18 @@
 %            does not change deviation values.
 %       slope - the slope value, relative to its base value. default []
 %               does not change slope values.
+%       overwrite - (1|0) whether or not to overwrite nonzero dv/slope
+%                   values. default: 1
 %
 % Out:  
 %       class - class struct with updated dv/slope fields
 % 
-%                    Copyright 2017 Laurens R Krol
+%                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-02-13 lrk
+%   - Added overwrite argument
 % 2017-11-03 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -49,12 +53,14 @@ addRequired(p, 'class', @isstruct);
 
 addParameter(p, 'dv', [], @isnumeric);
 addParameter(p, 'slope', [], @isnumeric);
+addParameter(p, 'overwrite', 1, @isnumeric);
 
 parse(p, class, varargin{:})
 
 class = p.Results.class;
 dv = p.Results.dv;
 slope = p.Results.slope;
+overwrite = p.Results.overwrite;
 
 % finding all class fields that end with 'Dv' or 'Slope'
 flds = fields(class);
@@ -62,17 +68,21 @@ for f = 1:length(flds)
     field = flds{f};
     if length(field) > 2 && strncmp(field(end-1:end), 'Dv', 2)
         if ~isempty(dv)
-            % setting Dv field to new value relative to base value
-            baseField = field(1:end-2);
-            baseValue = class.(baseField);
-            class.(field) = baseValue .* dv;
+            if ~(~overwrite && class.(field))
+                % setting Dv field to new value relative to base value
+                baseField = field(1:end-2);
+                baseValue = class.(baseField);
+                class.(field) = baseValue .* dv;
+            end
         end
     elseif length(field) > 5 && strncmp(field(end-4:end), 'Slope', 5)
         if ~isempty(slope)
-            % setting Slope field to new value relative to base value
-            baseField = field(1:end-5);
-            baseValue = class.(baseField);
-            class.(field) = baseValue .* slope;
+            if ~(~overwrite && class.(field))
+                % setting Slope field to new value relative to base value
+                baseField = field(1:end-5);
+                baseValue = class.(baseField);
+                class.(field) = baseValue .* slope;
+            end
         end
     end
 end
