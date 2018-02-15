@@ -87,11 +87,11 @@ resolution = p.Results.resolution;
 plotelecs = p.Results.plotelecs;
 
 % loading a standard template head model
-load('standard_vol.mat');
+load('headmodel-standard_vol.mat');
 
 % loading channel positions
 if isempty(chandef)
-    elec = ft_read_sens('standard_1005.elc');
+    elec = ft_read_sens('chanlocs-standard_1005.elc');
 else
     elec = chandef;
 end

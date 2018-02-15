@@ -6,21 +6,21 @@ arm_generate_signal
     this file is licensed under the MIT Licence
     used by arm_generate_signal_fromclass, arm_get_class_interacting
 
+chanlocs-standard_1005.elc
+    obtained from FieldTrip 170410.
+    http://www.fieldtriptoolbox.org
+    FieldTrip is licensed under the GNU GPL 3.
+    used by lf_generate_fromfieldtrip.m
+
+headmodel-standard_vol.mat
+    obtained from EEGLAB v13.6.5b.
+    https://sccn.ucsd.edu/eeglab
+    EEGLAB is licensed under the GNU GPL 2.
+    used by lf_generate_fromfieldtrip.m
+
 noise_generate_signal_coloreduniform.m
     original author: Miroslav Stoyanov, Oak Ridge National Laboratory,
                      mkstoyanov@gmail.com. 
     obtained from https://people.sc.fsu.edu/~jburkardt/m_src/cnoise/cnoise.html
     this file is licensed under the GNU LGPL 3.
     used by noise_generate_signal_fromclass.m
-
-standard_1005.elc
-    obtained from FieldTrip 170410.
-    http://www.fieldtriptoolbox.org
-    FieldTrip is licensed under the GNU GPL 3.
-    used by lf_generate_fromfieldtrip.m
-
-standard_vol.mat
-    obtained from EEGLAB v13.6.5b.
-    https://sccn.ucsd.edu/eeglab
-    EEGLAB is licensed under the GNU GPL 2.
-    used by lf_generate_fromfieldtrip.m
