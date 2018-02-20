@@ -46,7 +46,7 @@ addRequired(p, 'shift', @isnumeric);
 
 parse(p, classorcomp, shift);
 
-classorcomp = p.Results.class;
+classorcomp = p.Results.classorcomp;
 shift = p.Results.shift;
 
 if utl_iscomponent(classorcomp)
@@ -62,7 +62,6 @@ if utl_iscomponent(classorcomp)
         end
     end
 else
-
     % finding all class fields that end with 'Latency'
     flds = fields(classorcomp);
     for f = 1:length(flds)
