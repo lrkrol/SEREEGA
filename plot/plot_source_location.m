@@ -21,6 +21,10 @@
 %              [ 0,  0] = coronal (default: [90, 0]
 %       projlines - (0|1) whether or not to plot lines connecting to the 2D
 %                   projection. default: 0
+%       allviews - (0|1), whether or not to plot all three primary views in
+%                  one figure. if true, ignores 'view' and 'newfig'; opens
+%                  a new window with coronal, sagittal, and axial views
+%                  next to each other. default: 0
 %
 % Out:  
 %       h - handle of the generated figure
@@ -29,10 +33,12 @@
 %       >> lf = lf_generate_fromnyhead;
 %       >> plot_source_location(1:25:size(lf.leadfield, 2), lf);
 % 
-%                    Copyright 2017 Laurens R Krol
+%                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-02-20 lrk
+%   - Added allviews argument
 % 2017-04-24 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -62,6 +68,7 @@ addParameter(p, 'newfig', 1, @isnumeric);
 addParameter(p, 'color', {}, @iscell);
 addParameter(p, 'view', [90, 0], @isnumeric);
 addParameter(p, 'projlines', 0, @isnumeric);
+addParameter(p, 'allviews', 0, @isnumeric);
 
 parse(p, sourceIdx, leadfield, varargin{:})
 
@@ -71,24 +78,48 @@ newfig = p.Results.newfig;
 color = p.Results.color;
 view = p.Results.view;
 if p.Results.projlines == 1, projlines = 'on';
-else projlines = 'off'; end
+else, projlines = 'off'; end
+allviews = p.Results.allviews;
 
-if isempty(color)
-    % setting default, somewhat varying "brainy" colours
-    for i = .5:.025:.9, color = [color, {[1, i, i]}]; end
-    color = color([1, 1+randperm(length(color)-1)]);
+if allviews
+    % organising figure, calling self three times
+    h = figure();
+
+    subplot(1,3,1);
+    plot_source_location(sourceIdx, lf, 'newfig', 0, 'view', [0 0]);
+    pos = get(gca, 'Position');
+    set(gca, 'Position', [0, pos(2), 1/3.5, pos(4)]);
+
+    subplot(1,3,3);
+    plot_source_location(sourceIdx, lf, 'newfig', 0, 'view', [90 90]);
+    pos = get(gca, 'Position');
+    set(gca, 'Position', [2/3, pos(2), 1/3.5, pos(4)]);
+
+    subplot(1,3,2);
+    plot_source_location(sourceIdx, lf, 'newfig', 0);
+    pos = get(gca, 'Position');
+    set(gca, 'Position', [1/3, pos(2), 1/3.5, pos(4)]);
+
+    pos = get(h, 'Position');
+    set(h, 'Position', pos .* [1 1 2 1], 'InvertHardcopy', 'off', 'Color', [0 0 0]);
+else
+    if isempty(color)
+        % setting default, somewhat varying "brainy" colours
+        for i = .5:.025:.9, color = [color, {[1, i, i]}]; end
+        color = color([1, 1+randperm(length(color)-1)]);
+    end
+
+    % getting location struct for call to dipplot
+    locs = struct();
+    for i = sourceIdx
+        locs(i).posxyz = lf.pos(i,:);
+        locs(i).momxyz = [0 0 0];
+        locs(i).rv = 0;
+    end
+
+    % calling dipplot
+    if newfig, h = figure; else h = NaN; end
+    dipplot(locs, 'coordformat', 'MNI', 'color', color, 'gui', 'off', 'dipolesize', 20, 'view', view, 'projlines', projlines);
 end
-
-% getting location struct for call to dipplot
-locs = struct();
-for i = sourceIdx
-    locs(i).posxyz = lf.pos(i,:);
-    locs(i).momxyz = [0 0 0];
-    locs(i).rv = 0;
-end
-
-% calling dipplot
-if newfig, h = figure; else h = NaN; end
-dipplot(locs, 'coordformat', 'MNI', 'color', color, 'gui', 'off', 'dipolesize', 20, 'view', view, 'projlines', projlines);
 
 end
