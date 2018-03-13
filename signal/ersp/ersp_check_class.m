@@ -45,9 +45,10 @@
 %       A complete ERSP class definition includes the following fields:
 %
 %         .type:                 class type (must be 'ersp')
-%         .frequency:            base frequency, or [low, high] in Hz
-%         .frequencyDv:          frequency or [low, high] deviation in Hz
-%         .frequencySlope:       frequency or [low, high] slope in Hz
+%         .frequency:            base frequency, or [stopband1, passband1,
+%                                [passband2, stopband2] edges in Hz
+%         .frequencyDv:          frequency or edges deviation in Hz
+%         .frequencySlope:       frequency or edges slope in Hz
 %         .phase:                base frequency phase at the start of the
 %                                epoch, between 0 and 1, or [] for a random
 %                                phase
