@@ -68,7 +68,7 @@ for f = 1:length(flds)
     field = flds{f};
     if length(field) > 2 && strncmp(field(end-1:end), 'Dv', 2)
         if ~isempty(dv)
-            if ~(~overwrite && class.(field))
+            if ~(~overwrite & class.(field)) %#ok<AND2>
                 % setting Dv field to new value relative to base value
                 baseField = field(1:end-2);
                 baseValue = class.(baseField);
@@ -77,7 +77,7 @@ for f = 1:length(flds)
         end
     elseif length(field) > 5 && strncmp(field(end-4:end), 'Slope', 5)
         if ~isempty(slope)
-            if ~(~overwrite && class.(field))
+            if ~(~overwrite & class.(field)) %#ok<AND2>
                 % setting Slope field to new value relative to base value
                 baseField = field(1:end-5);
                 baseValue = class.(baseField);
