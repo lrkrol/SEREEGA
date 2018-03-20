@@ -82,4 +82,6 @@ end
 EEG.data = EEG.data(:,:,order);
 [EEG.event.type] = types{order};
 
+EEG.setname = 'SEREEGA reordered dataset';
+
 end

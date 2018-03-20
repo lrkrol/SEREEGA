@@ -86,7 +86,7 @@ end
 
 % creating required fields and corresponding values where available
 EEG = struct(); 
-EEG.setname = '';
+EEG.setname = 'SEREEGA dataset';
 EEG.filename = '';
 EEG.filepath = '';
 EEG.nbchan = size(data, 1);
