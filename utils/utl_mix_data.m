@@ -1,4 +1,4 @@
-% [data, db] = utl_mix_data(signal, noise, snr)
+% [data, db, signal, noise] = utl_mix_data(signal, noise, snr)
 %
 %       Mixes given signal and noise data matrices to a certain
 %       signal-to-noise ratio specification.
@@ -17,6 +17,8 @@
 % Out:  
 %       data - the data mixed to the given SNR
 %       db - the given SNR in dB
+%       signal - the orginal signal as scaled by this method
+%       noise - the original noise as scaled by this method
 %
 % Usage example:
 %       >> signal = ersp_generate_signal(10, 1, [], 100, 1000);
@@ -44,7 +46,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function [data, db] = utl_mix_data(signal, noise, snr)
+function [data, db, signal, noise] = utl_mix_data(signal, noise, snr)
 
 if ~all(size(signal) == size(noise))
     error('SEREEGA:utl_mix_data:invalidFunctionArguments', 'signal and noise matrices must be of the same size');
@@ -68,12 +70,18 @@ signal = snr .* signal ./ norm(signal, 'fro');
 noise = (1-snr) .* noise ./ norm(noise, 'fro');
 data = signal + noise;
 
-% attempting to keep similar overall amplitude
-data = data .* meanamplitude / mean(abs(data(:)));
+% attempting to keep similar overall amplitude;
+% returning original signals at same scale
+scale = meanamplitude / mean(abs(data(:)));
+data = data .* scale;
+signal = signal .* scale;
+noise = noise .* scale;
 
 if numel(originalsize) > 2
     % reshaping data back to epoched form
     data = reshape(data, originalsize);
+    signal = reshape(signal, originalsize);
+    noise = reshape(noise, originalsize);
 end
 
 % calculating dB value
