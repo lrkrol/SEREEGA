@@ -69,6 +69,7 @@ if length(component) > 1
     nrows = ceil(length(component)/ncols);
     for c = 1:length(component)
         subplot(nrows, ncols, c);
+        title(c);
         plot_component_projection(component(c), leadfield, 'colormap', cmap, 'newfig', 0);
     end
 else
@@ -81,6 +82,7 @@ else
 
     if newfig, h = figure; else h = NaN; end
     topoplot(meanproj, leadfield.chanlocs, 'colormap', cmap);
+    camzoom(1.25);
 end
 
 end
