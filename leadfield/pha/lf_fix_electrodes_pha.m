@@ -1,4 +1,4 @@
-% [chanlocs, headmidpoint, rotationX, rotationZ, shift] = fix_electrodes(atlas, layout)
+% [chanlocs, headmidpoint, rotationX, rotationZ, shift] = lf_fix_electrodes_pha(atlas, layout)
 %       
 %       Fixes the electrode recording such that the electrode grid fits
 %       onto the standard head model
@@ -36,7 +36,7 @@
 %       shift             - the hard-coded method to fit the electrode
 %                           grid onto the standard EEGLAB head model
 % Usage example:
-%       >> [chans, hm, A1, A2, shift] = fix_Electrodes('8to18', '2562')
+%       >> [ch, hm, A1, A2, shift] = lf_fix_electrodes_pha('8to18', '2562')
 % 
 %                    Copyright 2018 Juliane Pawlitzki
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
@@ -59,7 +59,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses
 
-function [chans, hm, A1, A2, shift] = fix_electrodes(atlas, layout)
+function [chans, hm, A1, A2, shift] = lf_fix_electrodes_pha(atlas, layout)
 %% preparation
 
 if strcmp(layout,'2562')

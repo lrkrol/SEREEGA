@@ -131,7 +131,7 @@ if any([exist(sensorfile), exist(dipolesfile), exist(leadfieldfile)] ~= 2)
 end
 
 % loading transformed electrode positions, removing fiducials and Cz
-[chanlocs, hm, A1, A2, shift] = fix_electrodes(atlas, layout);
+[chanlocs, hm, A1, A2, shift] = lf_fix_electrodes_pha(atlas, layout);
 [~, chanidx] = ismember({'FidNz', 'FidT9', 'FidT10', 'Cz'}, {chanlocs.labels});
 chanidx = chanidx(~~chanidx);
 chanlocs(chanidx) = [];
