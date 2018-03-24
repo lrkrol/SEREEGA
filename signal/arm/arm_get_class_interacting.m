@@ -58,6 +58,9 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-03-23 lrk
+%   - Fixed bug where classes could not be verified due to field
+%     inconsistencies
 % 2018-01-15 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -111,24 +114,24 @@ samples = floor(epochs.srate * epochs.length/1000);
 
 % simulating epochs
 data = zeros(numSources, samples, epochs.n);
+w = waitbar(0, 'Pre-generating epochs ...');
 for e = 1:epochs.n
+    waitbar(e/epochs.n, w);  
     data(:,:,e) = arm_generate_signal(numSources, samples, order, interactions, sigma, tensor);
 end
+delete(w);
 
 % delegating signals to data classes
 for n = 1:numSources
-    arm(n) = struct('type', 'data', ...
+    arm(n) = utl_check_class( ...
+                struct('type', 'data', ...
                     'data', squeeze(data(n,:,:))', ...
                     'index', {{'e', ':'}}, ...
                     'amplitude', amplitude, ...
                     'amplitudeDv', amplitudeDv, ...
                     'amplitudeSlope', amplitudeSlope, ...
                     'probability', probability, ...
-                    'probabilitySlope', probabilitySlope);
-end
-
-for n = 1:numSources
-    arm(n) = utl_check_class(arm(n));
+                    'probabilitySlope', probabilitySlope));
 end
 
 if plotInteractions
