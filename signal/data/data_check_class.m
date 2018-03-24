@@ -20,7 +20,11 @@
 %                                      n - maximum epoch number
 %                                for example, an index of {'e', ':'}
 %                                returns the e-th row for each epoch.
-%         .amplitude             the signal's maximum absolute amplitude
+%         .amplitudeType         'relative' or 'absolute', indicating
+%                                the behaviour of the 'amplitude' parameter
+%         .amplitude             the signal's maximum absolute amplitude,
+%                                or its amplitude relative to the given
+%                                data
 %         .amplitudeDv           the amplitude's deviation
 %         .amplitudeSlope        the amplitude's slope
 %         .probability:          0-1 scalar indicating probability of
@@ -40,10 +44,12 @@
 %       >> dataclass.amplitude = 1;
 %       >> dataclass = data_check_class(dataclass);
 % 
-%                    Copyright 2017 Laurens R Krol
+%                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-03-23 lrk
+%   - Added amplitudeType argument
 % 2017-10-23 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -77,6 +83,13 @@ end
 % adding fields / filling in defaults
 if ~isfield(class, 'type') || isempty(class.type)
     class.type = 'data'; end
+
+if ~isfield(class, 'amplitudeType')
+    class.amplitudeType = 'absolute';
+elseif ~any(strcmp(class.amplitudeType, {'absolute', 'relative'}))
+    warning('indicated amplitudeType not recognised; reverting to ''absolute''');
+    class.amplitudeType = 'absolute';
+end
 
 if ~isfield(class, 'amplitudeDv')
     class.amplitudeDv = 0; end

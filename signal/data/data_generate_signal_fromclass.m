@@ -29,10 +29,12 @@
 %       >> signal = data_generate_signal_fromclass(dataclass, epochs, ... 
 %                   'epochNumber', 5);
 % 
-%                    Copyright 2017 Laurens R Krol
+%                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-03-23 lrk
+%   - Added amplitudeType argument
 % 2017-10-24 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -98,7 +100,9 @@ end
 
 % scaling data to indicated (variable) amplitude
 amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
-signal = utl_normalise(signal, amplitude);
+if strcmp(class.amplitudeType, 'absolute')
+    signal = utl_normalise(signal, amplitude);
+end
 
 % ensuring row vector
 if iscolumn(signal), signal = signal'; end
