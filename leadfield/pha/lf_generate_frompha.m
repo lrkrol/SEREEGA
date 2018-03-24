@@ -1,23 +1,27 @@
 % lf = lf_generate_frompha(atlas, layout, varargin)
 %
-%       Generates a leadfield based on a Pediatric Head Atlas (v2),
+%       Generates a lead field based on a Pediatric Head Atlas (v2),
 %       containing the electrodes indicated.
 %
 %       Note that the coordinates given by the original Pediatric Head 
 %       Atlases do not correspond to a standard coordinate space. This
 %       script calls fix_electrodes to largely correct for this by rotating
 %       and shifting both the electrode and the source coordinates to 
-%       approximately fit a standard MNI model. Since the Atlases are based
-%       on real recordings, the final given models may still not be 
+%       approximately fit the MNI standard. Since the Atlases are based
+%       on real recordings, the corrected models may still not be 
 %       entirely symmetrical. You can use the plot_headmodel function to 
 %       verify this for yourself. It is particularly visible in the '2562' 
-%       layouts, where the electrodes cover the entire head shape. 
+%       layouts, where the electrodes cover the entire head shape. Because
+%       of this, and because the pediatric models are of course smaller 
+%       than the adult MNI standard, the plot_chanlocs_dipplot and
+%       plot_source_location_dipplot functions are not recommended for
+%       these models.
 %       
-%       Assumes you have the requested Pediatric Head Atlas directories in
-%       your MATLAB path. In particular, it needs the respective 
-%       LeadFieldMatrix_*, Sensors_*.txt, and Triples_Dipoles_* files. 
-%       As of 2018-02-05, the Pediatric Head Atlases are available upon 
-%       request at https://pedeheadmod.net
+%       This script assumes you have the requested Pediatric Head Atlas
+%       directories in your MATLAB path. In particular, it needs the
+%       respective LeadFieldMatrix_*, Sensors_*.txt, and Triples_Dipoles_*
+%       files. As of 2018-02-05, the Pediatric Head Atlases are available 
+%       upon request at https://pedeheadmod.net
 %       
 %       Pediatric Head Atlas publication:
 %           Song, J., Morgan, K., Turovets, S., Li, K., Davey, C.,
@@ -55,7 +59,8 @@
 %            .chanlocs    - channel information in EEGLAB format
 %
 % Usage example:
-%       >> lf = lf_generate_frompha('8to18', '2562')
+%       >> lf = lf_generate_frompha('8to18', '2562');
+%       >> plot_headmodel(lf, 'labels', 0);
 % 
 %                    Copyright 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
