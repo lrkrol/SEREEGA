@@ -1,7 +1,7 @@
-% h = plot_chanlocs_dipfit(leadfield, varargin)
+% h = plot_chanlocs_dipplot(leadfield, varargin)
 %
-%       Plots the location of the given sources using one of EEGLAB's 
-%       plotting functions. 
+%       Plots the location of the given sources using EEGLAB's dipplot
+%       function. 
 %
 %       Note that there must be a reasonable fit with the used lead field's
 %       head model and EEGLAB's standard head model for this plot to be
@@ -37,7 +37,7 @@
 %                    Berlin Institute of Technology
 
 % 2018-03-23 lrk
-%   - Removed 'style' argument and renamed to plot_chanlocs_dipfit;
+%   - Removed 'style' argument and renamed to plot_chanlocs_diplot;
 %     plot_headmodel now covers this script's previous functionality
 % 2018-02-06 lrk
 %   - Added 'style' argument and plotchans3d call
@@ -58,7 +58,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function h = plot_chanlocs_dipfit(leadfield, varargin)
+function h = plot_chanlocs_dipplot(leadfield, varargin)
 
 % parsing input
 p = inputParser;

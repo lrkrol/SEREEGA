@@ -1,6 +1,7 @@
-% h = plot_source_location_dipfit(sourceIdx, leadfield, varargin)
+% h = plot_source_location_dipplot(sourceIdx, leadfield, varargin)
 %
-%       Plots the location of the givensources using EEGLAB's dipfit plot.
+%       Plots the location of the givensources using EEGLAB's dipplot
+%       function.
 %
 %       Note that there must be a reasonable fit with the used lead field's
 %       head model and EEGLAB's standard head model for this plot to be
@@ -45,7 +46,7 @@
 %                    Berlin Institute of Technology
 
 % 2018-03-23 lrk
-%   - Renamed to plot_source_location_dipfit in favour of new
+%   - Renamed to plot_source_location_dipplot in favour of new
 %     plot_source_location script
 % 2018-02-20 lrk
 %   - Added allviews argument
@@ -66,7 +67,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function h = plot_source_location_dipfit(sourceIdx, leadfield, varargin)
+function h = plot_source_location_dipplot(sourceIdx, leadfield, varargin)
 
 % parsing input
 p = inputParser;
