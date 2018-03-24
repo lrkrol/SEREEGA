@@ -30,7 +30,7 @@
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead;
-%       >> plot_chanlocs_dipfit(lf);
+%       >> plot_chanlocs_dipplot(lf);
 % 
 %                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

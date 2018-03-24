@@ -39,7 +39,7 @@
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead;
-%       >> plot_source_location_dipfit(1:25:size(lf.leadfield, 2), lf);
+%       >> plot_source_location_dipplot(1:25:size(lf.leadfield, 2), lf);
 % 
 %                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
