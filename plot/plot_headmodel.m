@@ -8,8 +8,11 @@
 %
 % Optional inputs (key-value pairs):
 %       labels - whether or not to plot electrode labels (0|1, default: 1)
-%       style - 'scatter' plots all brain sources individually; 'chull'
-%               plots the convex hull of these sources (default: 'scatter')
+%       style - 'scatter' plots all brain sources individually;
+%               'boundary' plots the boundary surface of these sources
+%               (default: 'scatter')
+%       shrink - shrink factor for the boundary calculation, ranging from 0
+%                (convex hull) to 1 (tighest boundaries). default: 1
 %       view - viewpoint specification in terms of azimuth and elevation,
 %              as per MATLAB's view(), e.g.
 %              [ 0, 90] = axial
@@ -53,6 +56,7 @@ addRequired(p, 'leadfield', @isstruct);
 
 addParameter(p, 'labels', 1, @isnumeric);
 addParameter(p, 'style', 'scatter', @ischar);
+addParameter(p, 'shrink', 1, @isnumeric);
 addParameter(p, 'view', [120 20], @isnumeric);
 
 parse(p, leadfield, varargin{:})
@@ -60,6 +64,7 @@ parse(p, leadfield, varargin{:})
 leadfield = p.Results.leadfield;
 labels = p.Results.labels;
 style = p.Results.style;
+shrink = p.Results.shrink;
 viewpoint = p.Results.view;
 
 % drawing figure
@@ -76,11 +81,9 @@ if strcmp(style, 'scatter')
     color = [ones(1, size(leadfield.pos, 1)); linspace(.3, .7, size(leadfield.pos,1)); linspace(.3, .7, size(leadfield.pos,1))]';
     color = color(randperm(length(color)),:);
     scatter3(leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3), 10, color, 'filled');
-elseif strcmp(style, 'chull')
-    % thanks to gnovice via https://stackoverflow.com/questions/5492806/
-    DT = delaunayTriangulation(leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3));
-    hullFacets = convexHull(DT);
-    trisurf(hullFacets, DT.Points(:,1), DT.Points(:,2), DT.Points(:,3), 'FaceColor', [1 .75, .75], 'EdgeColor', 'none')
+elseif strcmp(style, 'boundary')
+    k = boundary(leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3), shrink);
+    trisurf(k, leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3), 'FaceColor', [1 .75, .75], 'EdgeColor', 'none')
     light('Position',[1 1 1],'Style','infinite', 'Color', [1 .75 .75]);
     light('Position',[-1 -1 -1],'Style','infinite', 'Color', [.5 .25 .25]);
     material dull ;
