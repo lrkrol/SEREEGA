@@ -43,7 +43,7 @@ end
 % generating winv by putting all components' projection patterns in one matrix
 winv = zeros(length(leadfield.chanlocs), length(components));
 for c = 1:length(components)
-    winv(:,c) = lf_get_projection(components(c).source, leadfield, 'orientation', components(c).orientation)';
+    winv(:,c) = lf_get_projection(leadfield, components(c).source, 'orientation', components(c).orientation)';
 end
 
 % generating w by inverting winv

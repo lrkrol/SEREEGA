@@ -1,11 +1,11 @@
-% scalpdata = lf_project_signal(signal, leadfield, sourceIdx, orientation, varargin)
+% scalpdata = lf_project_signal(leadfield, signal, sourceIdx, orientation, varargin)
 %
 %       Projects an activation signal through the indicated leadfield using
 %       the indicated source and orientation.
 %
 % In:
-%       signal - 1-by-n array, the activation signal to be projected
 %       leadfield - a leadfield struct
+%       signal - 1-by-n array, the activation signal to be projected
 %       sourceIdx - source index of the source in the leadfield
 %       orientation - [x, y, z] orientation of the source to use
 %
@@ -25,12 +25,14 @@
 %       >> s.peakLatency = 200; s.peakWidth = 100; s.peakAmplitude = 1;
 %       >> s = utl_check_class(s, 'type', 'erp');
 %       >> s = erp_generate_signal_fromclass(s, epochs, 1);
-%       >> scalpdata = lf_project_signal(s, lf, 1, [1 1 0]);
+%       >> scalpdata = lf_project_signal(lf, s, 1, [1 1 0]);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-03-23 lrk
+%   - Changed argument order for consistency
 % 2017-08-03 lrk
 %   - Switched normalisation defaults to 0
 % 2017-06-14 First version
@@ -50,23 +52,23 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function scalpdata = lf_project_signal(signal, leadfield, sourceIdx, orientation, varargin)
+function scalpdata = lf_project_signal(leadfield, signal, sourceIdx, orientation, varargin)
 
 % parsing input
 p = inputParser;
 
-addRequired(p, 'signal', @isnumeric);
 addRequired(p, 'leadfield', @isstruct);
+addRequired(p, 'signal', @isnumeric);
 addRequired(p, 'sourceIdx', @isnumeric);
 addRequired(p, 'orientation', @isnumeric);
 
 addParameter(p, 'normaliseLeadfield', 0, @isnumeric);
 addParameter(p, 'normaliseOrientation', 0, @isnumeric);
 
-parse(p, signal, leadfield, sourceIdx, orientation, varargin{:})
+parse(p, leadfield, signal, sourceIdx, orientation, varargin{:})
 
-signal = p.Results.signal;
 leadfield = p.Results.leadfield;
+signal = p.Results.signal;
 sourceIdx = p.Results.sourceIdx;
 orientation = p.Results.orientation;
 normaliseLeadfield = p.Results.normaliseLeadfield;

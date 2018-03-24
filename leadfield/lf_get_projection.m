@@ -1,14 +1,14 @@
-% projection = lf_get_projection(sourceIdx, leadfield, varargin)
+% projection = lf_get_projection(leadfield, sourceIdx, varargin)
 %
 %       Returns the (mean) projection matrix of (a) given source(s) in the 
 %       given leadfield, using the optionally given orientation and 
 %       normalisation arguments.
 %
 % In:
+%       leadfield - the leadfield from which to obtain the projection
 %       sourceIdx - single source index or array of source indices from the 
 %                   leadfield. in case of an array, the mean projection of
 %                   all sources will be returned.
-%       leadfield - the leadfield from which to obtain the projection
 %
 % Optional (key-value pairs):
 %       orientation - [x, y, z] orientation of the source to use
@@ -23,12 +23,14 @@
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead;
-%       >> projection = lf_get_projection(1, lf, 'orientation', [1 1 0]);
+%       >> projection = lf_get_projection(lf, 1, 'orientation', [1 1 0]);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-03-23 lrk
+%   - Changed argument order for consistency
 % 2017-10-26 lrk
 %   - Fixed issue where the wrong orientation was passed in recursive mode
 % 2017-10-19 lrk
@@ -54,19 +56,19 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function projection = lf_get_projection(sourceIdx, leadfield, varargin)
+function projection = lf_get_projection(leadfield, sourceIdx, varargin)
 
 % parsing input
 p = inputParser;
 
-addRequired(p, 'sourceIdx', @isnumeric);
 addRequired(p, 'leadfield', @isstruct);
+addRequired(p, 'sourceIdx', @isnumeric);
 
 addParameter(p, 'orientation', [], @isnumeric);
 addParameter(p, 'normaliseLeadfield', 0, @isnumeric);
 addParameter(p, 'normaliseOrientation', 0, @isnumeric);
 
-parse(p, sourceIdx, leadfield, varargin{:})
+parse(p, leadfield, sourceIdx, varargin{:})
 
 leadfield = p.Results.leadfield;
 sourceIdx = p.Results.sourceIdx;

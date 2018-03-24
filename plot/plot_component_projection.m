@@ -76,7 +76,7 @@ else
     % getting mean projection of all sources
     meanproj = [];
     for s = 1:length(component.source)
-        meanproj(:,s) = lf_get_projection(component.source(s), leadfield, 'orientation', component.orientation(s,:));
+        meanproj(:,s) = lf_get_projection(leadfield, component.source(s), 'orientation', component.orientation(s,:));
     end
     meanproj = mean(meanproj,2);
 
