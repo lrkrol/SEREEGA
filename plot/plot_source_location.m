@@ -4,8 +4,8 @@
 %       lead field's brain's boundaries. 
 %
 %       The accuracy of this estimate depends primarily on the resolution
-%       of the lead field, i.e., the number of sources present it. Use the
-%       'shrink' argument to vary the estimate's edge sensitivity. 
+%       of the lead field, i.e., the number of sources present in it. Use
+%       the 'shrink' argument to vary the estimate's edge sensitivity.
 %
 % In:
 %       sourceIdx - 1-by-n array containing the index/indices of the 
@@ -16,7 +16,7 @@
 %       newfig - (0|1) whether or not to open a newfigure window.
 %                default: 1
 %       shrink - shrink factor for the boundary calculation, ranging from 0
-%                (convex hull) to 1 (tighest boundaries). default: .5
+%                (convex hull) to 1 (tightest boundaries). default: .5
 %       mode - '2d' plots coronal, sagittal, and axial views of the brain;
 %              '3d' plots a 3D view (default: '2d')
 %       view - viewpoint specification in terms of azimuth and elevation,
@@ -36,7 +36,7 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
-% 2017-03-23 First version
+% 2018-03-23 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
 
@@ -90,7 +90,7 @@ if strcmp(mode, '3d')
     light('Position',[-1 -1 -1],'Style','infinite', 'Color', [.5 .25 .25]);
     scatter3(leadfield.pos(sourceIdx,1), leadfield.pos(sourceIdx,2), leadfield.pos(sourceIdx,3), markersize, sourcecolour, 'fill');
     material dull;
-    xlabel('X'); ylabel('Y'); xlabel('X');
+    xlabel('X'); ylabel('Y'); zlabel('Z');
     axis equal;
     alpha(s, .25);
     view(viewpoint);

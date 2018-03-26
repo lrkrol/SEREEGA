@@ -1,7 +1,9 @@
 % h = plot_headmodel(leadfield, varargin)
 %
 %       Plots both the sources and the electrodes from the given lead
-%       field, illustrating the head model as a whole.
+%       field, illustrating the head model as a whole. The sources can be
+%       plotted either all individually as points in a scatter plot, or as
+%       a 3D boundary estimated from these points.
 %
 % In:
 %       leadfield - the lead field to visualise
@@ -24,7 +26,7 @@
 %
 % Usage example:
 %       >> lf = lf_generate_frompha('8to18', '2562');
-%       >> plot_headmodel(lf, 'labels', 0, 'style', 'chull');
+%       >> plot_headmodel(lf, 'labels', 0, 'style', 'boundary');
 % 
 %                    Copyright 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
@@ -83,7 +85,7 @@ if strcmp(style, 'scatter')
     scatter3(leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3), 10, color, 'filled');
 elseif strcmp(style, 'boundary')
     k = boundary(leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3), shrink);
-    trisurf(k, leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3), 'FaceColor', [1 .75, .75], 'EdgeColor', 'none')
+    trisurf(k, leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3), 'FaceColor', [1 .75, .75], 'EdgeColor', 'none');
     light('Position',[1 1 1],'Style','infinite', 'Color', [1 .75 .75]);
     light('Position',[-1 -1 -1],'Style','infinite', 'Color', [.5 .25 .25]);
     material dull ;
