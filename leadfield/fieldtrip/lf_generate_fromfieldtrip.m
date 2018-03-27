@@ -39,6 +39,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-03-26 lrk
+%   - Set inwardshift to 0 and improved efficiency
 % 2018-01-25 lrk
 %   - Removed fiducials from automatically loaded channel labels
 % 2017-09-29 lrk
@@ -119,8 +121,8 @@ elec.label = elec.label(chanidx);
 
 if plotelecs
     figure; hold on;
-    ft_plot_mesh(vol.bnd(1), 'edgecolor', 'none', 'facealpha' ,0.8, 'facecolor', [0.6 0.6 0.8]); 
-    ft_plot_sens(elec,'style', 'sk');  
+    ft_plot_mesh(vol.bnd(1), 'edgecolor', 'none', 'facealpha' ,0.8, 'facecolor', [0.6 0.6 0.8]);
+    ft_plot_sens(elec,'style', 'sk');
 end
 
 % preparing the source model
@@ -128,7 +130,7 @@ cfg = [];
 cfg.grid.unit = 'mm';
 cfg.grid.resolution = resolution;
 cfg.grid.tight = 'yes';
-cfg.inwardshift = -15;
+cfg.inwardshift = 0;
 cfg.headmodel = vol;
 cfg.elec = elec;
 template_grid = ft_prepare_sourcemodel(cfg);
@@ -143,15 +145,11 @@ ftlf = ft_prepare_leadfield(cfg);
 
 % removing sources outside of the head,
 % reshaping leadfield
-leadfield = [];
-lfidx = 1;
+ftlf.leadfield = ftlf.leadfield(~cellfun(@isempty, ftlf.leadfield));
+leadfield = zeros(size(ftlf.leadfield{1}, 1), size(ftlf.leadfield, 2), 3);
 for i = 1:length(ftlf.leadfield)
-    if ftlf.inside(i)
-        leadfield(lfidx,:,:) = ftlf.leadfield{i};
-        lfidx = lfidx + 1; 
-    end
+    leadfield(:,i,:) = ftlf.leadfield{i};
 end
-leadfield = permute(leadfield, [2 1 3]);
 
 % preparing output
 lf = struct();
