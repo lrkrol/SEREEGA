@@ -8,11 +8,11 @@
 %       noise - matrix containing the noise, of the same size as signal
 %       snr - scalar between 0-1 indicating the desired signal-to-noise
 %             ratio, where (approximately)
-%             0   = -Inf dB, signal only
+%             0   = -Inf dB, noise only
 %             1/3 = -6 dB
 %             1/2 = 0 dB
 %             2/3 = +6 dB
-%             1   = +Inf dB, noise only; etc.
+%             1   = +Inf dB, signal only; etc.
 %
 % Out:  
 %       data - the data mixed to the given SNR
