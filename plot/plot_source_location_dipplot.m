@@ -97,17 +97,17 @@ if allviews
     h = figure();
 
     subplot(1,3,1);
-    plot_source_location(sourceIdx, lf, 'newfig', 0, 'view', [0 0]);
+    plot_source_location_dipplot(sourceIdx, lf, 'newfig', 0, 'view', [0 0]);
     pos = get(gca, 'Position');
     set(gca, 'Position', [0, pos(2), 1/3.5, pos(4)]);
 
     subplot(1,3,3);
-    plot_source_location(sourceIdx, lf, 'newfig', 0, 'view', [90 90]);
+    plot_source_location_dipplot(sourceIdx, lf, 'newfig', 0, 'view', [90 90]);
     pos = get(gca, 'Position');
     set(gca, 'Position', [2/3, pos(2), 1/3.5, pos(4)]);
 
     subplot(1,3,2);
-    plot_source_location(sourceIdx, lf, 'newfig', 0);
+    plot_source_location_dipplot(sourceIdx, lf, 'newfig', 0);
     pos = get(gca, 'Position');
     set(gca, 'Position', [1/3, pos(2), 1/3.5, pos(4)]);
 
