@@ -83,7 +83,7 @@ end
 if numel(sourceIdx) > 1
     % iteratively calling this script, returning mean projection
     for s = 1:numel(sourceIdx)
-        projection(s,:) = lf_get_projection(sourceIdx(s), leadfield, 'orientation', orientation(s,:), 'normaliseLeadfield', normaliseLeadfield, 'normaliseOrientation', normaliseOrientation);
+        projection(s,:) = lf_get_projection(leadfield, sourceIdx(s), 'orientation', orientation(s,:), 'normaliseLeadfield', normaliseLeadfield, 'normaliseOrientation', normaliseOrientation);
     end
     projection = mean(projection, 1);
 else
