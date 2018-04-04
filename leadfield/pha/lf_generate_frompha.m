@@ -2,12 +2,18 @@
 %
 %       Generates a lead field based on a Pediatric Head Atlas (v2),
 %       containing the electrodes indicated.
+%       
+%       This script assumes you have the requested Pediatric Head Atlas
+%       directories in your MATLAB path. In particular, it needs the
+%       respective LeadFieldMatrix_*, Sensors_*.txt, and Triples_Dipoles_*
+%       files. As of 2018-02-05, the Pediatric Head Atlases are available 
+%       upon request at https://pedeheadmod.net
 %
 %       Note that the coordinates given by the original Pediatric Head 
 %       Atlases do not correspond to a standard coordinate space. This
-%       script calls fix_electrodes to largely correct for this by rotating
-%       and shifting both the electrode and the source coordinates to 
-%       approximately fit the MNI standard. Since the Atlases are based
+%       script calls lf_fix_electrodes_pha to largely correct for this by 
+%       rotating and shifting both the electrode and the source coordinates
+%       to approximately fit the MNI standard. Since the Atlases are based
 %       on real recordings, the corrected models may still not be 
 %       entirely symmetrical. You can use the plot_headmodel function to 
 %       verify this for yourself. It is particularly visible in the '2562' 
@@ -16,12 +22,6 @@
 %       than the adult MNI standard, the plot_chanlocs_dipplot and
 %       plot_source_location_dipplot functions are not recommended for
 %       these models.
-%       
-%       This script assumes you have the requested Pediatric Head Atlas
-%       directories in your MATLAB path. In particular, it needs the
-%       respective LeadFieldMatrix_*, Sensors_*.txt, and Triples_Dipoles_*
-%       files. As of 2018-02-05, the Pediatric Head Atlases are available 
-%       upon request at https://pedeheadmod.net
 %       
 %       Pediatric Head Atlas publication:
 %           Song, J., Morgan, K., Turovets, S., Li, K., Davey, C.,
@@ -172,10 +172,10 @@ fclose(fid);
 % first read the dipoles in the same orientation.
 pos = [dipoles(2:3:end), -dipoles(1:3:end), dipoles(3:3:end)];
 for i=1:length(pos)
-    % rotating and shifting dipole to align with fixed electrodes;
+    % rotating and shifting dipole to align with fixed electrodes
     pos(i,:) = (A2*A1*transpose(pos(i,:)-hm))-transpose(shift);
     
-    % fixing the readlocs-interchange
+    % fixing the readlocs-x/y-interchange
     pos(i,:) = [-pos(i,2), pos(i,1), pos(i,3)];
 end
 
