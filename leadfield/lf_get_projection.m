@@ -1,7 +1,7 @@
 % projection = lf_get_projection(leadfield, sourceIdx, varargin)
 %
-%       Returns the (mean) projection matrix of (a) given source(s) in the 
-%       given leadfield, using the optionally given orientation and 
+%       Returns the (oriented) projection matrix of (a) given source(s) in
+%       the given leadfield, using the optionally given orientation and 
 %       normalisation arguments.
 %
 % In:
@@ -92,14 +92,12 @@ else
 
     if normaliseLeadfield
         % normalising to have the maximum (or minimum) value be 1 (or -1)
-        [~, i] = max(abs(leadfield(:)));
-        leadfield = leadfield .* (sign(leadfield(i)) / leadfield(i));
+        leadfield = utl_normalise(leadfield);
     end
 
     if normaliseOrientation
         % normalising to have the maximum (or minimum) value be 1 (or -1)
-        [~, i] = max(abs(orientation(:)));
-        orientation = orientation .* (sign(orientation(i)) / orientation(i));
+        orientation = utl_normalise(orientation);
     end
 
     % getting oriented projection
@@ -107,7 +105,7 @@ else
     projection(:,1) = leadfield(:,1) * orientation(1);
     projection(:,2) = leadfield(:,2) * orientation(2);
     projection(:,3) = leadfield(:,3) * orientation(3);
-    projection = mean(projection, 2);
+    projection = sum(projection, 2);
 end
 
 end
