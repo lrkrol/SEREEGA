@@ -22,6 +22,8 @@
 %       normaliseOrientation - 1|0, as above, except for orientation
 %       sensorNoise - maximum absolute amplitude of uncorrelated uniform 
 %                     white noise added to the final scalp data. default: 0
+%                     see utl_add_sensornoise and/or utl_mix_data for more
+%                     options.
 %       showprogress - 1|0, whether or not to show a progress bar
 %                      (default 1)
 %
@@ -44,6 +46,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-04-05 lrk
+%   - Added ETA to waitbar
 % 2018-01-10 lrk
 %   - Added sensor noise
 % 2017-10-11 lrk
@@ -103,12 +107,15 @@ if showprogress
 end
 
 % for each epoch...
+epochtimes = nan(1,epochs.n);
+etatext = '...';
 for e = 1:epochs.n
+    tic
     componentdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), numel(component));
     
     % for each component...
     for c = 1:numel(component)
-        if showprogress, waitbar(((e-1)*numel(component)+c)/maxwait, w, sprintf('Epoch %d of %d\nComponent %d of %d', e, epochs.n, c, numel(component)), 'Name', 'Generating scalp data'); end
+        if showprogress, waitbar(((e-1)*numel(component)+c)/maxwait, w, sprintf('Epoch %d of %d, Component %d of %d\nTime remaining: %s', e, epochs.n, c, numel(component), etatext), 'Name', 'Generating scalp data'); end
     
         % getting component's sum signal
         componentsignal = generate_signal_fromcomponent(component(c), epochs, 'epochNumber', e);
@@ -135,10 +142,15 @@ for e = 1:epochs.n
     
     % combining projected component signals into single epoch
     scalpdata(:,:,e) = sum(componentdata, 3);
+    
+    % keeping time
+    epochtimes(e) = toc;
+    eta = nanmean(epochtimes) * (epochs.n-e);
+    etatext = datestr(eta/(24*60*60), 'HH:MM:SS');
 end
 
 % adding sensor noise
-scalpdata = scalpdata + utl_normalise(rand(size(scalpdata))*2-1, sensorNoise);
+scalpdata = utl_add_sensornoise(scalpdata, 'amplitude', sensorNoise);
 
 fprintf('Done.\n');
 if showprogress, delete(w); end
