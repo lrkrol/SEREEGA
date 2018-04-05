@@ -21,7 +21,7 @@
 %       noise - the original noise as scaled by this method
 %
 % Usage example:
-%       >> signal = ersp_generate_signal(10, 1, [], 100, 1000);
+%       >> signal = ersp_generate_signal(10, 1, [], 1000, 1000);
 %       >> noise = rand(1, 1000) - .5;
 %       >> figure; plot(utl_mix_data(signal, noise, .5));
 % 
