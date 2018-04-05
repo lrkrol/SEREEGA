@@ -2,6 +2,8 @@
 %
 %       Adds spatially and temporally uncorrelated uniform white noise of
 %       the indicated amplitude to the data. This simulates sensor noise.
+%       Note that indicating a specific signal-to-noise ratio will affect
+%       the overall amplitude of the data.
 %
 % In:
 %       data - matrix of data
@@ -13,6 +15,9 @@
 %
 % Out:  
 %       data - the data with sensor noise added
+%
+% Usage example:
+%       >> utl_add_sensornoise(ones(5,5), 'snr', .5)
 % 
 %                    Copyright 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

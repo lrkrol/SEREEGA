@@ -1,7 +1,8 @@
 % [data, db, signal, noise] = utl_mix_data(signal, noise, snr)
 %
 %       Mixes given signal and noise data matrices to a certain
-%       signal-to-noise ratio specification.
+%       signal-to-noise ratio specification. Note that this will affect the
+%       overall amplitude of the data.
 %
 % In:
 %       signal - matrix containing the signal
