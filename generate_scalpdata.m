@@ -118,7 +118,7 @@ for e = 1:epochs.n
         if showprogress
             % updating ETA and waitbar message
             etatext = datestr((eta-toc)/(24*60*60), 'HH:MM:SS');
-            waitbar(((e-1)*numel(component)+c)/maxwait, w, sprintf('Epoch %d of %d, Component %d of %d\nTime remaining: %s', e, epochs.n, c, numel(component), etatext), 'Name', 'Generating scalp data');
+            waitbar(((e-1)*numel(component)+c)/maxwait, w, sprintf('Epoch %d of %d, Component %d of %d\nTime remaining: %s', e, epochs.n, c, numel(component), etatext));
         end
 
         % getting component's sum signal
