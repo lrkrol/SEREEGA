@@ -104,19 +104,23 @@ fprintf('Generating scalp data... ');
 if showprogress
     w = waitbar(0, sprintf('Epoch 0 of %d', epochs.n), 'Name', 'Generating scalp data');
     maxwait = epochs.n * numel(component);
+    epochtimes = nan(1,epochs.n);
+    eta = 0;
 end
 
 % for each epoch...
-epochtimes = nan(1,epochs.n);
-etatext = '...';
 for e = 1:epochs.n
     tic
     componentdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), numel(component));
     
     % for each component...
     for c = 1:numel(component)
-        if showprogress, waitbar(((e-1)*numel(component)+c)/maxwait, w, sprintf('Epoch %d of %d, Component %d of %d\nTime remaining: %s', e, epochs.n, c, numel(component), etatext), 'Name', 'Generating scalp data'); end
-    
+        if showprogress
+            % updating ETA and waitbar message
+            etatext = datestr((eta-toc)/(24*60*60), 'HH:MM:SS');
+            waitbar(((e-1)*numel(component)+c)/maxwait, w, sprintf('Epoch %d of %d, Component %d of %d\nTime remaining: %s', e, epochs.n, c, numel(component), etatext), 'Name', 'Generating scalp data');
+        end
+
         % getting component's sum signal
         componentsignal = generate_signal_fromcomponent(component(c), epochs, 'epochNumber', e);
         sourcedata(c,:,e) = componentsignal;
@@ -143,10 +147,11 @@ for e = 1:epochs.n
     % combining projected component signals into single epoch
     scalpdata(:,:,e) = sum(componentdata, 3);
     
-    % keeping time
-    epochtimes(e) = toc;
-    eta = nanmean(epochtimes) * (epochs.n-e);
-    etatext = datestr(eta/(24*60*60), 'HH:MM:SS');
+    if showprogress
+        % keeping time
+        epochtimes(e) = toc;
+        eta = nanmean(epochtimes) * (epochs.n-e);
+    end
 end
 
 % adding sensor noise
