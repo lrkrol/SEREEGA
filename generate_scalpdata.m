@@ -147,17 +147,15 @@ for e = 1:epochs.n
     % combining projected component signals into single epoch
     scalpdata(:,:,e) = sum(componentdata, 3);
     
-    if showprogress
-        % keeping time
-        epochtimes(e) = toc;
-        eta = nanmean(epochtimes) * (epochs.n-e);
-    end
+    % keeping time
+    epochtimes(e) = toc;
+    eta = nanmean(epochtimes) * (epochs.n-e);
 end
 
 % adding sensor noise
 scalpdata = utl_add_sensornoise(scalpdata, 'amplitude', sensorNoise);
 
-fprintf('Done.\n');
+fprintf('Done after %s.\n', datestr(sum(epochtimes)/(24*60*60), 'HH:MM:SS'));
 if showprogress, delete(w); end
 
 end
