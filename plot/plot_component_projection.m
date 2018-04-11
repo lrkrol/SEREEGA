@@ -82,7 +82,7 @@ else
 
     if newfig, h = figure; else h = NaN; end
     topoplot(meanproj, leadfield.chanlocs, 'colormap', cmap);
-    camzoom(1.25);
+    camzoom(1.15);
 end
 
 end
