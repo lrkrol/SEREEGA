@@ -4,10 +4,12 @@
 %       indicated electrode montage.
 %
 % In:
-%       montage - name of the montage
+%       montage - name of the montage, or '?' for a list of available
+%                 montages
 %
 % Out:
-%       labels - cell of channel labels contained in the indicated montage
+%       labels - cell of channel labels contained in the indicated montage,
+%                or cell of montage names (in case of montage = '?')
 %
 % Usage example:
 %       >> labels = utl_get_montage('S64');
@@ -17,6 +19,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-04-23 lrk
+%   - Added '?' montage, which returns a list of available montages
 % 2018-01-09 lrk
 %   - Added EASYCAP actiCAP 32/64 and BioSemi 32/64 montages.
 % 2017-08-10 First version
@@ -39,6 +43,10 @@
 function labels = utl_get_montage(montage)
 
 switch montage
+    case '?'
+        % return a list of all montages
+        labels = {'actiCAP32', 'actiCAP64', 'BioSemi32', 'BioSemi64', ...
+                  'S64'};
     case 'actiCAP32'
         % EASYCAP (Brain Products) Standard 32Ch actiCAP Electrode Cap
         labels = {'Fp1', 'Fz', 'F3', 'F7', 'FT9', 'FC5', 'FC1', 'C3', ...
@@ -54,7 +62,7 @@ switch montage
                   'AF7', 'AF3', 'AFz', 'F1', 'F5', 'FT7', 'FC3', 'C1', ...
                   'C5', 'TP7', 'CP3', 'P1', 'P5', 'PO7', 'PO3', 'POz', ...
                   'PO4', 'PO8', 'P6', 'P2', 'CPz', 'CP4', 'TP8', 'C6', ...
-                  'C2', 'FC4', 'FT8', 'F6', 'AF8', 'AF4', 'F2', 'IZ'};
+                  'C2', 'FC4', 'FT8', 'F6', 'AF8', 'AF4', 'F2', 'Iz'};
     case 'BioSemi32'
         % BioSemi 32-channel 10/20 layout
         labels = {'Fp1', 'AF3', 'F7', 'F3', 'FC1', 'FC5', 'T7', 'C3', ...
