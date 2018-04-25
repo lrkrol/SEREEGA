@@ -88,7 +88,7 @@ elseif strcmp(style, 'boundary')
     trisurf(k, leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3), 'FaceColor', [1 .75, .75], 'EdgeColor', 'none');
     light('Position',[1 1 1],'Style','infinite', 'Color', [1 .75 .75]);
     light('Position',[-1 -1 -1],'Style','infinite', 'Color', [.5 .25 .25]);
-    material dull ;
+    material dull;
 end
 
 % plotting electrodes
