@@ -13,8 +13,8 @@
 % Optional (key-value pairs):
 %       epochNumber - current epoch number. this is required for slope
 %                     calculation, but defaults to 1 if not indicated
-%       baseonly - whether or not to only plot the base signal, without any
-%                  deviations or slopes (1|0, default 0)
+%       baseonly - whether or not to only generate the base signal, without
+%                  any deviations or slopes (1|0, default 0)
 %
 % Out:  
 %       signal - row array containing the simulated noise activation signal
