@@ -1,15 +1,20 @@
-% orientation = utl_get_orientation_random()
+% orientation = utl_get_orientation_random(numsources)
 %
 %       Returns a random [x, y, z] orientation in the form of a 1-by-3
 %       array of doubles between -1 and 1.
 %
+% Optional:
+%       numsources - the number of sources (default: 1)
+%
 % Out:  
-%       orientation - 1-by-3 array of doubles each between -1 and 1
+%       orientation - numsources-by-3 array of doubles between -1 and 1
 %
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-04-25 lrk
+%   - Added numsources argument
 % 2017-12-03 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -27,8 +32,10 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function orientation = utl_get_orientation_random()
+function orientation = utl_get_orientation_random(numsources)
 
-orientation = [rand()*2-1, rand()*2-1, rand()*2-1];
+if ~exist('numsources', 'var'), numsources = 1; end
+
+orientation = rand(numsources,3)*2-1;
 
 end
