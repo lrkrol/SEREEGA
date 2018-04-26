@@ -7,14 +7,16 @@
 %       numsources - the number of sources (default: 1)
 %
 % Out:  
-%       orientation - numsources-by-3 array of doubles between -1 and 1
+%       orientation - numsources-by-3 array of doubles normalised to have
+%                     the maximum absolute value be 1
 %
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
-% 2018-04-25 lrk
+% 2018-04-26 lrk
 %   - Added numsources argument
+%   - Normalised output
 % 2017-12-03 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -37,5 +39,9 @@ function orientation = utl_get_orientation_random(numsources)
 if ~exist('numsources', 'var'), numsources = 1; end
 
 orientation = rand(numsources,3)*2-1;
+
+for i = 1:size(orientation, 1)
+    orientation(i,:) = utl_normalise(orientation(i,:));
+end
 
 end
