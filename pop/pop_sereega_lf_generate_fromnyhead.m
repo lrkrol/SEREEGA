@@ -1,3 +1,38 @@
+% EEG = pop_sereega_lf_generate_fromnyhead(EEG)
+%
+%       Pops up a dialog to serve as GUI for lf_generate_fromnyhead, and
+%       add a lead field to the given EEGLAB dataset.
+%
+%       The pop_ functions serve only to provide a GUI for some of
+%       SEREEGA's functions and are not intended to be used in scripts.
+%
+% In:
+%       EEG - an EEGLAB dataset
+%
+% Out:  
+%       EEG - the EEGLAB dataset with added lead field depending on the 
+%             actions taken in the dialog, at EEG.etc.sereega.leadfield
+% 
+%                    Copyright 2018 Laurens R Krol
+%                    Team PhyPA, Biological Psychology and Neuroergonomics,
+%                    Berlin Institute of Technology
+
+% 2018-04-23 First version
+
+% This file is part of Simulating Event-Related EEG Activity (SEREEGA).
+
+% SEREEGA is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+
+% SEREEGA is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+
+% You should have received a copy of the GNU General Public License
+% along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
 function EEG = pop_sereega_lf_generate_fromnyhead(EEG)
 
@@ -6,6 +41,7 @@ function EEG = pop_sereega_lf_generate_fromnyhead(EEG)
 cdorig = cd(fileparts(which('strfun/strjoin')));
 joinstring = @strjoin;
 cd(cdorig);
+userdata.joinstring = joinstring;
 
 % reading channel labels
 labels = {};
@@ -25,6 +61,7 @@ montages = [montages, utl_get_montage('?')];
 
 % callbacks
 cb_montage = [ ...
+        'userdata = get(gcf, ''userdata'');' ...
         'if get(gcbo, ''value'') == 1', ...
         '    set(findobj(''parent'', gcbf, ''tag'', ''labeledit''), ''string'', ''' joinstring(labels) ''');' ...
         'elseif get(gcbo, ''value'') == 2', ...
@@ -32,7 +69,7 @@ cb_montage = [ ...
         'else', ...
         '    montage = get(gcbo, ''String'');', ...
         '    montage = montage(get(gcbo, ''value''));', ...
-        '    set(findobj(''parent'', gcbf, ''tag'', ''labeledit''), ''string'', joinstring(utl_get_montage(montage{1})));' ...
+        '    set(findobj(''parent'', gcbf, ''tag'', ''labeledit''), ''string'', userdata.joinstring(utl_get_montage(montage{1})));' ...
         'end'];
 cb_select = [ ...
         '[~, labelselection] = pop_chansel({''' joinstring(labels, ''',''') '''});' ...
@@ -52,7 +89,9 @@ cb_select = [ ...
                 { }, ...
                 { 'style', 'edit', 'string', joinstring(labels), 'tag', 'labeledit' }, ...
                 { 'style', 'pushbutton', 'string', '...', 'callback', cb_select } }, ... 
-        'helpcom', 'pophelp(''lf_generate_fromnyhead'');', 'title', 'Lead field: New York Head');
+        'helpcom', 'pophelp(''lf_generate_fromnyhead'');', ...
+        'title', 'Lead field: New York Head', ...
+        'userdata', userdata);
 
 if ~isempty(structout)
     % user pressed OK, getting label selection in cell format

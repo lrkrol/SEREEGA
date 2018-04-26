@@ -1,3 +1,37 @@
+% version = eegplugin_sereega(fig, try_strings, catch_strings)
+%
+%       Loader for SEREEGA's EEGLAB plug-in, which provides a number of
+%       dialog options in the Tools menu to perform some of SEREEGA's EEG
+%       simulation functions.
+%
+% In:
+%       fig - the handle to the EEGLAB window
+%       try_strings - "try" strings for menu callbacks
+%       catch_strings - "catch" strings for menu callbacks
+%
+% Out:  
+%       version - the version of the plug-in
+% 
+%                    Copyright 2018 Laurens R Krol
+%                    Team PhyPA, Biological Psychology and Neuroergonomics,
+%                    Berlin Institute of Technology
+
+% 2018-04-23 First version
+
+% This file is part of Simulating Event-Related EEG Activity (SEREEGA).
+
+% SEREEGA is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+
+% SEREEGA is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+
+% You should have received a copy of the GNU General Public License
+% along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
 function version = eegplugin_sereega(fig, try_strings, catch_strings)
     
