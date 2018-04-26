@@ -55,8 +55,8 @@ function [sourceIdx] = lf_get_source_spaced(leadfield, number, spacing, varargin
 p = inputParser;
 
 addRequired(p, 'leadfield', @isstruct);
-addRequired(p, 'number', @isnumeric);
-addRequired(p, 'spacing', @isnumeric);
+addRequired(p, 'number', @(x) isnumeric(x) && ~isempty(x));
+addRequired(p, 'spacing', @(x) isnumeric(x) && ~isempty(x));
 
 addParameter(p, 'sourceIdx', [], @isnumeric);
 
