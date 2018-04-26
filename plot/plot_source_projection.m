@@ -18,6 +18,8 @@
 %                      in each direction, plus the given (or default)
 %                      orientation. default: 0
 %       colormap - the color map to use (default: jet)
+%       handle - the handle of an existing figure to draw in (sets newfig
+%                to 0)
 %
 % Out:  
 %       h - handle of the generated figure
@@ -30,6 +32,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-04-25 lrk
+%   - Added handle argument
 % 2017-04-24 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -59,6 +63,7 @@ addParameter(p, 'newfig', 1, @isnumeric);
 addParameter(p, 'orientation', [], @isnumeric);
 addParameter(p, 'orientedonly', 0, @isnumeric);
 addParameter(p, 'colormap', jet(100), @isnumeric);
+addParameter(p, 'handle', [], @ishandle);
 
 parse(p, sourceIdx, leadfield, varargin{:})
 
@@ -68,13 +73,22 @@ newfig = p.Results.newfig;
 orientation = p.Results.orientation;
 orientedonly = p.Results.orientedonly;
 cmap = p.Results.colormap;
+handle = p.Results.handle;
 
 if isempty(orientation)
     % getting default orientation
     orientation = lf.orientation(sourceIdx,:);
 end
 
-if newfig, h = figure; else h = NaN; end
+if ~isempty(handle)
+    set(0,'CurrentFigure', handle);
+else
+    if newfig
+        h = figure;
+    else
+        h = NaN;
+    end
+end
 
 if ~orientedonly
     % plotting three projections
