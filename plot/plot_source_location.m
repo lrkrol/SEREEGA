@@ -1,4 +1,4 @@
-% h = plot_source_location(sourceIdx, leadfield, varargin)
+% [h, hsxz, hsyz, hsxy] = plot_source_location(sourceIdx, leadfield, varargin)
 %
 %       Plots the location of the given source(s) using an estimate of the
 %       lead field's brain's boundaries. 
@@ -27,6 +27,9 @@
 %
 % Out:  
 %       h - handle of the generated figure
+%       hsxz - handle of the source locations plot in the x/z plane
+%       hsyz - handle of the source locations plot in the y/z plane
+%       hsxy - handle of the source locations plot in the x/y plane
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead;
@@ -53,7 +56,7 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function h = plot_source_location(sourceIdx, leadfield, varargin)
+function [h, hsxz, hsyz, hsxy] = plot_source_location(sourceIdx, leadfield, varargin)
 
 % parsing input
 p = inputParser;
@@ -109,7 +112,7 @@ elseif strcmp(mode, '2d')
     hold on;
     k = boundary(leadfield.pos(:,1), leadfield.pos(:,3), shrink);
     fill(leadfield.pos(k,1), leadfield.pos(k,3), braincolour, 'EdgeColor', 'none');
-    scatter(leadfield.pos(sourceIdx, 1), leadfield.pos(sourceIdx, 3), markersize, sourcecolour, 'fill');
+    hsxz = scatter(leadfield.pos(sourceIdx, 1), leadfield.pos(sourceIdx, 3), markersize, sourcecolour, 'fill');
     xlabel('X'); ylabel('Z');
     xlim([xmin xmax]);
     ylim([zmin zmax]);
@@ -122,7 +125,7 @@ elseif strcmp(mode, '2d')
     hold on;
     k = boundary(leadfield.pos(:,2), leadfield.pos(:,3), shrink);
     fill(leadfield.pos(k,2), leadfield.pos(k,3), braincolour, 'EdgeColor', 'none');
-    scatter(leadfield.pos(sourceIdx, 2), leadfield.pos(sourceIdx, 3), markersize, sourcecolour, 'fill');
+    hsyz = scatter(leadfield.pos(sourceIdx, 2), leadfield.pos(sourceIdx, 3), markersize, sourcecolour, 'fill');
     xlabel('Y'); ylabel('Z');
     xlim([ymin ymax]);
     ylim([zmin zmax]);
@@ -135,7 +138,7 @@ elseif strcmp(mode, '2d')
     hold on;
     k = boundary(leadfield.pos(:,1), leadfield.pos(:,2), shrink);
     fill(leadfield.pos(k,1), leadfield.pos(k,2), braincolour, 'EdgeColor', 'none');
-    scatter(leadfield.pos(sourceIdx, 1), leadfield.pos(sourceIdx, 2), markersize, sourcecolour, 'fill');
+    hsxy = scatter(leadfield.pos(sourceIdx, 1), leadfield.pos(sourceIdx, 2), markersize, sourcecolour, 'fill');
     xlabel('X'); ylabel('Y');
     xlim([xmin xmax]);
     ylim([ymin ymax]);
