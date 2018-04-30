@@ -58,7 +58,7 @@ function version = eegplugin_sereega(fig, try_strings, catch_strings)
     cb_comp_signals = 'EEG = pop_sereega_signals(EEG);';
     cb_comp_components = 'EEG = pop_sereega_components(EEG);';
     cb_plot_headmodel = 'EEG = pop_sereega_plot_headmodel(EEG);';
-    cb_plot_sources = 'EEG = pop_sereega_plot_sources(EEG);';
+    cb_plot_sources = 'EEG = pop_sereega_plot_source_location(EEG);';
     cb_plot_components = 'EEG = pop_sereega_plot_component(EEG);';
     cb_misc_lftoggle = 'EEG = pop_sereega_lftoggle(EEG);';
     cb_misc_addica = 'EEG = pop_sereega_utl_add_icaweights_toeeglabdataset(EEG);';
@@ -79,7 +79,7 @@ function version = eegplugin_sereega(fig, try_strings, catch_strings)
             menu_comp_components = uimenu(menu_comp, 'label', 'Define components', 'userdata', userdata, 'callback', cb_comp_components);
         menu_plot = uimenu(menu_root, 'label', 'Plot', 'userdata', userdata);
             menu_plot_headmodel = uimenu(menu_plot, 'label', 'Head model', 'userdata', userdata, 'callback', cb_plot_headmodel);
-            menu_plot_sources = uimenu(menu_plot, 'label', 'Sources', 'userdata', userdata, 'callback', cb_plot_sources);
+            menu_plot_sources = uimenu(menu_plot, 'label', 'Source locations', 'userdata', userdata, 'callback', cb_plot_sources);
             menu_plot_components = uimenu(menu_plot, 'label', 'Components', 'userdata', userdata, 'callback', cb_plot_components);
         menu_misc = uimenu(menu_root, 'label', 'Misc', 'userdata', userdata);
             menu_misc_lftoggle = uimenu(menu_misc, 'label', 'Remove/add lead field', 'userdata', userdata, 'callback', cb_misc_lftoggle);

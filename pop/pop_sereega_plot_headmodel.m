@@ -36,8 +36,15 @@
 
 function EEG = pop_sereega_plot_headmodel(EEG)
 
-if ~isfield(EEG.etc.sereega, 'leadfield') || isempty(EEG.etc.sereega.leadfield)
-    error('lead field not available');
+% testing if lead field is present
+if ~isfield(EEG.etc, 'sereega') || ~isfield(EEG.etc.sereega, 'leadfield') ...
+        || isempty(EEG.etc.sereega.leadfield)
+    errormsg = 'First add a lead field to the simulation.';
+    supergui( 'geomhoriz', { 1 1 1 }, 'uilist', { ...
+            { 'style', 'text', 'string', errormsg }, { }, ...
+            { 'style', 'pushbutton' , 'string', 'OK', 'callback', 'close(gcbf);'} }, ...
+            'title', 'Error');
+    return
 end
 
 [~, ~, ~, structout] = inputgui( ...
