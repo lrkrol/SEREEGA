@@ -20,9 +20,10 @@
 %       signal - row array containing the simulated noise activation signal
 %
 % Usage example:
-%       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
-%       >> erp.peakLatency= 200; erp.peakWidth= 100; erp.peakAmplitude = 1;
-%       >> erp = utl_check_class(erp, 'type', 'erp');
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
+%       >> erp = struct('type', 'erp', 'peakLatency', 200, ...
+%       >>      'peakWidth', 100, 'peakAmplitude', 1);
+%       >> erp = utl_check_class(erp);
 %       >> signal = generate_signal_fromclass(erp, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol

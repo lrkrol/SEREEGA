@@ -18,11 +18,12 @@
 %       componentsignal - row array containing the simulated mean signal
 %
 % Usage example:
-%       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
-%       >> erp.peakLatency= 200; erp.peakWidth= 100; erp.peakAmplitude = 1;
-%       >> noise.color = 'brown'; noise.amplitude = .5;
-%       >> c.source = 1; c.signal = {erp, noise};
-%       >> csignal = generate_signal_fromcomponent(c, epochs);
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
+%       >> erp = struct('type', 'erp', 'peakLatency', 200, ...
+%       >>      'peakWidth', 100, 'peakAmplitude', 1);
+%       >> noise = struct('type','noise', 'color','brown', 'amplitude',.5);
+%       >> comp = utl_create_component(1, {erp, noise}, lf);
+%       >> csignal = generate_signal_fromcomponent(comp, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

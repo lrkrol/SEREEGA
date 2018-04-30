@@ -34,13 +34,12 @@
 %                    source activations
 %
 % Usage example:
-%       >> lf = lf_generate_fromnyhead;
-%       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
-%       >> s.peakLatency = 200; s.peakWidth = 100; s.peakAmplitude = 1;
-%       >> s = utl_check_class(s, 'type', 'erp');
-%       >> c.source = 1; c.signal = {s};
-%       >> c = utl_check_component(c, lf);
-%       >> scalpdata = generate_scalpdata(c, lf, epochs);
+%       >> lf = lf_generate_fromnyhead();
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
+%       >> erp = struct('type', 'erp', 'peakLatency', 200, ...
+%       >>      'peakWidth', 100, 'peakAmplitude', 1);
+%       >> comp = utl_create_component(1, erp, lf);
+%       >> scalpdata = generate_scalpdata(comp, lf, epochs);
 % 
 %                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
