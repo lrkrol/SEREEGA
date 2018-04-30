@@ -83,7 +83,7 @@ sourcecolour = [ones(numel(sourceIdx),1), linspace(.6, .3, numel(sourceIdx))', l
 sourcecolour = sourcecolour(randperm(numel(sourceIdx)), :);
 markersize = 35;
 
-if newfig, h = figure; end
+if newfig, h = figure('name', 'Source location', 'NumberTitle', 'off'); end
 
 if strcmp(mode, '3d')
     hold on;

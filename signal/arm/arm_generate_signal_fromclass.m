@@ -66,6 +66,7 @@ parse(p, class, epochs, varargin{:})
 class = p.Results.class;
 epochs = p.Results.epochs;
 epochNumber = p.Results.epochNumber;
+baseonly = p.Results.baseonly;
 
 samples = floor(epochs.srate * epochs.length/1000);
 

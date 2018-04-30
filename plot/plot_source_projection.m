@@ -26,7 +26,7 @@
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead;
-%       >> plot_source_projection(lf, 1, 'colormap', bone(100))
+%       >> plot_source_projection(1000, lf, 'colormap', bone(100));
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
@@ -84,7 +84,7 @@ if ~isempty(handle)
     set(0,'CurrentFigure', handle);
 else
     if newfig
-        h = figure;
+        h = figure('name', 'Source projection', 'NumberTitle', 'off');
     else
         h = NaN;
     end

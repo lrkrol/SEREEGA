@@ -14,13 +14,11 @@
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead(); 
-%       >> epochs.srate = 1000; epochs.length = 1000; epochs.n = 100;
-%       >> erp.peakLatency = 500; erp.peakWidth = 100; erp.amplitude = 1;
-%       >> noise.color = 'brown'; noise.amplitude = .5;
-%       >> c(1).source = 1; c(1).signal = {erp};
-%       >> c(2).source = 30000; c(2).signal = {noise};
-%       >> c = utl_check_component(c, lf);
-%       >> plot_component(c, epochs, lf);
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
+%       >> sig = struct('type', 'noise', 'color', 'white', 'amplitude', 1);
+%       >> src = lf_get_source_random(lf, 4);
+%       >> comps = utl_create_component(src, sig, lf);
+%       >> plot_component(comps, epochs, lf);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
@@ -49,7 +47,7 @@ ncomponents = numel(component);
 
 if ncomponents > 10, nrows = 10; else, nrows = ncomponents; end
 
-h = figure;
+h = figure('name', 'Components', 'NumberTitle', 'off');
 j = 0;
 for i = 1:ncomponents
     % component projection, 1 column

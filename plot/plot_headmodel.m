@@ -70,7 +70,7 @@ shrink = p.Results.shrink;
 viewpoint = p.Results.view;
 
 % drawing figure
-h = figure();
+h = figure('name', 'Head model', 'NumberTitle', 'off');
 axis equal;
 xlabel('X');
 ylabel('Y');

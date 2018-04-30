@@ -89,7 +89,7 @@ for i = 1:length(lf.chanlocs)
 end
 
 % calling dipplot
-if newfig, h = figure; else h = NaN; end
+if newfig, h = figure('name', 'Channel locations', 'NumberTitle', 'off'); else h = NaN; end
 dipplot(locs, 'coordformat', 'MNI', 'color', color, 'gui', 'off', 'dipolesize', 20, 'view', viewpoint);
 
 end

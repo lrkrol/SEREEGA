@@ -94,7 +94,7 @@ allviews = p.Results.allviews;
 
 if allviews
     % organising figure, calling self three times
-    h = figure();
+    h = figure('name', 'Source location', 'NumberTitle', 'off');
 
     subplot(1,3,1);
     plot_source_location_dipplot(sourceIdx, lf, 'newfig', 0, 'view', [0 0]);
@@ -129,7 +129,7 @@ else
     end
 
     % calling dipplot
-    if newfig, h = figure; else h = NaN; end
+    if newfig, h = figure('name', 'Source location', 'NumberTitle', 'off'); else h = NaN; end
     dipplot(locs, 'coordformat', 'MNI', 'color', color, 'gui', 'off', 'dipolesize', 20, 'view', view, 'projlines', projlines);
 end
 

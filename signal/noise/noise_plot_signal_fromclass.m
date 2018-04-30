@@ -22,9 +22,11 @@
 %       h - handle of the generated figure
 %
 % Usage example:
-%       >> noise.color = 'white'; noise.amplitude = 0.1;
-%       >> noise.amplitudeDv = .05; noise.amplitudeSlope = -.1;
-%       >> noise = utl_check_class(noise, 'type', 'noise');
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
+%       >> noise = struct('type', 'noise', 'color', 'white', ...
+%       >>      'amplitude', .1, 'amplitudeDv', .05, ...
+%       >>      'amplitudeSlope', -.1);
+%       >> noise = utl_check_class(noise);
 %       >> noise_plot_signal_fromclass(noise, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol
@@ -74,7 +76,7 @@ x = x/epochs.srate;
 if isfield(epochs, 'prestim')
     x = x - epochs.prestim/1000; end
 
-if newfig, h = figure; else h = NaN; end
+if newfig, h = figure('name', 'Noise signal', 'NumberTitle', 'off'); else h = NaN; end
 hold on;
 
 % plotting the base signal, no deviations applied

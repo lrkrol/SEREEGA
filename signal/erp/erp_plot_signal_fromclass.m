@@ -23,12 +23,12 @@
 %       h - handle of the generated figure
 %
 % Usage example:
-%       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
-%       >> erp.peakLatency = 300; erp.peakLatencySlope = 150;
-%       >> erp.peakWidth = 100; erp.peakWidthDv = 50;
-%       >> erp.peakWidthSlope = 100; >> erp.peakAmplitude = 1;
-%       >> erp.peakAmplitudeDv = .25; erp.peakAmplitudeSlope = -.25;
-%       >> erp = utl_check_class(erp, 'type', 'erp')
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
+%       >> erp = struct('type', 'erp', 'peakLatency', 300, ...
+%       >>      'peakLatencySlope', 150, 'peakWidth', 300, ...
+%       >>      'peakWidthDv', 50, 'peakWidthSlope', 100, ...
+%       >>      'peakAmplitude', 1, 'peakAmplitudeDv', .25, ...
+%       >>      'peakamplitudeSlope', -.25);
 %       >> plot_signal_fromclass(erp, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol
@@ -78,7 +78,7 @@ x = x/epochs.srate;
 if isfield(epochs, 'prestim')
     x = x - epochs.prestim/1000; end
 
-if newfig, h = figure; else, h = NaN; end
+if newfig, h = figure('name', 'ERP signal', 'NumberTitle', 'off'); else, h = NaN; end
 hold on;
 
 % plotting the mean signal, no deviations applied

@@ -16,11 +16,11 @@
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead(); 
-%       >> erp.peakLatency = 500; erp.peakWidth = 100; erp.amplitude = 1;
-%       >> c.source = [1, 30000]; c.signal = {erp};
-%       >> c = utl_check_component(c, lf);
-%       >> plot_component_projection(c, lf);
-% 
+%       >> sig = struct('type', 'noise', 'color', 'white', 'amplitude', 1);
+%       >> src = lf_get_source_random(lf, 4);
+%       >> comps = utl_create_component(src, sig, lf);
+%       >> plot_component_projection(comps, lf);
+%
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
@@ -62,8 +62,9 @@ component = p.Results.component;
 newfig = p.Results.newfig;
 cmap = p.Results.colormap;
 
+if newfig, h = figure('name', 'Component projection', 'NumberTitle', 'off'); else h = NaN; end
+
 if length(component) > 1
-    if newfig, h = figure; else h = NaN; end
     % creating subplots
     ncols = ceil(sqrt(length(component)));
     nrows = ceil(length(component)/ncols);
@@ -80,7 +81,6 @@ else
     end
     meanproj = mean(meanproj,2);
 
-    if newfig, h = figure; else h = NaN; end
     topoplot(meanproj, leadfield.chanlocs, 'colormap', cmap);
     camzoom(1.15);
 end

@@ -18,10 +18,12 @@
 %       h - handle of the generated figure
 %
 % Usage example:
-%       >> epochs.srate = 1000; epochs.length = 1000;
-%       >> erp.peakLatency = 500; erp.peakWidth = 100; erp.amplitude = 1;
-%       >> c.source = 1; c.signal = {erp, noise};
-%       >> plot_signal_fromcomponent(c, epochs);
+%       >> lf = lf_generate_fromnyhead(); 
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
+%       >> sig = struct('type', 'noise', 'color', 'white', 'amplitude', 1);
+%       >> src = lf_get_source_random(lf);
+%       >> c = utl_create_component(src, sig, lf);
+%       >> plot_component_signal(c, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
@@ -68,7 +70,7 @@ x = x/epochs.srate;
 if isfield(epochs, 'prestim')
     x = x - epochs.prestim/1000; end
 
-if newfig, h = figure; else, h = NaN; end
+if newfig, h = figure('name', 'Component signal', 'NumberTitle', 'off'); else, h = NaN; end
 
 % getting mean signal of ten epochs 
 componentsignal = [];
