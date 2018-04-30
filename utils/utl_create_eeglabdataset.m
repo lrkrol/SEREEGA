@@ -101,6 +101,7 @@ EEG.icawinv = [];
 EEG.icaweights = [];
 EEG.icasphere = [];
 EEG.chanlocs = leadfield.chanlocs;
+EEG.etc = [];
 
 EEG = eeg_checkset(EEG);
 
