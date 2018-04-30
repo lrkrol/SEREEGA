@@ -15,7 +15,7 @@
 %
 % Usage example:
 %       >> signal = erp_generate_signal([175, 500], [50, 150], ...
-%                                       [-.25, 1], 500, 1000)
+%       >>                              [-.25, 1], 500, 1000)
 % 
 %                    Copyright 2015-2017 Fabien Lotte & Laurens R Krol
 %

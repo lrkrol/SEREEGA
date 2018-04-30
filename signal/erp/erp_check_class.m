@@ -48,6 +48,7 @@
 %       class - the class variable struct with all fields completed
 %
 % Usage example:
+%       >> erp = struct();
 %       >> erp.peakLatency = 200;
 %       >> erp.peakWidth = 100;
 %       >> erp.peakAmplitude = 1;

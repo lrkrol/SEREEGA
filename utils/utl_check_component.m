@@ -32,11 +32,12 @@
 %       component - the updated/verified component
 %
 % Usage example:
-%       >> lf = lf_generate_fromnyhead;
-%       >> erp.peakLatency= 300; erp.peakWidth= 100; erp.peakAmplitude= 1;
+%       >> lf = lf_generate_fromnyhead();
+%       >> erp = struct('peakLatency', 200, 'peakWidth', 100, ...
+%               'peakAmplitude', 1);
 %       >> erp = utl_check_class(erp, 'type', 'erp');
-%       >> c.source = [1, 2]; c.signal = {erp};
-%       >> c = utl_check_component(c, lf)
+%       >> comp = struct('source', 1, 'signal', {{erp}})
+%       >> comp = utl_check_component(comp, lf)
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

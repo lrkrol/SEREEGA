@@ -32,7 +32,8 @@
 %            .chanlocs    - channel information in EEGLAB format
 %
 % Usage example:
-%       >> lf = lf_generate_fromnyhead('labels', {'Fz', 'Cz', 'Pz'})
+%       >> lf = lf_generate_fromnyhead('labels', {'Fz', 'Cz', 'Pz'});
+%       >> plot_headmodel(lf, 'labels', 1, 'style', 'boundary');
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

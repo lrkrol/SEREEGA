@@ -20,12 +20,12 @@
 %       scalpdata - channels x samples array of simulated scalp data
 %
 % Usage example:
-%       >> lf = lf_generate_fromnyhead;
-%       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
-%       >> s.peakLatency = 200; s.peakWidth = 100; s.peakAmplitude = 1;
-%       >> s = utl_check_class(s, 'type', 'erp');
-%       >> s = erp_generate_signal_fromclass(s, epochs, 1);
-%       >> scalpdata = lf_project_signal(lf, s, 1, [1 1 0]);
+%       >> lf = lf_generate_fromnyhead();
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
+%       >> noise = struct('color', 'white', 'amplitude', 1);
+%       >> noise = utl_check_class(noise, 'type', 'noise');
+%       >> signal = noise_generate_signal_fromclass(noise, epochs);
+%       >> scalpdata = lf_project_signal(lf, signal, 1, [1 1 0]);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

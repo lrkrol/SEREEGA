@@ -19,6 +19,14 @@
 % Out:  
 %       component - 1-by-n structure array containing the created
 %                   components
+%
+% Usage example:
+%       >> lf = lf_generate_fromnyhead();
+%       >> erp = struct('peakLatency', 200, 'peakWidth', 100, ...
+%               'peakAmplitude', 1);
+%       >> erp = utl_check_class(erp, 'type', 'erp');
+%       >> src = lf_get_source_random(lf);
+%       >> comp = utl_create_component(src, erp, lf);
 % 
 %                    Copyright 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

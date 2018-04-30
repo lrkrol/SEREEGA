@@ -23,6 +23,7 @@
 %       EEG - reordered EEGLAB dataset structure
 %
 % Usage example:
+%       >> leadfield = lf_generate_fromnyhead('montage', 'S64');
 %       >> EEG1 = utl_create_eeglabdataset(rand(64, 512, 100), epochs, ...
 %                 leadfield, 'marker', 'event1');
 %       >> EEG2 = utl_create_eeglabdataset(rand(64, 512, 100), epochs, ...

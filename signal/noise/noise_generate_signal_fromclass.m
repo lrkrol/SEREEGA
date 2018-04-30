@@ -20,8 +20,8 @@
 %       signal - row array containing the simulated noise activation signal
 %
 % Usage example:
-%       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
-%       >> noise.color = 'white'; noise.amplitude = 0.1;
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
+%       >> noise = struct('color', 'brown', 'amplitude', .1);
 %       >> noise = utl_check_class(noise, 'type', 'noise');
 %       >> signal = noise_generate_signal_fromclass(noise, epochs);
 % 

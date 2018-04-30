@@ -20,7 +20,7 @@
 %       h - handle of the generated figure
 %
 % Usage example:
-%       >> epochs = struct('n', 100, 'srate', 500, 'length', 1000);
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
 %       >> ersp = struct('frequency', 20, 'amplitude', 1, 'phase', 0, ...
 %       >>      'modulation', 'ampmod', 'modFrequency', 2, ...
 %       >>      'modPhase', -.25, 'type', 'ersp');

@@ -19,8 +19,8 @@
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead();
-%       >> ep = struct('srate', 512, 'length', 1000, 'prestim', 200);
-%       >> EEG = utl_create_eeglabdataset(rand(228, 512, 100), ep, lf);
+%       >> epochs = struct('srate', 512, 'length', 1000, 'prestim', 200);
+%       >> EEG = utl_create_eeglabdataset(rand(228, 512, 100), epochs, lf);
 % 
 %                    Copyright 2015-2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

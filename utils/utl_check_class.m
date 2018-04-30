@@ -17,9 +17,8 @@
 %       class - the updated/verified class variable
 %
 % Usage example:
-%       >> erp.peakLatency = 200;
-%       >> erp.peakWidth = 100;
-%       >> erp.peakAmplitude = 1;
+%       >> erp = struct('peakLatency', 200, 'peakWidth', 100, ...
+%               'peakAmplitude', 1);
 %       >> erp = utl_check_class(erp, 'type', 'erp')
 % 
 %                    Copyright 2017 Laurens R Krol

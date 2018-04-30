@@ -28,9 +28,9 @@
 %       erp - 1-by-numClasses struct of ERP classes
 %
 % Usage example:
-%       >> epochs.srate = 1000; epochs.length = 1000; epochs.n = 1;
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
 %       >> erp = erp_get_class_random([1:3], [200:1000], [25:200], ...
-%          [-1:.1:-.5, .5:.1:1], 'numClasses', 64);
+%               [-1:.1:-.5, .5:.1:1], 'numClasses', 64);
 %       >> plot_signal_fromclass(erp(1), epochs);
 % 
 %                    Copyright 2017 Laurens R Krol

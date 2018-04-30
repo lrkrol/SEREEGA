@@ -12,8 +12,9 @@
 %       sourceIdx - the random source index/indices
 %
 % Usage example:
-%       >> lf = lf_generate_fromnyhead;
+%       >> lf = lf_generate_fromnyhead();
 %       >> sourceIdx = lf_get_source_random(lf, 5);
+%       >> plot_source_location(sourceIdx, lf);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

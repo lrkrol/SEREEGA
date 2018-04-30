@@ -41,8 +41,8 @@
 %       signal - row array containing the simulated noise activation signal
 %
 % Usage example:
-%       >> ersp_generate_signal(25, 1, [], 500, 1000);
-%       >> ersp_generate_signal([8 10 15 17], 1, [], 500, 1000);
+%       >> plot(ersp_generate_signal(25, 1, [], 500, 1000));
+%       >> plot(ersp_generate_signal([8 10 15 17], 1, [], 500, 1000));
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

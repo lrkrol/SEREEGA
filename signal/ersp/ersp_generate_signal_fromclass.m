@@ -20,11 +20,12 @@
 %       signal - row array containing the simulated noise activation signal
 %
 % Usage example:
-%       >> epochs.n = 100; epochs.srate = 500; epochs.length = 1000;
-%       >> ersp.frequency = 20; ersp.amplitude = 1; ersp.phase = 0;
-%       >> ersp.modulation='ampmod'; ersp.modFrequency=2;
-%       >> ersp.modPhase= -.25;
-%       >> signal = ersp_generate_signal_fromclass(ersp, epochs, 1);
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
+%       >> ersp = struct('frequency', 20, 'amplitude', 1, 'phase', 0, ...
+%       >>      'modulation', 'ampmod', 'modFrequency', 2, ...
+%       >>      'modPhase', -.25);
+%       >> ersp = utl_check_class(ersp, 'type', 'ersp');
+%       >> signal = ersp_generate_signal_fromclass(ersp, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

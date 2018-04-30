@@ -22,8 +22,8 @@
 %       projection - channels x 1 array representing the projection
 %
 % Usage example:
-%       >> lf = lf_generate_fromnyhead;
-%       >> projection = lf_get_projection(lf, 1, 'orientation', [1 1 0]);
+%       >> lf = lf_generate_fromnyhead();
+%       >> projection = lf_get_projection(lf, 1, 'orientation', [1 1 0])
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

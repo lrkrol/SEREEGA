@@ -52,7 +52,7 @@
 %       class - the class variable struct with all fields completed
 %
 % Usage example:
-%       >> noise.color = 'brown'; noise.amplitude = .1;
+%       >> noise = struct('color', 'brown', 'amplitude', .1);
 %       >> noise = noise_check_class(noise)
 % 
 %                    Copyright 2017 Laurens R Krol

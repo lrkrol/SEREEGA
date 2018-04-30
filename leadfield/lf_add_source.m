@@ -20,8 +20,7 @@
 %       lf - the leadfield with the new source added
 %
 % Usage example:
-%       >> lf = lf_generate_fromfieldtrip('labels', {'Fz', 'Cz', 'Pz'},
-%               'resolution', 25);
+%       >> lf = lf_generate_fromnyhead('labels', {'Fz', 'Cz', 'Pz'})
 %       >> lf = lf_add_source(lf, [0 0 0], rand(3,3))
 % 
 %                    Copyright 2017 Laurens R Krol

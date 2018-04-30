@@ -24,7 +24,9 @@
 % Usage example:
 %       >> signal = ersp_generate_signal(10, 1, [], 1000, 1000);
 %       >> noise = rand(1, 1000) - .5;
-%       >> figure; plot(utl_mix_data(signal, noise, .5));
+%       >> figure; plot(utl_mix_data(signal, noise, .75));
+%       >> figure; plot(utl_mix_data(signal, noise, .50));
+%       >> figure; plot(utl_mix_data(signal, noise, .25));
 % 
 %                    Copyright 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

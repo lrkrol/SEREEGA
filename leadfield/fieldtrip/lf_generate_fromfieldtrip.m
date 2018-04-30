@@ -28,8 +28,9 @@
 %            .chanlocs    - channel information in EEGLAB format
 %
 % Usage example:
-%       >> lf = lf_generate_fromfieldtrip('labels', {'Fz', 'Cz', 'Pz'},
-%               'resolution', 5)
+%       >> lf = lf_generate_fromfieldtrip('labels', {'Fz', 'Cz', 'Pz'}, ...
+%               'resolution', 5);
+%       >> plot_headmodel(lf, 'labels', 0);
 % 
 %                    Copyright 2015-2017 Fabien Lotte & Laurens R Krol
 %

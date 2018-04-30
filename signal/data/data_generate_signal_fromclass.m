@@ -23,11 +23,12 @@
 % Usage example:
 %       >> epochs = struct('n', 100, 'srate', 500, 'length', 2000);
 %       >> randomdata = randn(100,1000); dataclass = struct();
+%       >> dataclass = struct();
 %       >> dataclass.data = randomdata; dataclass.index = {'e', ':'};
 %       >> dataclass.amplitude = 1;
 %       >> dataclass = utl_check_class(dataclass, 'type', 'data');
 %       >> signal = data_generate_signal_fromclass(dataclass, epochs, ... 
-%                   'epochNumber', 5);
+%       >>          'epochNumber', 5);
 % 
 %                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

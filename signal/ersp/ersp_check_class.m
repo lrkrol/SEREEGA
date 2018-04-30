@@ -111,10 +111,13 @@
 %       class - the class variable struct with all fields completed
 %
 % Usage example:
+%       >> epochs = ('n', 100, 'srate', 1000, 'length', 1000);
+%       >> ersp = struct();
 %       >> ersp.frequency = 20; ersp.amplitude = 1;
 %       >> ersp.modulation = 'ampmod'; ersp.modFrequency = 1;
 %       >> ersp.modPhase = -.25; ersp.modMinRelAmplitude = .1;
 %       >> ersp = ersp_check_class(ersp)
+%       >> ersp_plot_signal_fromclass(ersp, epochs);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,

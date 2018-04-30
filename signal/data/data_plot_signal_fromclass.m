@@ -18,8 +18,9 @@
 %       h - handle of the generated figure
 %
 % Usage example:
-%       >> epochs = struct('n', 100, 'srate', 500, 'length', 2000);
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 2000);
 %       >> randomdata = randn(100,1000); dataclass = struct();
+%       >> dataclass = struct();
 %       >> dataclass.data = randomdata; dataclass.index = {'e', ':'};
 %       >> dataclass.amplitude = 1;
 %       >> dataclass = utl_check_class(dataclass, 'type', 'data');

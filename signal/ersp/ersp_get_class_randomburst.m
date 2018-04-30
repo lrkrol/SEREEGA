@@ -50,7 +50,7 @@
 %       ersp - 1-by-numClasses struct of ERSP classes
 %
 % Usage example:
-%       >> epochs.srate = 1000; epochs.length = 1000; epochs.n = 1;
+%       >> epochs = struct('n', 100, 'srate', 1000, 'length', 1000);
 %       >> ersp = ersp_get_class_randomburst([4:30], [.1:.1:1], ...
 %                 [300:1000], [50:300], [.5:.1:1], [0:.1:.5], ...
 %                 'bursts', [-1, 1], 'numClasses', 64);

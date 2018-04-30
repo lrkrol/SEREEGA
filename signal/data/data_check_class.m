@@ -40,6 +40,7 @@
 %
 % Usage example:
 %       >> randomdata = randn(100,1000); dataclass = struct();
+%       >> dataclass = struct();
 %       >> dataclass.data = randomdata; dataclass.index = {'e', ':'};
 %       >> dataclass.amplitude = 1;
 %       >> dataclass = data_check_class(dataclass);

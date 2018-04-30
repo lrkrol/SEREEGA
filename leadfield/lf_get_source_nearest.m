@@ -12,8 +12,9 @@
 %       dist - the distance of the found source to the indicated position
 %
 % Usage example:
-%       >> lf = lf_generate_fromnyhead;
+%       >> lf = lf_generate_fromnyhead();
 %       >> sourceIdx = lf_get_source_nearest(lf, [0 0 0]);
+%       >> plot_source_location(sourceIdx, lf);
 % 
 %                    Copyright 2017 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
