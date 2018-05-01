@@ -81,7 +81,8 @@ if isempty(orientation)
 end
 
 if ~isempty(handle)
-    set(0,'CurrentFigure', handle);
+    set(0, 'CurrentFigure', handle);
+    clf;
 else
     if newfig
         h = figure('name', 'Source projection', 'NumberTitle', 'off');
@@ -119,6 +120,7 @@ end
 projection = lf_get_projection(leadfield, sourceIdx, 'orientation', orientation);
 
 meanorientation = mean(orientation, 1);
-title(sprintf('orientation [%.2f, %.2f, %.2f] (n=%d)', meanorientation (1), meanorientation (2), meanorientation (3), numel(sourceIdx))); topoplot(projection, lf.chanlocs, 'colormap', cmap);
+title(sprintf('orientation [%.2f, %.2f, %.2f] (n=%d)', meanorientation (1), meanorientation (2), meanorientation (3), numel(sourceIdx)));
+topoplot(projection, lf.chanlocs, 'colormap', cmap);
 
 end
