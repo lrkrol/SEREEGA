@@ -25,13 +25,17 @@
 %
 % Optional (key-value pairs):
 %       amplitudeDv - the amplitude deviation of the resulting signals
+%                     (default: 0)
 %       amplitudeSlope - the amplitude slope of the resulting signals
-%       probability - the probability of the resulting signals
+%                        (default: 0)
+%       probability - the probability of the resulting signals (0-1,
+%                     default: 1)
 %       probabilitySlope - the probability slope of the resulting signals
+%                          (default: 0)
 %       plotInteractions - whether or not to plot the modelled interactions.
 %                          each off-diagonal non-zero value represents an
 %                          interaction. symmetry indicates a bidirectional
-%                          influence.
+%                          influence (0|1, default: 0).
 %
 % Out:  
 %       signal - row array containing the data classes
