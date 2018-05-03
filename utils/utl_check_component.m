@@ -70,9 +70,9 @@ if numel(component) > 1
 else
     % checking for required variables
     if ~isfield(component, 'source') || isempty(component.source)
-        error('SEREEGA:utl_check_component:missingFieldValue', 'no source indicated'); 
+        error('SEREEGA:utl_check_component:missingFieldValue', 'no source indicated: assign at least one source to each component'); 
     elseif ~isfield(component, 'signal') || isempty(component.signal)
-        error('SEREEGA:utl_check_component:missingFieldValue', 'no signal indicated');
+        error('SEREEGA:utl_check_component:missingFieldValue', 'no signal indicated: assign at least one signal to each component');
     end
 
     % adding fields / filling in defaults
