@@ -75,7 +75,7 @@ x = x/epochs.srate;
 if isfield(epochs, 'prestim')
     x = x - epochs.prestim/1000; end
 
-if newfig, h = figure('name', 'ERSP signal', 'NumberTitle', 'off'); else h = NaN; end
+if newfig, h = figure('name', 'ERSP signal', 'NumberTitle', 'off', 'ToolBar', 'none'); else h = NaN; end
 hold on;
 
 signal = ersp_generate_signal_fromclass(class, epochs, 'baseonly', 1);

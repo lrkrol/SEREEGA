@@ -62,7 +62,7 @@ component = p.Results.component;
 newfig = p.Results.newfig;
 cmap = p.Results.colormap;
 
-if newfig, h = figure('name', 'Component projection', 'NumberTitle', 'off'); else h = NaN; end
+if newfig, h = figure('name', 'Component projection', 'NumberTitle', 'off', 'ToolBar', 'none'); else h = NaN; end
 
 if length(component) > 1
     % creating subplots

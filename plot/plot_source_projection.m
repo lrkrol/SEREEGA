@@ -85,7 +85,7 @@ if ~isempty(handle)
     clf;
 else
     if newfig
-        h = figure('name', 'Source projection', 'NumberTitle', 'off');
+        h = figure('name', 'Source projection', 'NumberTitle', 'off', 'ToolBar', 'none');
     else
         h = NaN;
     end

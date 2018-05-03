@@ -47,7 +47,7 @@ ncomponents = numel(component);
 
 if ncomponents > 10, nrows = 10; else, nrows = ncomponents; end
 
-h = figure('name', 'Components', 'NumberTitle', 'off');
+h = figure('name', 'Components', 'NumberTitle', 'off', 'ToolBar', 'none');
 j = 0;
 for i = 1:ncomponents
     % component projection, 1 column
