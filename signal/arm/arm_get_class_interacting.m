@@ -62,6 +62,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-05-03 lrk
+%   - Added note field to data class
 % 2018-03-23 lrk
 %   - Fixed bug where classes could not be verified due to field
 %     inconsistencies
@@ -135,7 +137,8 @@ for n = 1:numSources
                     'amplitudeDv', amplitudeDv, ...
                     'amplitudeSlope', amplitudeSlope, ...
                     'probability', probability, ...
-                    'probabilitySlope', probabilitySlope));
+                    'probabilitySlope', probabilitySlope, ...
+                    'note', sprintf('ARM%d', n)));
 end
 
 if plotInteractions

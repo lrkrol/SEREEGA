@@ -30,6 +30,7 @@
 %         .probability:          0-1 scalar indicating probability of
 %                                appearance
 %         .probabilitySlope:     scalar, slope of the probability
+%         .note                  string, name/description of class
 %
 % In:
 %       class - the class variable as a struct with at least the required
@@ -49,6 +50,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-05-03 lrk
+%   - Added note field
 % 2018-03-23 lrk
 %   - Added amplitudeType argument
 % 2017-10-23 First version
@@ -103,6 +106,9 @@ if ~isfield(class, 'probability')
 
 if ~isfield(class, 'probabilitySlope')
     class.probabilitySlope = 0; end
+
+if ~isfield(class, 'note')
+    class.note = ''; end
 
 class = orderfields(class);
 

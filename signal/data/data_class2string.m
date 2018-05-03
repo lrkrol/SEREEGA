@@ -12,7 +12,7 @@
 %       >> randomdata = randn(100,1000); dataclass = struct();
 %       >> dataclass = struct();
 %       >> dataclass.data = randomdata; dataclass.index = {'e', ':'};
-%       >> dataclass.amplitude = 1;
+%       >> dataclass.amplitude = 1; dataclass.note = 'example';
 %       >> dataclass = data_check_class(dataclass);
 %       >> datastr = data_class2string(dataclass)
 % 
@@ -20,7 +20,7 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
-% 2018-04-30 First version
+% 2018-05-03 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
 
@@ -39,6 +39,6 @@
 
 function string = data_class2string(class)
 
-string = sprintf('Data (%.2f) (%s)', class.amplitude, class.amplitudeType);
+string = sprintf('Data (%.2f) (%s) (%s)', class.amplitude, class.amplitudeType, class.note);
 
 end
