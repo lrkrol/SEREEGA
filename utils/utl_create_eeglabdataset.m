@@ -85,10 +85,8 @@ else
 end
 
 % creating required fields and corresponding values where available
-EEG = struct(); 
+EEG = eeg_emptyset(); 
 EEG.setname = 'SEREEGA dataset';
-EEG.filename = '';
-EEG.filepath = '';
 EEG.nbchan = size(data, 1);
 EEG.trials = size(data, 3);
 EEG.pnts = size(data, 2);
@@ -96,12 +94,7 @@ EEG.srate = epochs.srate;
 EEG.xmin = xmin;
 EEG.xmax = EEG.xmin + (EEG.pnts-1) / EEG.srate;
 EEG.data = data;
-EEG.icaact = [];
-EEG.icawinv = [];
-EEG.icaweights = [];
-EEG.icasphere = [];
 EEG.chanlocs = leadfield.chanlocs;
-EEG.etc = [];
 
 EEG = eeg_checkset(EEG);
 
