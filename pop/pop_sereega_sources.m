@@ -35,6 +35,11 @@
 %       values as before, and allows them to be plotted. Click "remove
 %       source" to remove a source from the simulation.
 %
+%       Sources are saved as partial components in 
+%       EEG.etc.sereega.components--"partial" in the sense that these
+%       components have a source location and orientation, as selected in
+%       this dialog, but have not been assigned a signal yet.
+%
 %       See for details: lf_get_source_random, lf_get_source_nearest,
 %       lf_get_source_spaced, lf_get_source_inradius,
 %       utl_get_orientation_random,
@@ -84,9 +89,8 @@ if ~isfield(EEG.etc, 'sereega') || ~isfield(EEG.etc.sereega, 'leadfield') ...
 end
 
 % adding empty 'sources' field if no sources were added befor
-if ~isfield(EEG.etc.sereega, 'sources')
-    EEG.etc.sereega.sources.sourceidx = [];
-    EEG.etc.sereega.sources.orientation = [];
+if ~isfield(EEG.etc.sereega, 'components')
+    EEG.etc.sereega.components = struct('source', {}, 'signal', {}, 'orientation', {}, 'orientationDv', {});
 end
 
 % setting userdata
@@ -94,13 +98,13 @@ userdata.newsourceidx = [];
 userdata.newsourceorientation = [];
 userdata.plotlocationhandle = [];
 userdata.plotprojectionhandle = [];
-userdata.currentsourceidx = EEG.etc.sereega.sources.sourceidx;
-userdata.currentsourceorientation = EEG.etc.sereega.sources.orientation;
+userdata.currentsourceidx = [EEG.etc.sereega.components.source];
+userdata.currentsourceorientation = reshape([EEG.etc.sereega.components.orientation], 3, [])';
 
 % generating list of current sources
 currentsourcelist = {}; ...
 for i = 1:numel(userdata.currentsourceidx), ...
-    currentsourcelist = [currentsourcelist, {sprintf('%d at ( %d, %d, %d )', i, round(EEG.etc.sereega.leadfield.pos(EEG.etc.sereega.sources.sourceidx(i),:)))}]; ...
+    currentsourcelist = [currentsourcelist, {sprintf('%d at ( %d, %d, %d )', i, round(EEG.etc.sereega.leadfield.pos(EEG.etc.sereega.components(i).source,:)))}]; ...
 end
 
 % general callback functions
@@ -408,8 +412,16 @@ geom = { ...
      
 % saving sources
 if ~isempty(userdata)
-    EEG.etc.sereega.sources.sourceidx = userdata.currentsourceidx;
-    EEG.etc.sereega.sources.orientation = userdata.currentsourceorientation;
+    % removing removed sources
+    idx = ~ismember([EEG.etc.sereega.components.source], userdata.currentsourceidx);
+    EEG.etc.sereega.components(idx) = [];
+    
+    % adding new sources
+    idx = ~ismember(userdata.currentsourceidx, [EEG.etc.sereega.components.source]);
+    newsources = userdata.currentsourceidx(idx);
+    for src = 1:numel(newsources)
+        EEG.etc.sereega.components(numel(EEG.etc.sereega.components)+1) = struct('source', newsources(src), 'signal', {{}}, 'orientation', userdata.currentsourceorientation(src,:), 'orientationDv', [0, 0, 0]);
+    end
     
     if ~isempty(userdata.plotlocationhandle) && all(ishandle(userdata.plotlocationhandle))
         close(userdata.plotlocationhandle(1)); end

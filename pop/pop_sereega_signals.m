@@ -22,7 +22,7 @@
 %
 % In:
 %       EEG - an EEGLAB dataset with epochs configured in
-%       EEG.etc.sereega.epochs.
+%             EEG.etc.sereega.epochs.
 %
 % Out:  
 %       EEG - the EEGLAB dataset with signals added/removed according to
