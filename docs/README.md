@@ -757,4 +757,4 @@ Feel free to contact me at lrkrol@gmail.com.
 
 ## Special thanks and acknowledgements
 
-Fabien Lotte provided two early drafts of what are now `lf_generate_fromfieldtrip` and `erp_generate_signal`. That's where it all started! Stefan Haufe provided code and support for the autoregressive model signal type. Part of this work was supported by the Deutsche Forschungsgemeinschaft (ZA 821/3-1).
+Fabien Lotte provided two early drafts of what are now `lf_generate_fromfieldtrip` and `erp_generate_signal`. I'd like to thank Mahta Mousavi for the band-pass filter design, Stefan Haufe for the autoregressive signal generation code and accompanying support, and Ramón Martíınez-Cancino for his assistance with the GUI development. Part of this work was supported by the Deutsche Forschungsgemeinschaft (grant number ZA 821/3-1), Idex Bordeaux and LabEX CPU/SysNum, and the European Research Council with the BrainConquest project (grant number ERC-2016-STG-714567). 
