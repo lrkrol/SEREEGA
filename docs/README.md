@@ -510,7 +510,6 @@ plot_component(c, epochs, lf);
 ```
 
 (Note `utl_create_component` as a shorthand function to replace manually assigning structure arrays with `signal` and `source` fields. It also automatically verifies the resulting components.)
-```
 
 
 ### Source identification
