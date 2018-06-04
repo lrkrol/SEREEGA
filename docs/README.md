@@ -274,6 +274,8 @@ EEG = utl_create_eeglabdataset(generate_scalpdata(c, lf, epochs), ...
 pop_eegplot(EEG, 1, 1, 1);
 ```
 
+Note that `peakLatencyDv` applies to each peak latency value separately. Another parameter, `peakLatencyShift`, works the same way but applies to all values equally.
+
 Indicating a slope results in a consistent change over time. An amplitude of 1 and an amplitude slope of -.75, for example, results in the signal having a peak amplitude of 1 in the first epoch, and .25 in the last.
 
 ```matlab

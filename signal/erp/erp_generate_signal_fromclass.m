@@ -26,10 +26,12 @@
 %       >> erp = utl_check_class(erp);
 %       >> signal = erp_generate_signal_fromclass(erp, epochs);
 % 
-%                    Copyright 2017 Laurens R Krol
+%                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-06-04 lrk
+%   - Added peakLatencyShift
 % 2017-06-13 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -79,6 +81,11 @@ else
         peakWidth = abs(utl_apply_dvslope(class.peakWidth, class.peakWidthDv, class.peakWidthSlope, epochNumber, epochs.n));
         peakWidth(peakWidth == 0) = 1;
         peakAmplitude = utl_apply_dvslope(class.peakAmplitude, class.peakAmplitudeDv, class.peakAmplitudeSlope, epochNumber, epochs.n);
+        
+        % shifting latencies
+        shift = class.peakLatencyShift/ 3 * randn();
+        if abs(shift) > class.peakLatencyShift, shift = shift * sign(shift); end
+        peakLatency = peakLatency + shift;
         
         % generating signal
         signal = erp_generate_signal(peakLatency, peakWidth, peakAmplitude, epochs.srate, epochs.length);

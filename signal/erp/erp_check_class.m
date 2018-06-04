@@ -20,6 +20,10 @@
 %       of peaks being centered between 380 and 420 ms. A deviation of 0
 %       means all signals will be exactly the same (barring any sloping).
 %
+%       Deviations apply to each peak indivdiually. The peakLatencyShift
+%       works in the same way, but applies to all peaks equally, shifting
+%       the entire ERP for each epoch.
+%
 %       The probability can range from 0 (this ERP signal will never be
 %       generated) to 1 (this ERP signal will be generated for every single
 %       epoch). 
@@ -30,6 +34,9 @@
 %         .peakLatency:          1-by-n matrix of peak latencies
 %         .peakLatencyDv:        1-by-n matrix of peak latency deviations
 %         .peakLatencySlope:     1-by-n matrix of peak latency slopes
+%         .peakLatencyShift:     value indicating maximum absolute peak 
+%                                latency deviation applied equally to all
+%                                peaks
 %         .peakWidth:            1-by-n matrix of peak widths
 %         .peakWidthDv:          1-by-n matrix of peak width deviations
 %         .peakWidthSlope:       1-by-n matrix of peak width slopes
@@ -54,10 +61,12 @@
 %       >> erp.peakAmplitude = 1;
 %       >> erp = erp_check_class(erp)
 % 
-%                    Copyright 2017 Laurens R Krol
+%                    Copyright 2017, 2018 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-06-04 lrk
+%   - Added peakLatencyShift
 % 2017-10-19 lrk
 %   - Changed the width parameter to mean full width, not half width
 % 2017-06-13 First version
@@ -88,6 +97,8 @@ elseif ~isfield(class, 'peakAmplitude')
     error('SEREEGA:erp_check_class:missingField', 'field ''peakAmplitude'' is missing from given ERP class variable');
 elseif isfield(class, 'type') && ~isempty(class.type) && ~strcmp(class.type, 'erp')
     error('SEREEGA:erp_check_class:incorrectFieldValue', 'indicated type (''%s'') not set to ''erp''', class.type);
+elseif isfield(class, 'peakLatencyShift') && numel(class.peakLatencyShift) ~= 1
+    error('SEREEGA:erp_check_class:incorrectFieldValue', 'peakLatencyShift must be a single value');
 end
 
 % adding fields / filling in defaults
@@ -99,6 +110,9 @@ if ~isfield(class, 'peakLatencyDv')
 
 if ~isfield(class, 'peakLatencySlope')
     class.peakLatencySlope = zeros(1, numel(class.peakLatency)); end
+
+if ~isfield(class, 'peakLatencyShift')
+    class.peakLatencyShift = 0; end
 
 if ~isfield(class, 'peakWidthDv')
     class.peakWidthDv = zeros(1, numel(class.peakLatency)); end
