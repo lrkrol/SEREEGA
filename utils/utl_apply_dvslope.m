@@ -16,6 +16,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-06-04 lrk
+%   - Fixed actual deviation value to never exceed abs(deviation)
 % 2017-07-06 lrk
 %   - Fixed issue where slope already influenced the very first epoch
 % 2017-06-14 First version
@@ -43,8 +45,12 @@ if numel(mean) > 1
         value(i) = utl_apply_dvslope(mean(i), deviation(i), slope(i), epochNumber, maxEpoch);
     end
 else
+    % fixing applied deviation value between -/+ deviation
+    dv = deviation / 3 * randn();
+    if abs(dv) > deviation, dv = deviation * sign(dv); end
+    
     % slope can be NaN when maxEpoch = 1
-    value = nansum([mean + deviation / 3 * randn(), slope * (epochNumber-1) / (maxEpoch-1)]);
+    value = nansum([mean, dv, slope * (epochNumber-1) / (maxEpoch-1)]);
 end
 
 end
