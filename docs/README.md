@@ -2,6 +2,8 @@
 
 SEREEGA is a modular, general-purpose open-source MATLAB-based toolbox to generate simulated toy data mimicking event-related electroencephalography (EEG) data.
 
+See [Krol, L. R., Pawlitzki, J., Lotte, F., Gramann, K., & Zander, T. O. (2018). SEREEGA: Simulating Event-Related EEG Activity. bioRxiv doi: 10.1101/326066](https://doi.org/10.1101/326066) for a manuscript describing version 1.0.0-beta. 
+
 
 ## Contents
 
