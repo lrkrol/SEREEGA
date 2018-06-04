@@ -31,6 +31,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-06-04 lrk
+%   - Added frequencyShift
 % 2017-11-24 lrk
 %   - Renamed 'pac' to 'ampmod' and replaced references accordingly
 % 2017-11-22 lrk
@@ -100,8 +102,12 @@ else
 
         % obtaining specific base values
         frequency = utl_apply_dvslope(class.frequency, class.frequencyDv, class.frequencySlope, epochNumber, epochs.n);
-        
         amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
+        
+        % shifting frequencies
+        shift = class.frequencyShift/ 3 * randn();
+        if abs(shift) > class.frequencyShift, shift = shift * sign(shift); end
+        frequency = frequency + shift;
         
         if ~isempty(class.phase)
             phase = utl_apply_dvslope(class.phase, class.phaseDv, class.phaseSlope, epochNumber, epochs.n);

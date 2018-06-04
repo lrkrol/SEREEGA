@@ -38,6 +38,10 @@
 %       simulated value will be (on average, if any deviations are also
 %       indicated) 100 less than in the first epoch.
 %
+%       Deviations apply to each value indivdiually. For fequencies, 
+%       frequencyShift works in the same way, but applies to all frequency
+%       values equally, shifting the entire frequency band for each epoch.
+%
 %       The probability can range from 0 (this ERSP signal will never be
 %       generated) to 1 (this signal will be generated for every single
 %       epoch). 
@@ -49,6 +53,9 @@
 %                                [passband2, stopband2] edges in Hz
 %         .frequencyDv:          frequency or edges deviation in Hz
 %         .frequencySlope:       frequency or edges slope in Hz
+%         .frequencyShift:       value indicating maximum absolute
+%                                frequency band deviation, i.e. deviation 
+%                                applied equally to all band edges
 %         .phase:                base frequency phase at the start of the
 %                                epoch, between 0 and 1, or [] for a random
 %                                phase
@@ -123,6 +130,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-06-04 lrk
+%   - Added frequencyShift
 % 2017-12-30 lrk
 %   - Changed bandpass filter method
 % 2017-11-24 lrk
@@ -161,6 +170,8 @@ elseif ~isfield(class, 'amplitude')
     error('SEREEGA:ersp_check_class:missingField', 'field ''amplitude'' is missing from given ERSP class variable');
 elseif ~isfield(class, 'amplitude')
     error('SEREEGA:ersp_check_class:missingField', 'field ''modulation'' is missing from given ERSP class variable');
+elseif isfield(class, 'frequencyShift') && numel(class.frequencyShift) ~= 1
+    error('SEREEGA:ersp_check_class:incorrectFieldValue', 'frequencyShift must be a single value');
 end
 
 if ismember(class.modulation, {'burst', 'invburst'})
@@ -204,6 +215,8 @@ if ~isfield(class, 'frequencyDv')
     class.frequencyDv = 0; end
 if ~isfield(class, 'frequencySlope')
     class.frequencySlope = 0; end
+if ~isfield(class, 'frequencyShift')
+    class.frequencyShift = 0; end
 
 if ~isfield(class, 'phase')
     class.phase = []; end
