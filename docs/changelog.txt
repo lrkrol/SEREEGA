@@ -1,0 +1,9 @@
+
+v1.0.4-beta
+- Added peakLatencyShift parameter to ERP class
+- Added frequencyShift parameter to ERSP class
+- Updated ERSP classes in utl_get_component_fromtemplate using frequencyShift
+- Fixed utl_apply_dvslope to never apply deviations exceeding indicated deviation value
+
+v1.0.0-beta
+- The version described in and used for the bioRxiv preprint 326066
