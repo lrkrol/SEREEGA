@@ -60,7 +60,6 @@ if ~isfield(EEG.etc, 'sereega') || ~isfield(EEG.etc.sereega, 'components')
     return
 end
 
-
 % generating list of current signals
 signallist = {};
 for s = 1:numel(EEG.etc.sereega.signals)
@@ -70,13 +69,6 @@ end
 % setting userdata
 userdata.EEG = EEG;
 userdata.signallist = signallist;
-
-% strjoin is problematically overloaded by a number of EEGLAB toolboxes;
-% making sure that we use the correct one
-cdorig = cd(fileparts(which('strfun/strjoin')));
-joinstring = @strjoin;
-cd(cdorig);
-userdata.joinstring = joinstring;
 
 % generating list of current components
 currentcomponentlist = {};
