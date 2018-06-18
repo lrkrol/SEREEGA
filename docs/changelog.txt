@@ -1,4 +1,7 @@
 
+v1.0.5-beta
+- Updated GUI with previous version's changes
+
 v1.0.4-beta
 - Added peakLatencyShift parameter to ERP class
 - Added frequencyShift parameter to ERSP class

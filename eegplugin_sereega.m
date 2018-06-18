@@ -35,7 +35,7 @@
 
 function version = eegplugin_sereega(fig, try_strings, catch_strings)
     
-    version = '1.0.4-beta';
+    version = '1.0.5-beta';
     
     % find tools menu
     % ---------------
