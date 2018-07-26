@@ -17,6 +17,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-07-16 lrk
+%   - Fixed issue where view was not properly converted
 % 2018-04-23 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -69,7 +71,7 @@ end
 if ~isempty(structout)
     % user pressed OK
     styles = {'scatter', 'boundary'};    
-    plot_headmodel(EEG.etc.sereega.leadfield, 'labels', structout.labels, 'style', styles{structout.style}, 'shrink', str2double(structout.shrink), 'view', str2double(structout.view));
+    plot_headmodel(EEG.etc.sereega.leadfield, 'labels', structout.labels, 'style', styles{structout.style}, 'shrink', str2double(structout.shrink), 'view', str2num(structout.view));
 end
 
 end
