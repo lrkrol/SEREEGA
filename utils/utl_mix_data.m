@@ -88,7 +88,7 @@ if numel(originalsize) > 2
 end
 
 % calculating dB value
-db = 10 * log10(mean(signal(:).^2) / mean(noise(:).^2));
+db = 10 * log10((rms(signal(:)) / rms(noise(:)))^2);
 
 fprintf('SNR %.2f = %.2f dB\n', snr, db);
 
