@@ -11,7 +11,10 @@
 %                   all sources will be returned.
 %
 % Optional (key-value pairs):
-%       orientation - [x, y, z] orientation of the source to use
+%       orientation - numel(sourceIdx)-by-3 matrix of [x, y, z] 
+%                     orientations of the source(s) to use; when multiple
+%                     sources are indicated by only one orientation, this
+%                     orientation will be applied to all sources
 %       normaliseLeadfield - 1|0, whether or not to normalise the
 %                            leadfields before  projecting the signal to
 %                            have the most extreme value be either 1 or -1,
@@ -29,6 +32,9 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-08-22 cp/lrk
+%   - Single orientation can now be indicated to apply to multiple sources
+%     (GitHub issue #3)
 % 2018-03-23 lrk
 %   - Changed argument order for consistency
 % 2017-10-26 lrk
@@ -81,6 +87,12 @@ if isempty(orientation)
 end
 
 if numel(sourceIdx) > 1
+    % if only one orientation indicated, applying this to all sources
+    if size(orientation, 1) == 1
+        warning('Only one orientation indicated for %d sources; applying that same orientation to all sources', numel(sourceIdx));
+        orientation = repmat(orientation, [numel(sourceIdx), 1]);
+    end
+    
     % iteratively calling this script, returning mean projection
     for s = 1:numel(sourceIdx)
         projection(s,:) = lf_get_projection(leadfield, sourceIdx(s), 'orientation', orientation(s,:), 'normaliseLeadfield', normaliseLeadfield, 'normaliseOrientation', normaliseOrientation);
