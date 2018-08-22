@@ -80,6 +80,8 @@ if ~isempty(structout)
         'prestim', str2num(structout.prestim));
     
     EEG.etc.sereega.epochs = epochs;
+    
+    disp('Configured epochs.');
 end
 
 end

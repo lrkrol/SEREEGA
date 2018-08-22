@@ -145,10 +145,12 @@ if ~isempty(structout)
     layout = layouts{structout.layout};
             
     % adding lead field to EEG structure
+    disp('Generating lead field...');
     EEG.etc.sereega.leadfield = lf_generate_frompha(agegroup, layout, 'labels', labelselection);
     
     % also adding code to generate lead field
     EEG.etc.sereega.leadfieldfunction = sprintf('lf_generate_frompha(''%s'', ''%s'', ''labels'', %s);', agegroup, layout, ['{''' joinstring(labelselection, ''',''') '''}']);
+    disp('Done.');
 end
 
 end

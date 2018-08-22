@@ -99,10 +99,12 @@ if ~isempty(structout)
     labelselection = labelselection{1}';
     
     % adding lead field to EEG structure
+    disp('Generating lead field...');
     EEG.etc.sereega.leadfield = lf_generate_fromnyhead('labels', labelselection);
     
     % also adding code to generate lead field
     EEG.etc.sereega.leadfieldfunction = sprintf('lf_generate_fromnyhead(''labels'', %s);', ['{''' joinstring(labelselection, ''',''') '''}']);
+    disp('Done.');
 end
 
 end
