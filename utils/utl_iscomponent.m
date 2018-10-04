@@ -3,6 +3,12 @@
 %       Returns true when variable c is a struct with all four of the
 %       required component fields.
 %
+%       NOTE: This is to quickly check whether or not a variable is
+%       supposed to be a component or not. Passing this does not mean that 
+%       the variable can be successfully used for all further processing. 
+%       See utl_isvalidcomponent for a function that checks variables
+%       using utl_check_component.
+%
 % In:
 %       c - the variable to be checked
 %
