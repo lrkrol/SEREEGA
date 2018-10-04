@@ -39,6 +39,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-10-04 lrk
+%   - Put the toolbar back in 3d mode
 % 2018-03-23 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -83,9 +85,8 @@ sourcecolour = [ones(numel(sourceIdx),1), linspace(.6, .3, numel(sourceIdx))', l
 sourcecolour = sourcecolour(randperm(numel(sourceIdx)), :);
 markersize = 35;
 
-if newfig, h = figure('name', 'Source location', 'NumberTitle', 'off', 'ToolBar', 'none'); end
-
 if strcmp(mode, '3d')
+    if newfig, h = figure('name', 'Source location', 'NumberTitle', 'off'); end
     hold on;
     k = boundary(leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3), shrink);
     s = trisurf(k, leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3), 'FaceColor', [1 .75, .75], 'EdgeColor', 'none');
@@ -98,6 +99,8 @@ if strcmp(mode, '3d')
     alpha(s, .25);
     view(viewpoint);
 elseif strcmp(mode, '2d')
+    if newfig, h = figure('name', 'Source location', 'NumberTitle', 'off', 'ToolBar', 'none'); end
+    
     xmin = min(leadfield.pos(:,1));
     xmax = max(leadfield.pos(:,1));
     ymin = min(leadfield.pos(:,2));
