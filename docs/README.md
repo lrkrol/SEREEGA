@@ -95,12 +95,12 @@ It is recommended to have MATLAB 2014b or higher with the DSP toolbox installed.
 
 [EEGLAB](https://sccn.ucsd.edu/eeglab) is used for a number of functions, and should be started before generating a lead field as EEGLAB's `readlocs` is use to add channel location information. SEREEGA was tested with EEGLAB 13.6.5b.
 
-When using the New York Head, as in this tutorial, make sure you have the [New York Head (ICBM-NY) lead field](http://www.parralab.org/nyhead/sa_nyhead.mat) in MATLAB's path. Similarly, the [Pediatric Head Atlases](https://www.pedeheadmod.net) must also first be obtained separately, if you intend to use those. When using FieldTrip to generate a custom lead field, the file `/fileio/ft_read_sens` from the FieldTrip directory will be necessary. FieldTrip can be installed as an EEGLAB plug-in.
+When using the New York Head, as in this tutorial, make sure you have the [New York Head (ICBM-NY) lead field in MATLAB format](http://www.parralab.org/nyhead) in your path. Similarly, the [Pediatric Head Atlases](https://www.pedeheadmod.net) must also first be obtained separately, if you intend to use those. When using FieldTrip to generate a custom lead field, the file `/fileio/ft_read_sens` from the FieldTrip directory will be necessary. FieldTrip can be installed as an EEGLAB plug-in.
 
 
 ### Configuration
 
-Make sure that EEGLAB has been started for this tutorial. We will be using the lead field from the New York Head, thus, the file `sa_nyhead.mat` should be in the path.
+Make sure that EEGLAB has been started for this tutorial. We will be using the lead field from the New York Head, thus, the file `sa_nyhead.mat` should be in the path, available [here](http://www.parralab.org/nyhead).
 
 The general configuration of the to-be-simulated epochs is stored in a structure array. The following fields are required.
 
