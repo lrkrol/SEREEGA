@@ -427,6 +427,8 @@ if ~isempty(userdata)
         close(userdata.plotlocationhandle(1)); end
     if ~isempty(userdata.plotprojectionhandle) && ishandle(userdata.plotprojectionhandle)
         close(userdata.plotprojectionhandle); end
+    
+    fprintf('Number of source locations: %d\n', numel([EEG.etc.sereega.components.source]));
 end
 
 end

@@ -197,4 +197,10 @@ if ~isempty(userdata)
     EEG = userdata.EEG;
 end
 
+valid = utl_isvalidcomponent(EEG.etc.sereega.components, EEG.etc.sereega.leadfield);
+fprintf('Number of valid components: %d\n', sum(valid));
+if sum(valid) ~= numel(valid)
+    fprintf('Note: %d components remain without signals.\n', sum(~valid));
+end
+
 end

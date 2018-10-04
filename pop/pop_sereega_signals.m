@@ -181,4 +181,6 @@ if ~isempty(userdata)
     EEG = userdata.EEG;
 end
 
+fprintf('Number of signals: %d\n', numel([EEG.etc.sereega.signals]));
+
 end
