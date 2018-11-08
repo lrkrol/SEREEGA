@@ -39,6 +39,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018-11-08 lrk
+%   - Now continues with empty labels if montage not found
 % 2017-08-10 lrk
 %   - Added channel montage argument
 % 2017-06-21 lrk
@@ -83,7 +85,8 @@ end
 if ~isempty(montage)
     % taking channel labels from indicated montage
     labels = utl_get_montage(montage);
-elseif isempty(labels)
+
+if isempty(labels)
     % taking all available EEG electrodes, i.e., excluding fiducials
     labels = setdiff(sa.clab_electrodes, {'RPA', 'LPA', 'Nz'});
 end
