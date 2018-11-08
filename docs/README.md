@@ -124,7 +124,7 @@ We can indicate the electrode locations we want to use by indicating their chann
 lf = lf_generate_fromnyhead('montage', 'S64');
 ```
 
-Or, to only simulate the centre line, we can use:
+`S64` refers to a selection, i.e. a montage, of 64 channels from the 10-20 system. The file `utl_get_montage` contains all available montages. If the channel montage you want is not available there, you can either add it to that file, or indicate the individual channel labels when obtaining the lead field. For example, to only simulate the centre line, we can use:
 
 ```matlab
 lf2 = lf_generate_fromnyhead('labels', {'Fz', 'Cz', 'Pz', 'Oz'})
