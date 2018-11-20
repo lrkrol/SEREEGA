@@ -52,10 +52,10 @@
 %            .leadfield   - the leadfield, containing projections in three
 %                           directions (xyz) for each source, in a
 %                           nchannels x nsources x 3 matrix
-%            .orientation - a default orientation for each soure. for the
-%                           New York Head, this gives dipole orientations
-%                           perpendicular to the cortical surface
-%            .pos         - xyz MNI coordinates of each source
+%            .orientation - a default orientation for each soure. these are
+%                           not available in the PHA and thus default to 0.
+%            .pos         - xyz coordinates of each source (not scaled to
+%                           MNI but may be approximate, depending on atlas)
 %            .chanlocs    - channel information in EEGLAB format
 %
 % Usage example:

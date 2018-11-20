@@ -22,7 +22,7 @@
 %                           directions (xyz) for each source, in a 
 %                           nchannels x nsources x 3 matrix
 %            .orientation - a default orientation for each soure. since
-%                           FieldTrip does not provide this, it is [1 1 1]
+%                           FieldTrip does not provide this, it is [0 0 0]
 %                           for each source.
 %            .pos         - xyz MNI coordinates of each source
 %            .chanlocs    - channel information in EEGLAB format
