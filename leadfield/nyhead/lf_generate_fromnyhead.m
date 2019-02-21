@@ -85,6 +85,7 @@ end
 if ~isempty(montage)
     % taking channel labels from indicated montage
     labels = utl_get_montage(montage);
+end
 
 if isempty(labels)
     % taking all available EEG electrodes, i.e., excluding fiducials
@@ -106,5 +107,5 @@ lf.orientation = sa.cortex75K.normals;
 lf.pos = sa.cortex75K.vc;
 lf.chanlocs = readlocs('chanlocs-nyhead231.elp');
 lf.chanlocs = lf.chanlocs(chanidx);
-    
+
 end
