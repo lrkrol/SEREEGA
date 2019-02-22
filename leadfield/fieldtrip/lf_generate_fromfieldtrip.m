@@ -104,6 +104,7 @@ end
 if ~isempty(montage)
     % taking channel labels from indicated montage
     labels = utl_get_montage(montage);
+end
 
 if isempty(labels)
     % taking all available EEG electrodes, i.e., excluding fiducials
