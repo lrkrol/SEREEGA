@@ -27,7 +27,7 @@
 %                    Berlin Institute of Technology
 
 % 2017-11-24 lrk
-%   - Now takes epochs and leafield structs instead of separate values for
+%   - Now takes epochs and leadfield structs instead of separate values for
 %     srate, chanlocs, prestim, and marker.
 % 2017-06-14 lrk
 %   - Now accepts both chanlocs structure and cell of channel labels
