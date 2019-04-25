@@ -20,6 +20,7 @@ Reference:
   - [Orienting a source dipole](#orienting-a-source-dipole)
   - [Defining a source activation signal](#defining-a-source-activation-signal)
   - [Brain components and scalp data](#brain-components-and-scalp-data)
+  - [Finalising a dataset](#finalising-a-dataset)
   - [Variability](#variability)
   - [Noise and multiple signal classes](#noise-and-multiple-signal-classes)
   - [Event-related spectral perturbations](#event-related-spectral-perturbations)
