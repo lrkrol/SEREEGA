@@ -17,6 +17,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2019-03-25 lrk
+%   - Fixed bug in first argument name
 % 2017-12-01 lrk
 %   - Function now also accepts components
 % 2017-11-09 First version
@@ -41,7 +43,7 @@ function classorcomp = utl_shift_latency(classorcomp, shift)
 % parsing input
 p = inputParser;
 
-addRequired(p, 'class', @isstruct);
+addRequired(p, 'classorcomp', @isstruct);
 addRequired(p, 'shift', @isnumeric);
 
 parse(p, classorcomp, shift);
