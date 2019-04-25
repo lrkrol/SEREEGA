@@ -239,7 +239,12 @@ We now have the minimum we need to simulate scalp data. Scalp data is simulated 
 scalpdata = generate_scalpdata(c, lf, epochs);
 ```
 
-We can turn this into a dataset according to the EEGLAB format in order to be able to use EEGLAB's analysis tools, for example, to see the scalp projection time course of the ERP we just simulated. At this point, we may also want to add some additional parameters to the configuration array.
+
+### Finalising a dataset
+
+After the above step, `scalpdata` contains the channels-by-samples-by-epochs simulated data, but no additional information, such as time stamps, channel names, et cetera. 
+
+We can turn this into a dataset according to the EEGLAB format which has a standard structure to save such information. Doing so will also allow us to use EEGLAB's analysis tools, for example, to see the scalp projection time course of the ERP we just simulated. At this point, two optional parameters in the configuration array `epochs` are taken into account.
 
 ```matlab
 epochs.marker = 'event 1';  % the epochs' time-locking event marker
@@ -256,6 +261,12 @@ EEG = utl_create_eeglabdataset(scalpdata, epochs, lf);
 
 pop_topoplot(EEG, 1, [100, 200, 250, 300, 350, 400, 500], '', [1 8]);
 ```
+
+The above code named the simulated event `event 1`, and set its zero point at 200 ms into the epoch. `utl_create_eeglabdataset` takes the simulated data, the configuration array, and the lead field and compiles an EEGLAB-compatible dataset. The call to `pop_topoplot` demonstrates this compatibility.
+
+To save the dataset in EEGLAB format, use EEGLAB's function `pop_saveset`. 
+
+Keep in mind that EEGLAB uses the variable `EEG` internally to refer to the currently active dataset. Therefore, if you have assigned the dataset to the variable `EEG`, calling `eeglab redraw` redraws the main menu and recognies the newly created or updated variable as an active dataset. You can then use EEGLAB's GUI to further work with the data.
 
 
 ### Variability
