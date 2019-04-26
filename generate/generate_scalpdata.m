@@ -132,7 +132,7 @@ for e = 1:epochs.n
         % obtaining orientation
         orientation = component(c).orientation(n,:);
         orientationDv = component(c).orientationDv(n,:);
-        orientation = utl_apply_dvslope(orientation, orientationDv, zeros(size(orientation)), e, epochs.n);
+        orientation = utl_apply_dvslopeshift(orientation, orientationDv, zeros(size(orientation)), e, epochs.n);
         if all(orientation == zeros(1,3))
             warning('all-zero orientation for component %d', c);
         end

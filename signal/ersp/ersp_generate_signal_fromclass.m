@@ -101,16 +101,11 @@ else
     else
 
         % obtaining specific base values
-        frequency = utl_apply_dvslope(class.frequency, class.frequencyDv, class.frequencySlope, epochNumber, epochs.n);
-        amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
-        
-        % shifting frequencies
-        shift = class.frequencyShift/ 3 * randn();
-        if abs(shift) > class.frequencyShift, shift = shift * sign(shift); end
-        frequency = frequency + shift;
-        
+        frequency = utl_apply_dvslopeshift(class.frequency, class.frequencyDv, class.frequencySlope, epochNumber, epochs.n, class.frequencyShift);
+        amplitude = utl_apply_dvslopeshift(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
+                
         if ~isempty(class.phase)
-            phase = utl_apply_dvslope(class.phase, class.phaseDv, class.phaseSlope, epochNumber, epochs.n);
+            phase = utl_apply_dvslopeshift(class.phase, class.phaseDv, class.phaseSlope, epochNumber, epochs.n);
         else
             phase = class.phase;
         end
@@ -120,20 +115,20 @@ else
             signal = ersp_generate_signal(frequency, amplitude, phase, epochs.srate, epochs.length);
         elseif ismember(class.modulation, {'burst', 'invburst'})
             % obtaining specific burst values
-            latency = utl_apply_dvslope(class.modLatency, class.modLatencyDv, class.modLatencySlope, epochNumber, epochs.n);
-            width = utl_apply_dvslope(class.modWidth, class.modWidthDv, class.modWidthSlope, epochNumber, epochs.n);
-            taper = utl_apply_dvslope(class.modTaper, class.modTaperDv, class.modTaperSlope, epochNumber, epochs.n);
-            minAmplitude = utl_apply_dvslope(class.modMinRelAmplitude, class.modMinRelAmplitudeDv, class.modMinRelAmplitudeSlope, epochNumber, epochs.n);
+            latency = utl_apply_dvslopeshift(class.modLatency, class.modLatencyDv, class.modLatencySlope, epochNumber, epochs.n);
+            width = utl_apply_dvslopeshift(class.modWidth, class.modWidthDv, class.modWidthSlope, epochNumber, epochs.n);
+            taper = utl_apply_dvslopeshift(class.modTaper, class.modTaperDv, class.modTaperSlope, epochNumber, epochs.n);
+            minAmplitude = utl_apply_dvslopeshift(class.modMinRelAmplitude, class.modMinRelAmplitudeDv, class.modMinRelAmplitudeSlope, epochNumber, epochs.n);
 
             % generating signal
             signal = ersp_generate_signal(frequency, amplitude, phase, epochs.srate, epochs.length, ...
                     'modulation', class.modulation, 'modLatency', latency, 'modWidth', width, 'modTaper', taper, 'modMinRelAmplitude', minAmplitude);
         elseif strcmp(class.modulation, {'ampmod'})
             % obtaining specific amplitude modulation values
-            modFrequency = utl_apply_dvslope(class.modFrequency, class.modFrequencyDv, class.modFrequencySlope, epochNumber, epochs.n);
-            minAmplitude = utl_apply_dvslope(class.modMinRelAmplitude, class.modMinRelAmplitudeDv, class.modMinRelAmplitudeSlope, epochNumber, epochs.n);
+            modFrequency = utl_apply_dvslopeshift(class.modFrequency, class.modFrequencyDv, class.modFrequencySlope, epochNumber, epochs.n);
+            minAmplitude = utl_apply_dvslopeshift(class.modMinRelAmplitude, class.modMinRelAmplitudeDv, class.modMinRelAmplitudeSlope, epochNumber, epochs.n);
             if ~isempty(class.modPhase)
-                modPhase = utl_apply_dvslope(class.modPhase, class.modPhaseDv, class.modPhaseSlope, epochNumber, epochs.n);
+                modPhase = utl_apply_dvslopeshift(class.modPhase, class.modPhaseDv, class.modPhaseSlope, epochNumber, epochs.n);
             else
                 modPhase = class.modPhase;
             end 

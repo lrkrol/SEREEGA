@@ -77,15 +77,10 @@ else
         signal = zeros(1, floor((epochs.length/1000)*epochs.srate));
     else
         % obtaining specific instances of peak latencies, widths, and amps
-        peakLatency = utl_apply_dvslope(class.peakLatency, class.peakLatencyDv, class.peakLatencySlope, epochNumber, epochs.n);        
-        peakWidth = abs(utl_apply_dvslope(class.peakWidth, class.peakWidthDv, class.peakWidthSlope, epochNumber, epochs.n));
+        peakLatency = utl_apply_dvslopeshift(class.peakLatency, class.peakLatencyDv, class.peakLatencySlope, epochNumber, epochs.n, class.peakLatencyShift);
+        peakWidth = abs(utl_apply_dvslopeshift(class.peakWidth, class.peakWidthDv, class.peakWidthSlope, epochNumber, epochs.n));
         peakWidth(peakWidth == 0) = 1;
-        peakAmplitude = utl_apply_dvslope(class.peakAmplitude, class.peakAmplitudeDv, class.peakAmplitudeSlope, epochNumber, epochs.n);
-        
-        % shifting latencies
-        shift = class.peakLatencyShift/ 3 * randn();
-        if abs(shift) > class.peakLatencyShift, shift = shift * sign(shift); end
-        peakLatency = peakLatency + shift;
+        peakAmplitude = utl_apply_dvslopeshift(class.peakAmplitude, class.peakAmplitudeDv, class.peakAmplitudeSlope, epochNumber, epochs.n);
         
         % generating signal
         signal = erp_generate_signal(peakLatency, peakWidth, peakAmplitude, epochs.srate, epochs.length);

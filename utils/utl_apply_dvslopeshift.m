@@ -1,8 +1,7 @@
-% value = utl_apply_dvslope(mean, deviation, slope, epochNumber, maxEpoch)
+% value = utl_apply_dvslopeshift(mean, deviation, slope, epochNumber, maxEpoch, shift)
 %
-%       Applies the indicated slope and random deviation to a given value.
-%
-%       Deprecated. Replaced by utl_apply_dvslopeshift.
+%       Applies the indicated slope, random deviation, and optional random
+%       shift to a given (array of) value(s).
 %
 % In:
 %       mean - 1-by-n array of the value(s) to be adjusted
@@ -11,13 +10,18 @@
 %       epochNumber - the current epoch number
 %       maxEpoch - the maximum number of epochs
 %
+% Optional:
+%       shift - maximum (six sigma) value by which to shift all values
+%
 % Out:  
 %       value - 1-by-n array of the adjusted value(s)
 % 
-%                    Copyright 2017 Laurens R Krol
+%                    Copyright 2017, 2019 Laurens R Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2019-04-26 lrk
+%   - Added shift parameter, now as utl_apply_dvslopeshift
 % 2018-06-04 lrk
 %   - Fixed actual deviation value to never exceed abs(deviation)
 % 2017-07-06 lrk
@@ -39,20 +43,33 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function value = utl_apply_dvslope(mean, deviation, slope, epochNumber, maxEpoch)
+function value = utl_apply_dvslopeshift(mean, deviation, slope, epochNumber, maxEpoch, shift)
+
+if nargin == 5, shift = 0; end
 
 if numel(mean) > 1
-    % recursively calling self in case more than one value is given
+    % in case more than one value is given, first recursively calling self
+    % without shift
     for i = 1:numel(mean)
-        value(i) = utl_apply_dvslope(mean(i), deviation(i), slope(i), epochNumber, maxEpoch);
+        value(i) = utl_apply_dvslopeshift(mean(i), deviation(i), slope(i), epochNumber, maxEpoch, 0);
     end
 else
     % fixing applied deviation value between -/+ deviation
     dv = deviation / 3 * randn();
     if abs(dv) > deviation, dv = deviation * sign(dv); end
     
-    % slope can be NaN when maxEpoch = 1
-    value = nansum([mean, dv, slope * (epochNumber-1) / (maxEpoch-1)]);
+    % getting slope
+    slope = slope * (epochNumber-1) / (maxEpoch-1);
+    
+    % applying; using nansum because slope can be NaN when maxEpoch = 1
+    value = nansum([mean, dv, slope]);
+end
+
+if shift ~= 0
+    % adding shift
+    shiftvalue = shift / 3 * randn();
+    if abs(shiftvalue) > shift, shiftvalue = shift * sign(shiftvalue); end
+    value = value + shiftvalue;
 end
 
 end

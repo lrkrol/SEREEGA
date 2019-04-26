@@ -100,7 +100,7 @@ else
 end
 
 % scaling data to indicated (variable) amplitude
-amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
+amplitude = utl_apply_dvslopeshift(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
 if strcmp(class.amplitudeType, 'absolute')
     signal = utl_normalise(signal, amplitude);
 elseif strcmp(class.amplitudeType, 'relative')

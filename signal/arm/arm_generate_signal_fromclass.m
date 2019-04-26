@@ -79,7 +79,7 @@ else
     signal = arm_generate_signal(1, samples, class.order, 0, 0, class.arm);
 
     % normalising to given amplitude
-    amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
+    amplitude = utl_apply_dvslopeshift(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
     signal = utl_normalise(signal, amplitude);
 end
 

@@ -121,7 +121,7 @@ else
         
     % normalising to have the maximum (or minimum) value be (-)amplitude
     if ~baseonly
-        amplitude = utl_apply_dvslope(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
+        amplitude = utl_apply_dvslopeshift(class.amplitude, class.amplitudeDv, class.amplitudeSlope, epochNumber, epochs.n);
     else 
         amplitude = class.amplitude;
     end
