@@ -9,7 +9,7 @@
 % Optional (key-value pairs):
 %       newfig - (0|1) whether or not to open a new figure window.
 %                default: 1
-%       colormap - the color map to use (default: jet)
+%       colormap - the color map to use (default: blue-red)
 %
 % Out:  
 %       h - handle of the generated figure
@@ -25,6 +25,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2019-04-30 lrk
+%   - Changed default colormap
 % 2017-08-10 lrk
 %   - Added ability to plot multiple component projections in one figure
 % 2017-06-19 First version
@@ -53,7 +55,7 @@ addRequired(p, 'component', @isstruct);
 addRequired(p, 'leadfield', @isstruct);
 
 addParameter(p, 'newfig', 1, @isnumeric);
-addParameter(p, 'colormap', jet(100), @isnumeric);
+addParameter(p, 'colormap', multigradient('preset', 'div.km.BuRd', 'length', 100), @isnumeric);
 
 parse(p, component, leadfield, varargin{:})
 

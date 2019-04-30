@@ -17,7 +17,7 @@
 %                      (or default) orientation, otherwise, plots four: one
 %                      in each direction, plus the given (or default)
 %                      orientation. default: 0
-%       colormap - the color map to use (default: jet)
+%       colormap - the color map to use (default: blue-red)
 %       handle - the handle of an existing figure to draw in (sets newfig
 %                to 0)
 %
@@ -32,6 +32,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2019-04-30 lrk
+%   - Changed default colormap
 % 2018-04-25 lrk
 %   - Added handle argument
 % 2017-04-24 First version
@@ -62,7 +64,7 @@ addRequired(p, 'leadfield', @isstruct);
 addParameter(p, 'newfig', 1, @isnumeric);
 addParameter(p, 'orientation', [], @isnumeric);
 addParameter(p, 'orientedonly', 0, @isnumeric);
-addParameter(p, 'colormap', jet(100), @isnumeric);
+addParameter(p, 'colormap', multigradient('preset', 'div.km.BuRd', 'length', 100), @isnumeric);
 addParameter(p, 'handle', [], @ishandle);
 
 parse(p, sourceIdx, leadfield, varargin{:})
