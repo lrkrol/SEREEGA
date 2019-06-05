@@ -9,9 +9,6 @@ Reference:
 (See also [this PDF mirror](https://lrkrol.com/files/krol2018jnm-sereega.pdf), or [this bioRxiv preprint](https://www.biorxiv.org/content/early/2018/05/18/326066).)
 
 
-![SEREEGA](/docs/SEREEGA-GUI.png)
-
-
 ## Contents
 
 - [Introduction](#introduction)
@@ -590,6 +587,8 @@ The `orientationDv` field has the same dimensions as the `orientation` field. Th
 
 
 ### Using the GUI
+
+![SEREEGA](/docs/SEREEGA-GUI.png)
 
 When using SEREEGA as an EEGLAB plug-in, it will appear as a separate sub-menu in EEGLAB's "Tools" menu. The SEREEGA menu provides options to follow the basic steps outlined before in this tutorial. 
 
