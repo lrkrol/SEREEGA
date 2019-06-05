@@ -56,7 +56,7 @@ As an example, the following code produces an [EEGLAB](https://sccn.ucsd.edu/eeg
 
 ```matlab
 % configuring for 100 epochs of 1000 ms at 1000 Hz
-config      = struct('n', 10, 'srate', 1000, 'length', 1000);
+config      = struct('n', 100, 'srate', 1000, 'length', 1000);
 
 % obtaining a 64-channel lead field from ICBM-NY
 leadfield   = lf_generate_fromnyhead('montage', 'S64');
