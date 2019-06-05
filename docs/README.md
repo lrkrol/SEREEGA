@@ -8,6 +8,8 @@ Reference:
 
 (See also [this PDF mirror](https://lrkrol.com/files/krol2018jnm-sereega.pdf), or [this bioRxiv preprint](https://www.biorxiv.org/content/early/2018/05/18/326066).)
 
+![SEREEGA](/docs/SEREEGA-scripting.png)
+
 
 ## Contents
 
