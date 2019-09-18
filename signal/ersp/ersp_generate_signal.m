@@ -48,6 +48,9 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2019-09-18 lrk
+%   - Shifted the burst latency one sample to the right since EEG starts 
+%     counting at 0, not at 1 (GitHub issue #10)
 % 2017-12-30 lrk
 %   - Changed bandpass filter method as designfilt was blowing out the
 %     signal under certain conditions; thanks to Mahta Mousavi for the 
@@ -153,7 +156,7 @@ end
 signal = utl_normalise(signal, amplitude);
 
 if ismember(modulation, {'burst', 'invburst'})
-    latency = floor((modLatency/1000)*srate);
+    latency = floor((modLatency/1000)*srate) + 1;
     width = floor((modWidth/1000)*srate);
     taper = modTaper;
     

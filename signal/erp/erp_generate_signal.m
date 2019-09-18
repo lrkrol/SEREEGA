@@ -25,6 +25,9 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2019-09-18 lrk
+%   - Shifted peakLatency one sample to the right since EEG starts counting
+%     at 0, not at 1 (GitHub issue #10)
 % 2017-10-19 lrk
 %   - Changed the width parameter to mean full width, not half width
 % 2017-06-13 lrk
@@ -53,7 +56,7 @@
 function signal = erp_generate_signal(peakLatency, peakWidth, peakAmplitude, srate, epochLength)
 
 % transforming ms into samples
-peakLatency = (peakLatency/1000)*srate;
+peakLatency = (peakLatency/1000)*srate + 1;
 peakWidth = (peakWidth/1000)*srate;
 epochLength = floor((epochLength/1000)*srate);
 
