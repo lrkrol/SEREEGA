@@ -25,6 +25,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2019-09-25 lrk
+%   - Fixed the function call to utl_multigradient
 % 2019-04-30 lrk
 %   - Changed default colormap
 % 2017-08-10 lrk
@@ -55,7 +57,7 @@ addRequired(p, 'component', @isstruct);
 addRequired(p, 'leadfield', @isstruct);
 
 addParameter(p, 'newfig', 1, @isnumeric);
-addParameter(p, 'colormap', multigradient('preset', 'div.km.BuRd', 'length', 100), @isnumeric);
+addParameter(p, 'colormap', utl_multigradient('preset', 'div.km.BuRd', 'length', 100), @isnumeric);
 
 parse(p, component, leadfield, varargin{:})
 
