@@ -33,6 +33,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2019-09-25 athifbu
+%   - Fixed the function call to utl_multigradient 
 % 2019-09-18 lrk
 %   - Added shading argument
 % 2019-04-30 lrk
