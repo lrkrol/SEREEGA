@@ -67,7 +67,7 @@ addRequired(p, 'leadfield', @isstruct);
 addParameter(p, 'newfig', 1, @isnumeric);
 addParameter(p, 'orientation', [], @isnumeric);
 addParameter(p, 'orientedonly', 0, @isnumeric);
-addParameter(p, 'colormap', multigradient('preset', 'div.km.BuRd', 'length', 1000), @isnumeric);
+addParameter(p, 'colormap', utl_multigradient('preset', 'div.km.BuRd', 'length', 1000), @isnumeric);
 addParameter(p, 'shading', 'flat', @ischar);
 addParameter(p, 'handle', [], @ishandle);
 
