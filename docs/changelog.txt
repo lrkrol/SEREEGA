@@ -1,3 +1,13 @@
+v1.0.19-beta
+- Lead fields now continue with empty labels (i.e. all channels) if montage not found
+- Fixed bug in utl_shift_latency arguments
+- Added utl_apply_dvslopeshift, and replaced all calls to predecessor utl_apply_dvslope with it
+- Added utl_multigradient for updated default projection colormap
+- Added utl_epoch2continuous after GitHub issue #4
+- Fixed GitHub issue #10 where latencies were off by 1 sample in erp_generate_signal and ersp_generate_signal
+- Added shading argument to plot_source_projection
+- Fixed GitHub issue #11 where utl_multigradient was not called in plot_source_projection and plot_component_projection
+
 v1.0.11-beta
 - Fixed GitHub issue #3 in lf_get_projection
 - Fixed issue in pop_sereega_plot_headmodel
