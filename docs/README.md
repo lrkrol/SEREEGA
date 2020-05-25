@@ -50,7 +50,7 @@ Reference:
 ## Introduction
 SEREEGA is an open-source MATLAB-based toolbox to generate simulated, event-related EEG toy data. Starting with a forward model obtained from a head model or pre-generated lead field, dipolar _brain components_ can be defined. Each component has a specified position and orientation in the brain. Different activation signals can be assigned to these components. EEG data is simulated by projecting all activation signals from all components onto the scalp and summing them together.
 
-SEREEGA is modular in that different head models and lead fields are supported, as well as different activation signals. Currently, SEREEGA supports the [New York Head (ICBM-NY)](https://neuralengr.com/nyhead) pre-generated lead field, the [Pediatric Head Atlases](https://www.pedeheadmod.net) pre-generated lead fields, and [FieldTrip](http://www.fieldtriptoolbox.org) custom lead field generation. Four types of activation signals are provided: _ERP_ (event-related potential, i.e. systematic deflections in the time domain), _ERSP_ (event-related spectral perturbation, i.e. systematic modulations of oscillatory activations), _noise_ (stochastic processes in the time domain), and signals based on an _autoregressive model_. A final _data_ class allows the inclusion of any already existing time series as an activation signal.
+SEREEGA is modular in that different head models and lead fields are supported, as well as different activation signals. Currently, SEREEGA supports the [New York Head (ICBM-NY)](https://www.parralab.org/nyhead) pre-generated lead field, the [Pediatric Head Atlases](https://www.pedeheadmod.net) pre-generated lead fields, and [FieldTrip](http://www.fieldtriptoolbox.org) custom lead field generation. Four types of activation signals are provided: _ERP_ (event-related potential, i.e. systematic deflections in the time domain), _ERSP_ (event-related spectral perturbation, i.e. systematic modulations of oscillatory activations), _noise_ (stochastic processes in the time domain), and signals based on an _autoregressive model_. A final _data_ class allows the inclusion of any already existing time series as an activation signal.
 
 SEREEGA is intended as a tool to generate data with a known ground truth in order to evaluate neuroscientific and signal processing methods, e.g. blind source separation, source localisation, connectivity measures, brain-computer interface classifier accuracy, derivative EEG measures, et cetera.
 
@@ -96,7 +96,7 @@ Download [SEREEGA](https://github.com/lrkrol/SEREEGA) to your computer and add a
 
 It is recommended to have MATLAB 2014b or higher with the DSP toolbox installed. SEREEGA's core functionality requires R2013b. This is primarily due to the use of `addParameter` rather than `addParamValue`; if your MATLAB does not support `addParameter`, try exchanging all those references with `addParamValue`. That should restore basic functionality. Some plotting functions rely on the `boundary` function introduced in R2014b. Some signal generation functions depend on the DSP toolbox version 8.6 (R2014a) or higher.
 
-[EEGLAB](https://sccn.ucsd.edu/eeglab) is used for a number of functions, and should be started before generating a lead field as EEGLAB's `readlocs` is use to add channel location information. SEREEGA was tested with EEGLAB 13.6.5b.
+[EEGLAB](https://sccn.ucsd.edu/eeglab) is used for a number of functions, and should be started before generating a lead field as EEGLAB's `readlocs` is used to add channel location information. SEREEGA was tested with EEGLAB 13.6.5b.
 
 When using the New York Head, as in this tutorial, make sure you have the [New York Head (ICBM-NY) lead field in MATLAB format](http://www.parralab.org/nyhead) in your path. Similarly, the [Pediatric Head Atlases](https://www.pedeheadmod.net) must also first be obtained separately, if you intend to use those. When using FieldTrip to generate a custom lead field, the file `/fileio/ft_read_sens` from the FieldTrip directory will be necessary. FieldTrip can be installed as an EEGLAB plug-in.
 
@@ -407,7 +407,7 @@ The inverse of the above is also possible. It results in an attenuation in the g
 ```matlab
 ersp.modulation = 'invburst';
 ersp.modWidth = 300;
-ersp.modMinAmplitude = 0.05;
+ersp.modMinRelAmplitude = 0.05;
 
 plot_signal_fromclass(ersp, epochs);
 ```
@@ -428,7 +428,7 @@ ersp = utl_check_class(ersp);
 plot_signal_fromclass(ersp, epochs);
 ```
 
-Indicating the `phase` of the modulating wave is optional, as is indicating the `modMinAmplitude`, as above. Additionally, the amplitude-modulated signal can be attenuated completely during a given baseline period, using a tapering window similar to the one used for frequency bursts.
+Indicating the `phase` of the modulating wave is optional, as is indicating the `modMinRelAmplitude`, as above. Additionally, the amplitude-modulated signal can be attenuated completely during a given baseline period, using a tapering window similar to the one used for frequency bursts.
 
 ```matlab
 ersp.frequency = [12 15 25 28];
