@@ -186,7 +186,7 @@ plot_source_projection(source, lf, 'orientation', [1, 1, 0]);
 plot_source_projection(source, lf);
 ```
 
-Note that the `plot_source_projection` function merely plots the projection pattern at the indicated orientation; it does not by itself change the orientation of any source in the simulation. The actual source orientations to be used in the simulation are indicated at the level of [brain components](#brain-components-and-scalp-data), described furher below.
+Note that the `plot_source_projection` function merely plots the projection pattern at the indicated orientation; it does not by itself change the orientation of any source in the simulation. The actual source orientations to be used in the simulation are indicated at the level of [brain components](#brain-components-and-scalp-data), described further below.
 
 
 ### Defining a source activation signal
@@ -238,7 +238,7 @@ c = utl_check_component(c, lf);
 
 Note that, just as for classes, there is a function, `utl_check_component`, to validate the component structure and fill in any missing parameters. For example, if none is indicated, this function reverts the source's orientation to a default value obtained from the lead field.
 
-(Also have a look at `utl_create_component` in the examples below for a shorthand function to replace manually assigning structure arrays with `signal` and `source` fields. It also automatically verifies the resulting components.)
+(Also have a look at `utl_create_component` in the examples further below for a shorthand function to replace manually assigning structure arrays with `signal` and `source` fields. It also automatically verifies the resulting components.)
 
 If desired, changing a source's orientation also happens here, at the level of components. It can be done simply by changing the value in the `orientation` field of the corresponding component. You can input manual values, or see the above [section on orientation](#orienting-a-source-dipole) for functions to obtain different orientations.
 
