@@ -4,13 +4,13 @@
 %       an indicated source or coordinate.
 %
 % In:
-%       leadfield - the leadfield from which to get the random source
+%       leadfield - the leadfield from which to get the sources
 %       centre - 1-by-3 matrix of x, y, z coordinates or single source
 %                index
 %       radius - the radius in which to search, in mm
 %
 % Out:
-%       sourceIdx - the source within the indicated area
+%       sourceIdx - the source index/indices within the indicated area
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead();

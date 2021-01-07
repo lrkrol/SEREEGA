@@ -4,7 +4,7 @@
 %       and its distance from that position.
 %
 % In:
-%       leadfield - the leadfield from which to get the random source
+%       leadfield - the leadfield from which to get the source
 %       pos - 1-by-3 matrix of x, y, z coordinates
 %
 % Out:

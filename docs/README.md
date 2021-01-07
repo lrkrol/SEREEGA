@@ -186,6 +186,8 @@ plot_source_projection(source, lf, 'orientation', [1, 1, 0]);
 plot_source_projection(source, lf);
 ```
 
+Note that the `plot_source_projection` function merely plots the projection pattern at the indicated orientation; it does not by itself change the orientation of any source in the simulation. The actual source orientations to be used in the simulation are indicated at the level of [brain components](#brain-components-and-scalp-data), described furher below.
+
 
 ### Defining a source activation signal
 
@@ -235,6 +237,15 @@ c = utl_check_component(c, lf);
 ```
 
 Note that, just as for classes, there is a function, `utl_check_component`, to validate the component structure and fill in any missing parameters. For example, if none is indicated, this function reverts the source's orientation to a default value obtained from the lead field.
+
+(Also have a look at `utl_create_component` in the examples below for a shorthand function to replace manually assigning structure arrays with `signal` and `source` fields. It also automatically verifies the resulting components.)
+
+If desired, changing a source's orientation also happens here, at the level of components. It can be done simply by changing the value in the `orientation` field of the corresponding component. You can input manual values, or see the above [section on orientation](#orienting-a-source-dipole) for functions to obtain different orientations.
+
+```matlab
+c.orientation = [0 1 0];
+c.orientation = utl_get_orientation_pseudoperpendicular(source, lf);
+````
 
 We now have the minimum we need to simulate scalp data. Scalp data is simulated by projecting all components' signal activations through their respective, oriented source projections, and summing all projections together. Right now, our scalp data would contain the activation of only one component, with one single and fixed activation pattern coming from one and the same location.
 
@@ -530,8 +541,6 @@ c = utl_create_component(sourcelocs, erp, lf);
 % plotting each component's projection and activation
 plot_component(c, epochs, lf);
 ```
-
-(Note `utl_create_component` as a shorthand function to replace manually assigning structure arrays with `signal` and `source` fields. It also automatically verifies the resulting components.)
 
 
 ### Source identification

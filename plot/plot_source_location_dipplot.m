@@ -1,6 +1,6 @@
 % h = plot_source_location_dipplot(sourceIdx, leadfield, varargin)
 %
-%       Plots the location of the givensources using EEGLAB's dipplot
+%       Plots the location of the given sources using EEGLAB's dipplot
 %       function.
 %
 %       Note that there must be a reasonable fit with the used lead field's

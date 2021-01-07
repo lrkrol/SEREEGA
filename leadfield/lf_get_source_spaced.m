@@ -16,7 +16,7 @@
 %       sourceIdx - source indices to be included in the final results. 
 %                   these must not satisfy the spacing criterion among each
 %                   other, but all randomly added sources will be at least
-%                   the indicated distance away from these.
+%                   the indicated distance away from these and each other.
 %
 % Out:
 %       sourceIdx - 1-by-number array containing the source indices of the
