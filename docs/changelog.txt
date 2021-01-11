@@ -1,3 +1,9 @@
+
+v1.1.0
+- Added electrodes argument to plot_source_projection
+- Added lf_prune_nyheadfile to reduce NY Head lead field filesize
+- Changed generate_scalpdata behaviour when one component has multiple sources. The projections from each source are now summed together. Previous behaviour, which used only one randomly chosen souce per epoch, can be reinstated with the argument legacy_rndmultsrc.
+
 v1.0.19-beta
 - Lead fields now continue with empty labels (i.e. all channels) if montage not found
 - Fixed bug in utl_shift_latency arguments

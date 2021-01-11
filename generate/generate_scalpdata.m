@@ -15,17 +15,24 @@
 %                 ('length'), and the total number of epochs ('n')
 %
 % Optional (key-value pairs):
-%       normaliseLeadfield - 1|0, whether or not to normalise the
+%       normaliseLeadfield - 0|1, whether or not to normalise the
 %                            leadfields before  projecting the signal to
 %                            have the most extreme value be either 1 or -1,
 %                            depending on its sign. default: 0
-%       normaliseOrientation - 1|0, as above, except for orientation
+%       normaliseOrientation - 0|1, as above, except for orientation,
+%                              default: 0
 %       sensorNoise - maximum absolute amplitude of uncorrelated uniform 
 %                     white noise added to the final scalp data. default: 0
 %                     see utl_add_sensornoise and/or utl_mix_data for more
 %                     options.
-%       showprogress - 1|0, whether or not to show a progress bar
-%                      (default 1)
+%       showprogress - 1|0, whether or not to show a progress bar,
+%                      default 1
+%       legacy_rndmultsrc - 0|1, reinstates legacy (<=1.0.19) behaviour
+%                           where, when multiple sources are indicated in
+%                           one component, only one random source is
+%                           selected for each epoch's projection. new
+%                           behaviour takes the sum of the source
+%                           projections. default: 0
 %
 % Out:
 %       scalpdata - channels x samples x epochs array of simulated scalp
@@ -45,6 +52,11 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2020-01-11 lrk
+%   - Changed behaviour when one component contains multiple sources. The
+%     projections from each source are now summed together. Previous
+%     behaviour, using only one randomly chosen souce per epoch, can be
+%     reinstated with the argument legacy_rndmultsrc.
 % 2018-04-05 lrk
 %   - Added ETA to waitbar
 % 2018-01-10 lrk
@@ -83,6 +95,7 @@ addParameter(p, 'normaliseLeadfield', 0, @isnumeric);
 addParameter(p, 'normaliseOrientation', 0, @isnumeric);
 addParameter(p, 'sensorNoise', 0, @isnumeric);
 addParameter(p, 'showprogress', 1, @isnumeric);
+addParameter(p, 'legacy_rndmultsrc', 0, @isnumeric);
 
 parse(p, component, leadfield, epochs, varargin{:})
 
@@ -93,6 +106,7 @@ normaliseLeadfield = p.Results.normaliseLeadfield;
 normaliseOrientation = p.Results.normaliseOrientation;
 sensorNoise = p.Results.sensorNoise;
 showprogress = p.Results.showprogress;
+legacy_rndmultsrc = p.Results.legacy_rndmultsrc;
 
 component = utl_check_component(component, leadfield);
 
@@ -124,23 +138,45 @@ for e = 1:epochs.n
         componentsignal = generate_signal_fromcomponent(component(c), epochs, 'epochNumber', e);
         sourcedata(c,:,e) = componentsignal;
 
-        % obtaining single source
-        n = randperm(numel(component(c).source));
-        n = n(1);
-        source = component(c).source(n);
+        if legacy_rndmultsrc
+            % legacy behaviour: obtaining single random source
+            n = randperm(numel(component(c).source));
+            n = n(1);
+            source = component(c).source(n);
 
-        % obtaining orientation
-        orientation = component(c).orientation(n,:);
-        orientationDv = component(c).orientationDv(n,:);
-        orientation = utl_apply_dvslopeshift(orientation, orientationDv, zeros(size(orientation)), e, epochs.n);
-        if all(orientation == zeros(1,3))
-            warning('all-zero orientation for component %d', c);
+            % obtaining orientation
+            orientation = component(c).orientation(n,:);
+            orientationDv = component(c).orientationDv(n,:);
+            orientation = utl_apply_dvslopeshift(orientation, orientationDv, zeros(size(orientation)), e, epochs.n);
+            if all(orientation == zeros(1,3))
+                warning('all-zero orientation for component %d', c);
+            end
+
+            % projecting signal
+            componentdata(:,:,c) = lf_project_signal(leadfield, componentsignal, source, orientation, ...
+                    'normaliseLeadfield', normaliseLeadfield, ...
+                    'normaliseOrientation', normaliseOrientation);
+        else
+            % new behaviour: projecting through each source and taking sum
+            sourceprojection = [];
+            for s = 1:numel(component(c).source)
+                % obtaining orientation
+                orientation = component(c).orientation(s,:);
+                orientationDv = component(c).orientationDv(s,:);
+                orientation = utl_apply_dvslopeshift(orientation, orientationDv, zeros(size(orientation)), e, epochs.n);
+                if all(orientation == zeros(1,3))
+                    warning('all-zero orientation for component %d', c);
+                end
+                
+                % projecting signal
+                source = component(c).source(s);
+                sourceprojection = cat(3, sourceprojection, ...
+                        lf_project_signal(leadfield, componentsignal, source, orientation, ...
+                                'normaliseLeadfield', normaliseLeadfield, ...
+                                'normaliseOrientation', normaliseOrientation));
+            end
+            componentdata(:,:,c) = sum(sourceprojection, 3);
         end
-
-        % projecting signal
-        componentdata(:,:,c) = lf_project_signal(leadfield, componentsignal, source, orientation, ...
-                'normaliseLeadfield', normaliseLeadfield, ...
-                'normaliseOrientation', normaliseOrientation);
     end
     
     % combining projected component signals into single epoch

@@ -25,6 +25,7 @@ Reference:
   - [Finalising a dataset](#finalising-a-dataset)
   - [Variability](#variability)
   - [Noise and multiple signal classes](#noise-and-multiple-signal-classes)
+  - [A note on components and sources](#a-note-on-components-and-sources)
   - [Event-related spectral perturbations](#event-related-spectral-perturbations)
       - [Frequency burst for event-related synchronization](#frequency-burst-for-event-related-synchronization)
       - [Inverse frequency burst for event-related desynchronization](#inverse-frequency-burst-for-event-related-desynchronization)
@@ -158,14 +159,14 @@ source = lf_get_source_random(lf);
 plot_source_location(source, lf);
 ```
 
-Or, if we know from where in the brain we wish to simulate activity, we can get the source from the lead field that nearest to that location's coordinates in mm, for example, somewhere in the right visual cortex:
+Or, if we know from where in the brain we wish to simulate activity, we can get the source from the lead field that is nearest to that location's coordinates, for example, somewhere in the right visual cortex:
 
 ```matlab
 source = lf_get_source_nearest(lf, [20 -75 0]);
 plot_source_location(source, lf, 'mode', '3d');
 ```
 
-Other options to obtain source locations are `lf_get_source_inradius` to get all sources in a specific radius from either a given location in mm, or from another source in the lead field. If you want more than one source with a specific spacing between them, use `lf_get_source_spaced`.
+Other options to obtain source locations are `lf_get_source_inradius` to get all sources in a specific radius from either given location coordinates, or from another source in the lead field. If you want more than one source picked at random but with a specific spacing between them, use `lf_get_source_spaced`.
 
 
 ### Orienting a source dipole
@@ -202,7 +203,7 @@ erp.peakWidth = 200;        % in ms
 erp.peakAmplitude = 1;      % in microvolt
 ```
 
-This thus describes an ERP where a single positive peak, 200 ms wide, is centred at the 500 ms mark, where its peak amplitude is +1 microvolt.
+The above thus describes an ERP where a single positive peak, 200 ms wide, is centred at the 500 ms mark, where its peak amplitude is +1 microvolt.
 
 (Note that the amplitude indicated here is the amplitude as it is generated at the source; the final simulated amplitude at the scalp depends on the lead field, and on possibly interfering other signals.)
 
@@ -213,7 +214,7 @@ This toolbox actually works with more than these three parameters for ERP class 
 erp = utl_check_class(erp, 'type', 'erp')
 ```
 
-(You may notice one of the parameters of the final class is its `type`, which is set to `erp`. This is how SEREEGA knows how to interpret this class. If we had manually added this argument to our class definition, we no longer would have needed to pass this information to `utl_check_class`, and instead could have simple called `erp = utl_check_class(erp)`.)
+(You may notice one of the parameters of the final class is its `type`, which is set to `erp`. This is how SEREEGA knows how to interpret this class. If we had manually added this field to our class definition, we no longer would have needed to pass this information to `utl_check_class`, and instead could have simple called `erp = utl_check_class(erp)`.)
 
 We can now plot what this ERP would look like.
 
@@ -293,7 +294,7 @@ pop_eegplot( EEG, 1, 1, 1);
 
 This is of course unrealistic and defeats the entire purpose of even simulating multiple epochs in the first place.
 
-We can add variability to the signal by indicating allowed _deviations_ and specific _slopes_. A deviation of 50 ms for our peak latency allows this latency to vary +/- 50 ms between trials, following a normal distribution with the indicated deviation being the six-sigma range.
+We can add variability to the signal by indicating allowed random _deviations_ or _shifts_ as well as specific _slopes_. A deviation of 50 ms for our peak latency allows this latency to vary +/- 50 ms between trials, following a normal distribution with the indicated deviation being the six-sigma range.
 
 ```matlab
 erp.peakLatencyDv = 50;
@@ -361,6 +362,15 @@ pop_eegplot(EEG, 1, 1, 1);
 When a component's signal activity is simulated, all of its signals are simulated separately and then summed together before being projected through the lead field. It is thus possible to generate any number of signal activation patterns from the same source location using a single component, for example, as we did here, in order to add noise to an otherwise clean signal. Also see `utl_add_signal_tocomponent` to add an additional signal activation class to an existing component.
 
 The noise class can simulate different types of coloured noise: `white`, `pink`, `brown`, `blue` and `purple`. By default, these are generated from a Gaussian process using the DSP toolbox. A third-party script, not using the DSP toolbox, allows coloured noise to be generated using a uniform process as well, e.g. `white-unif`, `brown-unif`, et cetera.
+
+
+### A note on components and sources
+
+In EEG analyses, we may be used to speak of 'sources' in the brain to indicate specific areas that we localised on the basis of specific activity coming from that area. In such contexts, the concept of 'source' thus combines a number of different pieces of information. For SEREEGA, the word 'source' refers to the sources as they are represented in a lead field. They can be combined with additional information, primarily the signal, to form components. It is thus at the level of the component where the building blocks of the simulation are defined, by the combination of signal activations, source locations, and their orientations. 
+
+Multiple sources can be added to one and the same component. In such cases, that component's signal activation is simulated once per epoch, and then projected as such from all indicated sources. This can be used to simulate bilateral sources, for example. It is also possible to add multiple signals to one and the same component, as discussed [above](#noise-and-multiple-signal-classes).
+
+Keep in mind that adding multiple sources to one and the same component is completely different from adding the same signal(s) to multiple different components that each have one source. In the former case, the exact same signal activation is projected simultaneously from all sources. In the latter case, separately simulated instances of the signal activation are projected from each source.
 
 
 ### Event-related spectral perturbations
