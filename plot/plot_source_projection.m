@@ -19,6 +19,7 @@
 %                      orientation. default: 0
 %       colormap - the color map to use (default: blue-red)
 %       shading - 'flat' (default) or 'interp' for interpolated shading
+%       electrodes - (0|1) whether or not to plot electrodes. default: 0
 %       handle - the handle of an existing figure to draw in (sets newfig
 %                to 0)
 %
@@ -33,6 +34,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2021-01-05 lrk
+%   - Added electrodes argument
 % 2019-09-25 athifbu
 %   - Fixed the function call to utl_multigradient 
 % 2019-09-18 lrk
@@ -71,6 +74,7 @@ addParameter(p, 'orientation', [], @isnumeric);
 addParameter(p, 'orientedonly', 0, @isnumeric);
 addParameter(p, 'colormap', utl_multigradient('preset', 'div.km.BuRd', 'length', 1000), @isnumeric);
 addParameter(p, 'shading', 'flat', @ischar);
+addParameter(p, 'electrodes', 0, @isnumeric);
 addParameter(p, 'handle', [], @ishandle);
 
 parse(p, sourceIdx, leadfield, varargin{:})
@@ -82,11 +86,18 @@ orientation = p.Results.orientation;
 orientedonly = p.Results.orientedonly;
 cmap = p.Results.colormap;
 shading = p.Results.shading;
+electrodes = p.Results.electrodes;
 handle = p.Results.handle;
 
 if isempty(orientation)
     % getting default orientation
     orientation = lf.orientation(sourceIdx,:);
+end
+
+if electrodes == 1
+    electrodes = 'on';
+else
+    electrodes = 'off';
 end
 
 if ~isempty(handle)
@@ -106,19 +117,19 @@ if ~orientedonly
     pos = get(gca, 'Position');
     set(gca, 'Position', [0, pos(2)-.05, .5, pos(4)+.05]);
     projection = lf_get_projection(leadfield, sourceIdx, 'orientation', repmat([1 0 0], numel(sourceIdx), 1));
-    topoplot(projection, lf.chanlocs, 'colormap', cmap, 'shading', shading);
+    topoplot(projection, lf.chanlocs, 'colormap', cmap, 'shading', shading, 'electrodes', electrodes);
     
     subplot(2,2,2); title('projection y');
     pos = get(gca, 'Position');
     set(gca, 'Position', [.5, pos(2)-.05, .5, pos(4)+.05]);
     projection = lf_get_projection(leadfield, sourceIdx, 'orientation', repmat([0 1 0], numel(sourceIdx), 1));
-    topoplot(projection, lf.chanlocs, 'colormap', cmap, 'shading', shading);
+    topoplot(projection, lf.chanlocs, 'colormap', cmap, 'shading', shading, 'electrodes', electrodes);
     
     subplot(2,2,3); title('projection z');
     pos = get(gca, 'Position');
     set(gca, 'Position', [0, pos(2)-.05, .5, pos(4)+.05]);
     projection = lf_get_projection(leadfield, sourceIdx, 'orientation', repmat([0 0 1], numel(sourceIdx), 1));
-    topoplot(projection, lf.chanlocs, 'colormap', cmap, 'shading', shading);
+    topoplot(projection, lf.chanlocs, 'colormap', cmap, 'shading', shading, 'electrodes', electrodes);
     
     subplot(2,2,4);
     pos = get(gca, 'Position');
@@ -130,6 +141,6 @@ projection = lf_get_projection(leadfield, sourceIdx, 'orientation', orientation)
 
 meanorientation = mean(orientation, 1);
 title(sprintf('orientation [%.2f, %.2f, %.2f] (n=%d)', meanorientation (1), meanorientation (2), meanorientation (3), numel(sourceIdx)));
-topoplot(projection, lf.chanlocs, 'colormap', cmap, 'shading', 'interp');
+topoplot(projection, lf.chanlocs, 'colormap', cmap, 'shading', 'interp', 'electrodes', electrodes);
 
 end
