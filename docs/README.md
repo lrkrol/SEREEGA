@@ -34,7 +34,7 @@ Reference:
   - [Autoregressive models](#autoregressive-models)
   - [Random class generation and multiple components](#random-class-generation-and-multiple-components)
   - [Source identification](#source-identification)
-  - [Source and component variability](#source-and-component-variability)
+  - [Component variability](#component-variability)
   - [Using the GUI](#using-the-gui)
 - [Extending SEREEGA](#extending-sereega)
     - [Lead fields](#lead-fields)
@@ -372,6 +372,8 @@ Multiple sources can be added to one and the same component. In such cases, that
 
 Keep in mind that adding multiple sources to one and the same component is completely different from adding the same signal(s) to multiple different components that each have one source. In the former case, the exact same signal activation is projected simultaneously from all sources. In the latter case, separately simulated instances of the signal activation are projected from each source.
 
+(The section on [component variability](#component-variability) further below discusses an alternative way to use multiple sources in the same component. This is no longer the default behaviour of SEREEGA, but can still be used.)
+
 
 ### Event-related spectral perturbations
 
@@ -576,35 +578,11 @@ components = utl_create_component(sourcelocs, signal, lf);
 In case an EEGLAB dataset has been created from generated scalp data, e.g. using `utl_create_eeglabdataset`, the convenience function `utl_add_icaweights_toeeglabdataset` can be used to add the weights directly to the dataset.
 
 
-### Source and component variability
+### Component variability
 
-Just as activation signals can have an epoch-to-epoch variability, so too can the location and orientation of the signal's source vary. In the following code, we obtain all sources in a radius of 25 mm around a random source. We indicate all of these sources as the source location of a component, which emits brown noise.
+Just as activation signals can have an epoch-to-epoch variability, so too can the location and orientation of the signal's source vary. The `orientationDv` field of the component struct contains an _n_-by-3 matrix containing the maximum permissible deviation for each of the _n_ sources indicated for that component.
 
-```matlab
-% obtaining random source
-source = lf_get_source_random(lf);
-
-% obtaining and plotting all sources in that area
-source = lf_get_source_inradius(lf, source, 5);
-plot_source_location(source, lf, 'allviews', 1);
-
-% combining into component
-c = struct( ...
-        'source', source, ...
-        'signal', {{struct( ...
-                'type', 'noise', ...
-                'color', 'brown', ...
-                'amplitude', 1)}});
-c = utl_check_component(c, lf);
-
-plot_component(c, epochs, lf);
-```
-
-The component's projection is plotted as the mean of the projections of all of its sources.
-
-Note that the component now also contains multiple orientations: one for each of its source locations. During simulation, for each epoch, one source plus its corresponding orientation is randomly selected. For that epoch, the activation is then projected accordingly.
-
-The `orientationDv` field has the same dimensions as the `orientation` field. This indicates the allowed epoch-to-epoch variability of the source orientations.
+Indicating more than one source for a component, as mentioned [above](#a-note-on-components-and-sources), results in a signal projected from all those sources. However, in versions of SEREEGA older than v1.1.0, this was interpreted as location variability of the source. This behaviour can be reinstated using the `legacy_rndmultsrc` argument when calling `generate_scalpdata`. As such, you could use `lf_get_source_inradius` to get all sources around a particular point, and add all of these to a single component to simulate activity coming from variable locations in the same brain region. 
 
 
 ### Using the GUI
