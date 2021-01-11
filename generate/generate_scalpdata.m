@@ -158,7 +158,7 @@ for e = 1:epochs.n
                     'normaliseOrientation', normaliseOrientation);
         else
             % new behaviour: projecting through each source and taking sum
-            sourceprojection = [];
+            sourceprojecteddata = [];
             for s = 1:numel(component(c).source)
                 % obtaining orientation
                 orientation = component(c).orientation(s,:);
@@ -170,12 +170,12 @@ for e = 1:epochs.n
                 
                 % projecting signal
                 source = component(c).source(s);
-                sourceprojection = cat(3, sourceprojection, ...
+                sourceprojecteddata = cat(3, sourceprojecteddata, ...
                         lf_project_signal(leadfield, componentsignal, source, orientation, ...
                                 'normaliseLeadfield', normaliseLeadfield, ...
                                 'normaliseOrientation', normaliseOrientation));
             end
-            componentdata(:,:,c) = sum(sourceprojection, 3);
+            componentdata(:,:,c) = sum(sourceprojecteddata, 3);
         end
     end
     
