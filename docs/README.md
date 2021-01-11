@@ -580,9 +580,9 @@ In case an EEGLAB dataset has been created from generated scalp data, e.g. using
 
 ### Component variability
 
-Just as activation signals can have an epoch-to-epoch variability, so too can the location and orientation of the signal's source vary. The `orientationDv` field of the component struct contains an _n_-by-3 matrix containing the maximum permissible deviation for each of the _n_ sources indicated for that component.
+Just as activation signals can have an epoch-to-epoch variability, so too can the location and orientation of the signal's source vary. The `orientationDv` field of the component struct contains an _n_-by-3 matrix containing the maximum permissible deviation for the orientation of each of the _n_ sources indicated for that component.
 
-Indicating more than one source for a component, as mentioned [above](#a-note-on-components-and-sources), results in a signal projected from all those sources. However, in versions of SEREEGA older than v1.1.0, this was interpreted as location variability of the source. This behaviour can be reinstated using the `legacy_rndmultsrc` argument when calling `generate_scalpdata`. As such, you could use `lf_get_source_inradius` to get all sources around a particular point, and add all of these to a single component to simulate activity coming from variable locations in the same brain region. 
+Indicating more than one source for a component, as mentioned [above](#a-note-on-components-and-sources), results in a signal projected from all those sources. However, in versions of SEREEGA older than v1.1.0, this was interpreted as location variability of the source. For each epoch, it randomly selected one of the indicated sources to project the signal activation from. This behaviour can be reinstated using the `legacy_rndmultsrc` argument when calling `generate_scalpdata`. As such, you could use `lf_get_source_inradius` to get all sources around a particular point, and add all of these to a single component to simulate activity coming from variable locations in the same brain region. 
 
 
 ### Using the GUI
