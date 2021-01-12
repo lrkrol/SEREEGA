@@ -187,7 +187,9 @@ plot_source_projection(source, lf, 'orientation', [1, 1, 0]);
 plot_source_projection(source, lf);
 ```
 
-Note that the `plot_source_projection` function merely plots the projection pattern at the indicated orientation; it does not by itself change the orientation of any source in the simulation. The actual source orientations to be used in the simulation are indicated at the level of [brain components](#brain-components-and-scalp-data), described further below.
+When looking at source localisation results in EEG literature, authors usually report the _location_ of a source, but not its _orientation_ per se. What they do report, however, is its projection pattern, usually in the form of topoplots like the ones we plotted in this section. To mimic known effects, you could thus either find a souce from your region of interest whose default orientation results in the projection pattern you are seeking to mimic, or you can pick a source and adjust its orientation to match the desired projection.
+
+Note that the `plot_source_projection` function used here merely plots the projection pattern at the indicated orientation; it does not by itself change the orientation of any source in the simulation. The actual source orientations to be used in the simulation are indicated at the level of [brain components](#brain-components-and-scalp-data), described further below.
 
 
 ### Defining a source activation signal
@@ -368,11 +370,13 @@ The noise class can simulate different types of coloured noise: `white`, `pink`,
 
 In EEG analyses, we may be used to speak of 'sources' in the brain to indicate specific areas that we localised on the basis of specific activity coming from that area. In such contexts, the concept of 'source' thus combines a number of different pieces of information. For SEREEGA, the word 'source' refers to the sources as they are represented in a lead field. They can be combined with additional information, primarily the signal, to form components. It is thus at the level of the component where the building blocks of the simulation are defined, by the combination of signal activations, source locations, and their orientations. 
 
-Multiple sources can be added to one and the same component. In such cases, that component's signal activation is simulated once per epoch, and then projected as such from all indicated sources. This can be used to simulate bilateral sources, for example. It is also possible to add multiple signals to one and the same component, as discussed [above](#noise-and-multiple-signal-classes).
+A component must have at least one signal to project, but can have multiple signals, as we said [above](#noise-and-multiple-signal-classes). When a component's activation is simulated, all of its signals are simulated separately and summed together before being projected onto the scalp. 
 
-Keep in mind that adding multiple sources to one and the same component is completely different from adding the same signal(s) to multiple different components that each have one source. In the former case, the exact same signal activation is projected simultaneously from all sources. In the latter case, separately simulated instances of the signal activation are projected from each source.
+A component must have at least one source location, but can also have multiple. When one and the same component contains multiple sources, that component's signal activation is simulated once per epoch, and then projected as such from _all_ indicated sources. This can be used to simulate bilateral sources, for example. When multiple sources are indicated, they all also have their own orientation. (The section on [component variability](#component-variability) further below discusses an alternative way to use multiple sources in the same component. This is no longer the default behaviour of SEREEGA, but can still be used.)
 
-(The section on [component variability](#component-variability) further below discusses an alternative way to use multiple sources in the same component. This is no longer the default behaviour of SEREEGA, but can still be used.)
+You can define as many components as you want using any combination of sources and signals. The first argument of `generate_scalpdata` is a struct containing any nonzero number of components.
+
+Keep in mind that adding multiple sources to one and the same component is completely different from adding the same signal(s) to multiple different components that each have one source. In the former case, the _exact same_ signal activation is projected simultaneously from all sources. In the latter case, separately simulated instances of the signal activation are projected from each source.
 
 
 ### Event-related spectral perturbations
