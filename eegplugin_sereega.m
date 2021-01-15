@@ -16,6 +16,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2018 through 2021 lrk
+%   - Version number increments
 % 2018-04-23 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -35,7 +37,7 @@
 
 function version = eegplugin_sereega(fig, try_strings, catch_strings)
     
-    version = '1.0.19-beta';
+    version = '1.1.0';
     
     % find tools menu
     % ---------------
