@@ -10,10 +10,9 @@
 %
 %       A full brain component is defined by the following fields.
 %         .source        - row array of source indices in the leadfield, 
-%                          giving the component's (possible) location(s). 
-%                          if more than one source is indicated, one of 
-%                          those sources will randomly be selected for each
-%                          simulated epoch.
+%                          giving the component's source location(s). 
+%                          if more than one source is indicated, activity
+%                          will be projected through each src and summed.
 %         .signal        - cell array of activation classes. see e.g.
 %                          utl_check_class, erp_check_class, etc.
 %         .orientation   - nsources-by-3 matrix containing the source 
