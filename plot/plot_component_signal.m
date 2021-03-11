@@ -29,6 +29,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2021-03-11 lrk
+%   - Added text to plot indicating number of averages taken
 % 2017-06-19 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -62,6 +64,9 @@ component = p.Results.component;
 epochs = p.Results.epochs;
 newfig = p.Results.newfig;
 
+% taking the average signal of numavg epochs
+numavg = 10;
+
 % getting time stamps
 x = 1:epochs.length/1000*epochs.srate;
 x = x/epochs.srate;
@@ -70,13 +75,15 @@ x = x/epochs.srate;
 if isfield(epochs, 'prestim')
     x = x - epochs.prestim/1000; end
 
-if newfig, h = figure('name', 'Component signal', 'NumberTitle', 'off', 'ToolBar', 'none'); else, h = NaN; end
-
 % getting mean signal of ten epochs 
 componentsignal = [];
-for i = 1:10
+for i = 1:numavg
     componentsignal(i,:) = generate_signal_fromcomponent(component, epochs, 'baseonly', 1);
 end
 
 componentsignal = mean(componentsignal, 1);
+
+if newfig, h = figure('name', 'Component signal', 'NumberTitle', 'off', 'ToolBar', 'none'); else, h = NaN; end
+
 plot(x, componentsignal, '-');
+text(.95, .05, ['n=' num2str(numavg)], 'Units', 'normalized', 'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom');
