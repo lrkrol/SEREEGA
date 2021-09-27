@@ -25,8 +25,8 @@
 %                     white noise added to the final scalp data. default: 0
 %                     see utl_add_sensornoise and/or utl_mix_data for more
 %                     options.
-%       showprogress - 1|0, whether or not to show a progress bar,
-%                      default 1
+%       showprogress - 1|0, whether or not to show progress updates in the
+%                      console, default 1
 %       legacy_rndmultsrc - 0|1, reinstates legacy (<=1.0.19) behaviour
 %                           where, when multiple sources are indicated in
 %                           one component, only one random source is
@@ -52,6 +52,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2021-07-05 lrk
+%   - Switched to a parallel loop to generate the epochs (where available)
 % 2020-01-11 lrk
 %   - Changed behaviour when one component contains multiple sources. The
 %     projections from each source are now summed together. Previous
@@ -113,30 +115,30 @@ component = utl_check_component(component, leadfield);
 scalpdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), epochs.n);
 sourcedata = zeros(length(component), floor((epochs.length/1000)*epochs.srate), epochs.n);
 
+% starting parallel pool if available
+if exist('gcp') && isempty(gcp('nocreate'))
+    parpool;
+end
+
 fprintf('Generating scalp data... ');
 if showprogress
-    w = waitbar(0, sprintf('Epoch 0 of %d', epochs.n), 'Name', 'Generating scalp data');
-    maxwait = epochs.n * numel(component);
-    epochtimes = nan(1,epochs.n);
-    eta = 0;
+    progress_start = tic;
+    utl_show_progress_timetocomplete;
+    utl_show_progress_parfor(epochs.n);
 end
 
 % for each epoch...
-for e = 1:epochs.n
-    tic
-    componentdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), numel(component));
+parfor e = 1:epochs.n
+    
+    epochsourcedata = zeros(length(component), floor((epochs.length/1000)*epochs.srate));
+    epochscalpdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), numel(component));
     
     % for each component...
     for c = 1:numel(component)
-        if showprogress
-            % updating ETA and waitbar message
-            etatext = datestr((eta-toc)/(24*60*60), 'HH:MM:SS');
-            waitbar(((e-1)*numel(component)+c)/maxwait, w, sprintf('Epoch %d of %d, Component %d of %d\nTime remaining: %s', e, epochs.n, c, numel(component), etatext));
-        end
 
         % getting component's sum signal
         componentsignal = generate_signal_fromcomponent(component(c), epochs, 'epochNumber', e);
-        sourcedata(c,:,e) = componentsignal;
+        epochsourcedata(c,:) = componentsignal;
 
         if legacy_rndmultsrc
             % legacy behaviour: obtaining single random source
@@ -153,7 +155,7 @@ for e = 1:epochs.n
             end
 
             % projecting signal
-            componentdata(:,:,c) = lf_project_signal(leadfield, componentsignal, source, orientation, ...
+            epochscalpdata(:,:,c) = lf_project_signal(leadfield, componentsignal, source, orientation, ...
                     'normaliseLeadfield', normaliseLeadfield, ...
                     'normaliseOrientation', normaliseOrientation);
         else
@@ -175,22 +177,29 @@ for e = 1:epochs.n
                                 'normaliseLeadfield', normaliseLeadfield, ...
                                 'normaliseOrientation', normaliseOrientation));
             end
-            componentdata(:,:,c) = sum(sourceprojecteddata, 3);
+            epochscalpdata(:,:,c) = sum(sourceprojecteddata, 3);
         end
+        
     end
     
-    % combining projected component signals into single epoch
-    scalpdata(:,:,e) = sum(componentdata, 3);
+    % combining (projected) component signals into single epoch
+    sourcedata(:,:,e) = epochsourcedata;
+    scalpdata(:,:,e) = sum(epochscalpdata, 3);
+        
+    if showprogress
+        % keeping time
+        p = utl_show_progress_parfor();
+        utl_show_progress_timetocomplete(p/100, [], [], progress_start);
+    end
     
-    % keeping time
-    epochtimes(e) = toc;
-    eta = nanmean(epochtimes) * (epochs.n-e);
+end
+
+if showprogress
+    % deleting temp file
+    utl_show_progress_parfor(0);
 end
 
 % adding sensor noise
 scalpdata = utl_add_sensornoise(scalpdata, 'amplitude', sensorNoise);
-
-fprintf('Done after %s.\n', datestr(sum(epochtimes)/(24*60*60), 'HH:MM:SS'));
-if showprogress, delete(w); end
 
 end
