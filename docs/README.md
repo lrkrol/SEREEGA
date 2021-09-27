@@ -95,7 +95,7 @@ For a detailed overview of all functions and their capabilities, please look at 
 
 Download [SEREEGA](https://github.com/lrkrol/SEREEGA) to your computer and add all its (sub)directories to MATLAB's path.
 
-It is recommended to have MATLAB 2014b or higher with the DSP toolbox installed. SEREEGA's core functionality requires R2013b. This is primarily due to the use of `addParameter` rather than `addParamValue`; if your MATLAB does not support `addParameter`, try exchanging all those references with `addParamValue`. That should restore basic functionality. Some plotting functions rely on the `boundary` function introduced in R2014b. Some signal generation functions depend on the DSP toolbox version 8.6 (R2014a) or higher.
+It is recommended to have MATLAB 2014b or higher with the DSP and Parallel Computing toolboxes installed. SEREEGA's core functionality requires R2013b. This is primarily due to the use of `addParameter` rather than `addParamValue`; if your MATLAB does not support `addParameter`, try exchanging all those references with `addParamValue`. That should restore basic functionality. Some plotting functions rely on the `boundary` function introduced in R2014b. Some signal generation functions depend on the DSP toolbox version 8.6 (R2014a) or higher. Data simulation tries to use parallel processing from the Parallel Computing Toolbox where available.
 
 [EEGLAB](https://sccn.ucsd.edu/eeglab) is used for a number of functions, and should be started before generating a lead field as EEGLAB's `readlocs` is used to add channel location information. SEREEGA was tested with EEGLAB 13.6.5b.
 

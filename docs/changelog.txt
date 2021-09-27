@@ -1,3 +1,8 @@
+v1.2.0
+- Added text to plot_component_signal plot indicating number of averages taken
+- Added utl_add_markers_toeeglabdataset following GitHub issue #13
+- Fixed typo in BioSemi-32 montage in utl_get_montage
+- Switched to parallel processing in generate_scalpdata where available, following GitHub issue #14, also adding utl_show_progress_parfor and utl_show_progress_timetocomplete to replace progress bar
 
 v1.1.0
 - Added electrodes argument to plot_source_projection

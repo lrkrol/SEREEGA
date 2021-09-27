@@ -24,3 +24,16 @@ noise_generate_signal_coloreduniform.m
     obtained from https://people.sc.fsu.edu/~jburkardt/m_src/cnoise/cnoise.html
     this file is licensed under the GNU LGPL 3.
     used by noise_generate_signal_fromclass.m
+    
+utl_show_progress_parfor
+    original author: Jeremy Scheff, jdscheff@gmail.com
+    obtained from https://www.mathworks.com/matlabcentral/fileexchange/32101
+    this file is licensed under an unidentified variant of the BSD license
+    used by generate_scalpdata
+    
+utl_show_progress_timetocomplete
+    original author: Jacob Donley, University of Wollongong,
+                     jrd089@uowmail.edu.au
+    obtained from https://github.com/jdonley/SoundZone_Tools/
+    this file is licensed under the GNU GPL 2.
+    used by generate_scalpdata
