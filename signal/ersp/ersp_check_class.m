@@ -29,14 +29,13 @@
 %       Additionally, a pre-stimulus period can be indicated to attenuate
 %       the signal during that time, using an inverse window as above.
 %
-%       Deviations and slopes can be indicated for all variables.
-%       A deviation of x indicates that 99.7% (six sigma) of the final 
-%       simulated values will be between +/- x of the indicated base value,
-%       following a normal distribution. 
-%       A slope indicates a systematic change from the first epoch to the
-%       last. A slope of -100 indicates that on the last epoch, the
-%       simulated value will be (on average, if any deviations are also
-%       indicated) 100 less than in the first epoch.
+%       Deviations and slopes can be indicated for all variables. A
+%       deviation of x indicates that the final simulated values will be
+%       between +/- x of the indicated base value, following a normal
+%       distribution. A slope indicates a systematic change from the first
+%       epoch to the last. A slope of -100 indicates that on the last
+%       epoch, the simulated value will be (on average, if any deviations
+%       are also indicated) 100 less than in the first epoch.
 %
 %       Deviations apply to each value indivdiually. For fequencies, 
 %       frequencyShift works in the same way, but applies to all frequency
@@ -130,6 +129,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2021-09-27 lrk
+%   - updated documentation to reflect 2018-06-04 utl_apply_dvslopeshift change
 % 2018-06-04 lrk
 %   - Added frequencyShift
 % 2017-12-30 lrk

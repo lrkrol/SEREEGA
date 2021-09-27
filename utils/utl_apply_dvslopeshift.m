@@ -1,17 +1,19 @@
 % value = utl_apply_dvslopeshift(mean, deviation, slope, epochNumber, maxEpoch, shift)
 %
 %       Applies the indicated slope, random deviation, and optional random
-%       shift to a given (array of) value(s).
+%       shift to a given (array of) value(s). Deviations are sampled
+%       following a normal distribution with the indicated deviation being
+%       the six-sigma range, capped to never exceed the indicated maximum.
 %
 % In:
 %       mean - 1-by-n array of the value(s) to be adjusted
-%       deviation - 1-by-n array of the maximum (six sigma) deviation(s)
+%       deviation - 1-by-n array of the maximum deviation(s)
 %       slope - 1-by-n array of the slope(s)
 %       epochNumber - the current epoch number
 %       maxEpoch - the maximum number of epochs
 %
 % Optional:
-%       shift - maximum (six sigma) value by which to shift all values
+%       shift - maximum value by which to shift all values
 %
 % Out:  
 %       value - 1-by-n array of the adjusted value(s)
@@ -20,6 +22,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2021-09-27 lrk
+%   - updated documentation
 % 2019-04-26 lrk
 %   - Added shift parameter, now as utl_apply_dvslopeshift
 % 2018-06-04 lrk

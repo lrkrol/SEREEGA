@@ -296,7 +296,7 @@ pop_eegplot( EEG, 1, 1, 1);
 
 This is of course unrealistic and defeats the entire purpose of even simulating multiple epochs in the first place.
 
-We can add variability to the signal by indicating allowed random _deviations_ or _shifts_ as well as specific _slopes_. A deviation of 50 ms for our peak latency allows this latency to vary +/- 50 ms between trials, following a normal distribution with the indicated deviation being the six-sigma range.
+We can add variability to the signal by indicating allowed random _deviations_ or _shifts_ as well as specific _slopes_. A deviation of 50 ms for our peak latency allows this latency to vary +/- 50 ms between trials, following a normal distribution with the indicated deviation being the six-sigma range, capped to never exceed the indicated maximum.
 
 ```matlab
 erp.peakLatencyDv = 50;

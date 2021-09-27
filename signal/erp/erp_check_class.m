@@ -14,11 +14,11 @@
 %       100 ms later, between 450 and 550 ms. A slope of 0 means nothing
 %       will change over time (barring any indicated deviations).
 %
-%       Deviations represent the epoch-to-epoch (trial-to-trial) 
+%       Deviations represent the epoch-to-epoch (trial-to-trial)
 %       variability. A deviation of 20 for a peak at 400 ms means that the
-%       peak latency varies according to a normal distribution, with 99.7% 
-%       of peaks being centered between 380 and 420 ms. A deviation of 0
-%       means all signals will be exactly the same (barring any sloping).
+%       centre peak latency varies according to a normal distribution,
+%       between 380 and 420 ms. A deviation of 0 means all signals will be
+%       exactly the same (barring any sloping).
 %
 %       Deviations apply to each peak indivdiually. The peakLatencyShift
 %       works in the same way, but applies to all peaks equally, shifting
@@ -65,6 +65,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2021-09-27 lrk
+%   - updated documentation to reflect 2018-06-04 utl_apply_dvslopeshift change
 % 2018-06-04 lrk
 %   - Added peakLatencyShift
 % 2017-10-19 lrk
