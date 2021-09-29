@@ -1,3 +1,7 @@
+v1.2.2
+- Fixed forgotten version increment in eegplugin_sereega.m
+- Fixed forgotten documentation update reflecting 2018-06-04 utl_apply_dvslopeshift change
+
 v1.2.0
 - Added text to plot_component_signal plot indicating number of averages taken
 - Added utl_add_markers_toeeglabdataset following GitHub issue #13
