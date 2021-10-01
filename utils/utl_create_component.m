@@ -7,7 +7,7 @@
 %       sourceIdx - 1-by-n array of source indices
 %       signal - single struct containing an activation class, or 1-by-m 
 %                struct or cell containing n activation classes. When m=1,
-%                the same signal will be added to all components. When m=k,
+%                the same signal will be added to all components. When m=n,
 %                each signal m(i) will be added to component n(i). 
 %       leadfield - the lead field structure array corresponding to the 
 %                   source indices

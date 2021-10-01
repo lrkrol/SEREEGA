@@ -22,9 +22,10 @@
 %                                returns the e-th row for each epoch.
 %         .amplitudeType         'relative' or 'absolute', indicating
 %                                the behaviour of the 'amplitude' parameter
-%         .amplitude             the signal's maximum absolute amplitude,
-%                                or its amplitude relative to the given
-%                                data
+%         .amplitude             the signal's maximum absolute amplitude
+%                                (i.e. the data will be scaled), or its
+%                                amplitude relative to the given data (i.e.
+%                                data will be multiplied by the amplitude)
 %         .amplitudeDv           the amplitude's deviation
 %         .amplitudeSlope        the amplitude's slope
 %         .probability:          0-1 scalar indicating probability of

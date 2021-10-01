@@ -83,8 +83,10 @@
 %         .modTaper:              taper of the tukey window between 0 and 1
 %         .modTaperDv:            taper deviation
 %         .modTaperSlope:         taper slope
-%         .modMinRelAmplitude:       minimum amplitude of the base signal 
-%                                    relative to the base amplitude
+%         .modMinRelAmplitude:       minimum amplitude of the
+%                                    modulated (burst) / base (invurst)
+%                                    signal relative to the base /
+%                                    modulated amplitude
 %         .modMinRelAmplitudeDv:     minimum amplitude deviation
 %         .modMinRelAmplitudeSlope:  minimum amplitude slope
 %

@@ -5,7 +5,8 @@
 %
 %       An ARM class structure can only be used to generate one single,
 %       independent time series using an autoregressive model. To simulate
-%       interactions between different time series, use arm_generate_data.
+%       interactions between different time series, use
+%       arm_get_class_interacting.
 %
 %       For a single class structure, only the 'order' must initially be 
 %       indicated. This validation function will then fill in a random
