@@ -10,11 +10,13 @@
 %
 %       The base frequency can be defined by a single frequency in Hz, its
 %       amplitude, and optionally, its phase. Alternatively, a frequency
-%       band can be indicated using its band edge frequencies. A frequency 
-%       of [6, 8, 12, 14] for example will result in a base signal with 
-%       maximum spectral power between 8 and 12 Hz, with transitions 
-%       between 6-8 and 12-14. In case a frequency band is indicated, phase
-%       will be ignored.
+%       band can be indicated using its band edge frequencies. A frequency
+%       of [6, 8, 12, 14] for example will result in a base signal with
+%       maximum spectral power between 8 and 12 Hz, with transitions
+%       between 6-8 and 12-14. The filter is a window-based finite impulse
+%       response filter with a Kaiser window and an automatically decided
+%       filter order. In case a frequency band is indicated, phase will be
+%       ignored.
 %
 %       A burst can additionally be indicated using its latency (the burst
 %       window's centre) in ms, its width in ms, and its taper, where a
