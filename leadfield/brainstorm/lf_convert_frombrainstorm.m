@@ -75,6 +75,8 @@
 %     but WITHOUT ANY WARRANTY; without even the implied warranty of
 %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %     GNU General Public License for more details (https://www.gnu.org/licenses).
+%
+% For queries you can contact me at: daniele.scanzi@auckland.ac.nz
 
 function lf = lf_convert_frombrainstorm(varargin)
 
