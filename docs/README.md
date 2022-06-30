@@ -176,7 +176,7 @@ lf = lf_convert_frombrainstorm('chanloc', 'my_chanloc.mat', 't1', 'my_T1_MRI.mat
 ```
 Brainstorm headmodels are expressed in $\frac{V}{A-m}$. `lf_convert_frombrainstorm` converts these into $\frac{\mu V}{nA-m}$ according to the following formula:
 
-$$ \frac{V}{A-m} \cdot \frac{10^6 \muV}{V} \cdot \frac{A}{10^9 nA} = 10^{-3} \frac{10^{-3} \muV}{nA-m} $$
+$$ \frac{V}{A-m} \cdot \frac{10^6 \mu V}{V} \cdot \frac{A}{10^9 nA} = 10^{-3} \frac{10^{-3} \mu V}{nA-m} $$
 
 The conversion allows working with realistic units, which would help define and interpret the results, especially for ERPs. However, if you desire to work with the International System, you can set the *scale* argument to 0 to turn the conversion off. The help file of the function provides more details about this.
 
@@ -814,7 +814,7 @@ Also note that an additional source of noise, sensor noise, can be added to gene
 
 It is relevant to highlight that the three leadfield provided by default (NYhead, Fieldtrip, and Pediatric Head Atlas) have different units of measure. Unfortunately, although knowing the units is important to interpret the results correctly, these have not been reported in the literature. Consequently, the units of the result are relative to the leadfield employed. As a workaround, the `generate_scalpdata` function contains a *normaliseLeadfield* argument, which normalises the leadfield values. 
 
-An exception to this is the leadfield converted from Brainstorm. Brainstorm explicitly utlises the International System; thus, every leadfield generated with it is expressed in $\frac{V}{A-m}$ (for more information: https://neuroimage.usc.edu/forums/t/eeg-units/1499). The function `lf_convert_frombrainstorm` automatically converts this in $\frac{mV}{nA-m}$ as the results are more easily interpreted. However, the argument `scale` can be set to 0 to skip the conversion and use the default Brainstorm units.
+An exception to this is the leadfield converted from Brainstorm. Brainstorm explicitly utlises the International System; thus, every leadfield generated with it is expressed in $\frac{V}{A-m}$ (for more information: https://neuroimage.usc.edu/forums/t/eeg-units/1499). The function `lf_convert_frombrainstorm` automatically converts this in $\frac{\mu V}{nA-m}$ as the results are more easily interpreted. See [above](#using-a-leadfield-generated-in-brainstorm) for more information.
 
 ## Contact
 
