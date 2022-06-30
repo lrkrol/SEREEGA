@@ -150,8 +150,6 @@ plot_headmodel(lf, 'style', 'boundary', 'labels', 0);
 ```
 #### Using a leadfield generated in Brainstorm
 
-***Command line only***
-
 Brainstorm allows you to create personalised leadfield (aka headmodels in Brainstorm). The `lf_convert_frombrainstorm` enables you to convert a leadfield generated in Brainstorm to a format usable by SEREEGA. 
 
 ```matlab
@@ -186,6 +184,7 @@ The conversion allows working with realistic units, which would help define and 
 % Use SI units (V/A-m)
 lf = lf_convert_frombrainstorm('chanloc', 'my_chanloc.mat', 't1', 'my_T1_MRI.mat', 'headmodel', 'my_headmodel.mat', 'scale', 0);
 ```
+Note that this function is available only through the command line.
 
 ### Picking a source location
 
