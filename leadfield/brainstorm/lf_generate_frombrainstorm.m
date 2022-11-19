@@ -5,8 +5,8 @@ p = inputParser;
 
 addParameter(p, 'chanloc', 'channel_GSN_HydroCel_128_E1.mat', @ischar)  %Channel location file name
 addParameter(p, 't1', 'subjectimage_T1.mat', @ischar)                   %T1 image for coordinates conversion
-addParameter(p, 'headmodel', 'headmodel_vol_duneuro.mat', @ischar)      %Headmodel generated in Brainstorm
-addParameter(p, 'scaleUnits', 1, @isnumeric);                          %Scale units from V/A-m to microV/nA-m
+addParameter(p, 'headmodel', 'headmodel_surf_openmeeg.mat', @ischar)      %Headmodel generated in Brainstorm
+addParameter(p, 'scaleUnits', 1, @isnumeric);                           %Scale units from V/A-m to microV/nA-m
 addParameter(p, 'useMm', 1, @isnumeric);                                %Convert all lengths from meters to mm
 
 parse(p, varargin{:});
@@ -29,7 +29,7 @@ if ~exist('chanloc', 'var')
          '\nMake sure you use the same file you used in Brainstorm to generate the leadfield. ' ...
          '\nAdd it to the same directory as this script'], chanloc)
 else
-    channels = load(chanloc);
+    channels = readlocs(chanloc);
 end
 
 % T1 data used in Brainstorm
@@ -62,14 +62,17 @@ ydim = bsLeadField.Gain(:, 2:3:size(bsLeadField.Gain,2)); %X dim is in columns 2
 zdim = bsLeadField.Gain(:, 3:3:size(bsLeadField.Gain,2)); %X dim is in columns 3-6-9-12-etc...
 
 % Save in 3D matrix
-lf3D = cat(3, xdim, ydim, zdim);
-
-% Scale from Brainstorm V/A-m to microV/nA-m if requested
-if scaleUnits 
-    fprintf('Converting leadfield from Brainstorm default V/A-m to microV/nA-m\n')
-    lf3D = lf3D * 1e-3;
-end
-
+% Note1: that the X-Y-Z dimensions of the leadfield are in the SCS system
+% used by Brainstorm. However, here we will transform everything in the MNI
+% coordinate system. Thus, we need to account for this here too, otherwise
+% the leadfiled will project onto the wrong surface. The SCS system has the
+% X-axis pointing towards the nose and the Y-axis pointing towards LPA. The
+% MNI coordinate system has the X-axis pointing towards RPA and the Y-axis
+% towards the nose. 
+% Note2: The rotation applied here is not the same as the rotation applied
+% to the channels to account for the EEGLAB rotation. In that case, we will
+% go from MNI to EEGLAB. 
+lf3D = cat(3, -ydim, xdim, zdim);
 %% Convert leadfiled dipole position and orientation to MNI coordinates
 
 fprintf('Converting dipole locations from Brainstorm Subject Coordinate System (SCS) to MNI system\n');
@@ -82,18 +85,12 @@ try
     if isempty(bsLeadField.GridOrient)
         gridOriMNI = zeros(size(gridLocMNI));
     else
-        gridOriMNI = cs_convert(t1Image, 'scs', 'mni', bsLeadField.GridOrient); 
-    end
-
-    %Channels
-    bsChannelocMNI = channels; %Channel structure to save MNI coordinates
-
-    for ch=1:size(channels.Channel,2)
-    
-        xyzChanpos = channels.Channel(ch).Loc;                        %Extract current channel location
-        xyzMNI     = cs_convert(t1Image, 'scs', 'mni', xyzChanpos);   %Convert them into MNI coordinates
-        bsChannelocMNI.Channel(ch).Loc = xyzMNI';                     %Save them in chan loc MNI struct
-
+        % Use the provided perpendicular orientations, but rotate them to
+        % account for the switch from SCS to MNI coordinate system (see
+        % note above)
+        gridOriMNI(:,1) = -bsLeadField.GridOrient(:,2);
+        gridOriMNI(:,2) = bsLeadField.GridOrient(:,1);
+        gridOriMNI(:,3) = bsLeadField.GridOrient(:,3);
     end
 
 catch ME
@@ -110,83 +107,66 @@ catch ME
     rethrow(ME)
 end
 
-%% Rotate coordinates
-% The MNI coordinate system is rotated by 90 degrees compared to the EEGLAB
-% system, which is used by SEREEGA loading channel location and plotting.
-% Because of this, we need to rotate the converted dipoles location and
-% electrode locations. 
-% If we save the chanloc file now, EEGLAB will assume that it is a
-% Brainstorm chanloc file, which should use a SCS system. However, we are
-% now in the MNI coordinate system, whihc is rotated by 90 degrees compared
-% to EEGLAB system
-% (https://eeglab.org/tutorials/ConceptsGuide/coordinateSystem.html). Thus,
-% we need to rotate channels and dipoles accordingly X=Y and Y=-X
-
-for ch = 1:size(bsChannelocMNI.Channel,2)
-   
-   % Electrodes
-   % Extract values for x and y coordinates
-   xchan = bsChannelocMNI.Channel(ch).Loc(1);
-   ychan = bsChannelocMNI.Channel(ch).Loc(2);
-
-   % Swap coordinates and rotate
-   bsChannelocMNI.Channel(ch).Loc(1) = ychan;
-   bsChannelocMNI.Channel(ch).Loc(2) = -xchan;
-   
-   % Dipoles
-   xdip = gridLocMNI(:,1);
-   ydip = gridLocMNI(:,2);
-
-   gridLocMNI(:,1) = ydip;
-   gridLocMNI(:,2) = -xdip;
-
-   
-   lfX = lf3D(:,:,1);
-   lfY = lf3D(:,:,2);
-
-   lf3D(:,:,1) = lfY;
-   lf3D(:,:,2) = lfX;
-
-
+% Channels
+fprintf('Converting channel location from SCS system to MNI system and readjusting for EEGLAB coordinate rotation (X=Y, Y=-X)\n')
+channelsMNI = channels;
+for ch = 1:length(channels)
+    % Convert XYZ EEGLAB coordinates into MNI coordinates. This will rotate
+    % the coordinates so that Xmni = -Yeeglab, Ymni = Xeeglab
+    xyzMNI = cs_convert(t1Image, 'scs', 'mni', [[channels(ch).X], [channels(ch).Y], [channels(ch).Z]]);
+    
+    % Reassign the MNI coordinates to the channel structure. SEREEGA
+    % expects the channels to be in the EEGLAB fomat, thus we need to
+    % rotate them 
+    channelsMNI(ch).X = xyzMNI(2);
+    channelsMNI(ch).Y = -xyzMNI(1);
+    channelsMNI(ch).Z = xyzMNI(3);
 end
 
-%% Change all units from meters to mm to match the other leadfields - if 
-% requested. We do this before saving the channel file so that EEGLAB will
-% load the X-Y-Z coordinates in mm and correctly compute the spherical
-% coordinates.
+% Recompute spherical and besa coordinates 
+channelsMNI = convertlocs(channelsMNI);
 
+% If the fiducials are saved with the other channels, remove them (they are
+% not included in the leadfield)
+fiducials = { 'nz' 'lpa' 'rpa' 'nasion' 'left' 'right' 'nazion' 'fidnz' 'fidt9' 'fidt10' 'cms' 'drl' 'nas' 'lht' 'rht' 'lhj' 'rhj' };
+fiducialIdx = find(ismember(lower({channelsMNI.labels}), fiducials));
+
+if length(fiducialIdx)
+    channelsMNI(fiducialIdx) = [];
+end
+
+%% Scale units if requested
+
+% Dipole  and channels (NOTE: the MNI coordinate system shoukd be in mm.
+% However, the cs_convert function returns the results in meters, as this
+% is Brainstorm default). 
 if useMm
-    
+    fprintf('Converting dipole and channel location from M to mm')
     % Dipole location
     gridLocMNI = gridLocMNI * 1000;
     
     % Electrode XYZ Location
-    for ch = 1:size(bsChannelocMNI.Channel,2)
-        bsChannelocMNI.Channel(ch).Loc = bsChannelocMNI.Channel(ch).Loc * 1000;
+    for ch = 1:length(channelsMNI)
+        channelsMNI(ch).X = channelsMNI(ch).X * 1000;
+        channelsMNI(ch).Y = channelsMNI(ch).Y * 1000;
+        channelsMNI(ch).Z = channelsMNI(ch).Z * 1000;
     end
+    % Recompute spherical and besa coordinates 
+    channelsMNI = convertlocs(channelsMNI);
 end
     
-%% Save MNI converted channel file in order to open  it with eeglab
-fprintf('Saving channel file converted to MNI coordinates\n');
-save(strcat(chanloc(1:end-4), '_MNI.mat'), '-struct', 'bsChannelocMNI');
-
-%% Open with eeglab and adjust fields so they can be used by SEREEGA
-eeglabChan = readlocs(strcat(chanloc(1:end-4), '_MNI.mat'), 'filetype', 'mat');
-
-% There should not be fiducial channels in the channel structure.
-% However, if any are present, find and remove them
-fiducials = { 'nz' 'lpa' 'rpa' 'nasion' 'left' 'right' 'nazion' 'fidnz' 'fidt9' 'fidt10' 'cms' 'drl' 'nas' 'lht' 'rht' 'lhj' 'rhj' };
-fiducialIdx = find(ismember(lower({eeglabChan.labels}), fiducials));
-if length(fiducialIdx)
-    eeglabChan(fiducialIdx) = [];
+% Leadfield from Brainstorm V/A-m to microV/nA-m
+if scaleUnits 
+    fprintf('Converting leadfield from Brainstorm default V/A-m to microV/nA-m\n')
+    lf3D = lf3D * 1e-3;
 end
 
-% Create leadfield structure for sereega
+%% Create leadfield structure for sereega
 lf = struct();
 lf.leadfield   = lf3D;
 lf.orientation = gridOriMNI;
 lf.pos         = gridLocMNI;
-lf.chanlocs    = eeglabChan;
+lf.chanlocs    = channelsMNI;
 
 end
 
