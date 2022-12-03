@@ -811,12 +811,6 @@ data        = utl_mix_data(sigdata, noisedata, 1/3);
 
 Also note that an additional source of noise, sensor noise, can be added to generated scalp data using the `sensorNoise` argument of `generate_scalpdata`. This noise has no dependencies across channels or samples.
 
-## Relativity of the Units of Measure
-
-It is relevant to highlight that the three leadfield provided by default (NYhead, Fieldtrip, and Pediatric Head Atlas) have different units of measure. Unfortunately, although knowing the units is important to interpret the results correctly, these have not been reported in the literature. Consequently, the units of the result are relative to the leadfield employed. As a workaround, the `generate_scalpdata` function contains a *normaliseLeadfield* argument, which normalises the leadfield values. 
-
-An exception to this is the leadfield converted from Brainstorm. Brainstorm explicitly utlises the International System; thus, every leadfield generated with it is expressed in $\frac{V}{A-m}$ (for more information: https://neuroimage.usc.edu/forums/t/eeg-units/1499). The function `lf_convert_frombrainstorm` automatically converts this in $\frac{\mu V}{nA-m}$ as the results are more easily interpreted. See [above](#using-a-leadfield-generated-in-brainstorm) for more information.
-
 ## Contact
 
 Feel free to contact me at lrkrol@gmail.com.
