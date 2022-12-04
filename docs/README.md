@@ -18,7 +18,6 @@ Reference:
   - [Installation](#installation)
   - [Configuration](#configuration)
   - [Obtaining a lead field](#obtaining-a-lead-field)
-      - [Using a leadfield generated in Brainstorm](#using-a-leadfield-generated-in-brainstorm)
   - [Picking a source location](#picking-a-source-location)
   - [Orienting a source dipole](#orienting-a-source-dipole)
   - [Defining a source activation signal](#defining-a-source-activation-signal)
@@ -148,44 +147,6 @@ We can inspect the channel locations in the obtained lead field and their relati
 plot_headmodel(lf);
 plot_headmodel(lf, 'style', 'boundary', 'labels', 0);
 ```
-#### Using a leadfield generated in Brainstorm
-
-Brainstorm allows you to create personalised leadfield (aka headmodels in Brainstorm). The `lf_convert_frombrainstorm` enables you to convert a leadfield generated in Brainstorm to a format usable by SEREEGA. 
-
-```matlab
-% Run with default files
-lf = lf_convert_frombrainstorm();
-```
-
-In order for this to work, you will need three files:
-* The headmodel *mat* file generated in Brainstorm
-* The channel location *mat* file used for the generation of the headmodel in Brainstorm
-* The structural MRI *mat* file to which the electrodes have been coregistered. 
-
-The current function is provided with a precomputed headmodel and associated files. However, you can replace these with your own files. For instance, if you have created a headmodel in Brainstorm from a personal MRI scan. The default model and files were obtained as follows:
-
-* *EGI HydroCel 128* channel locations already coregistered by Brainstorm to the default T1 image (next point)
-* *ICBM125 T1* image used in the default anatomy by Brainstorm
-* *Headmodel* generated from the above files by applying the DUNEuro FEM constrained to the surface to the FEM mesh generated with Iso2Mesh. All settings were set to default. 
-
-If you have created a personal headmodel, save the channels, structural MRI, and headmodel matrices into the *leadfield/brainstorm* directory of SEREEGA. Assuming your files are called: *my_chanloc.mat*, *my_T1_MRI.mat* and *my_headmodel.mat*, the conversion to SEREEGA usable format can be easily done with:
-
-```matlab
-% Use personal files
-lf = lf_convert_frombrainstorm('chanloc', 'my_chanloc.mat', 't1', 'my_T1_MRI.mat', 'headmodel', 'my_headmodel.mat');
-```
-Brainstorm headmodels are expressed in $\frac{V}{A-m}$. `lf_convert_frombrainstorm` converts these into $\frac{\mu V}{nA-m}$ according to the following formula:
-
-$$ \frac{V}{A-m} \cdot \frac{10^6 \mu V}{V} \cdot \frac{A}{10^9 nA} = 10^{-3} \frac{10^{-3} \mu V}{nA-m} $$
-
-The conversion allows working with realistic units, which would help define and interpret the results, especially for ERPs. However, if you desire to work with the International System, you can set the *scale* argument to 0 to turn the conversion off. The help file of the function provides more details about this.
-
-```matlab
-% Use SI units (V/A-m)
-lf = lf_convert_frombrainstorm('chanloc', 'my_chanloc.mat', 't1', 'my_T1_MRI.mat', 'headmodel', 'my_headmodel.mat', 'scale', 0);
-```
-Note that this function is available only through the command line.
-
 ### Picking a source location
 
 The lead field contains a number of 'sources' in the virtual brain, i.e. possible dipole locations plus their projection patterns to the selected electrodes. In order to simulate a signal coming from a given source location, we must first select that source in the lead field.
@@ -815,7 +776,7 @@ Also note that an additional source of noise, sensor noise, can be added to gene
 
 It is relevant to highlight that the three leadfield provided by default (NYhead, Fieldtrip, and Pediatric Head Atlas) have different units of measure. Unfortunately, although knowing the units is important to interpret the results correctly, these have not been reported in the literature. Consequently, the units of the result are relative to the leadfield employed. As a workaround, the `generate_scalpdata` function contains a *normaliseLeadfield* argument, which normalises the leadfield values. 
 
-An exception to this is the leadfield converted from Brainstorm. Brainstorm explicitly utlises the International System; thus, every leadfield generated with it is expressed in $\frac{V}{A-m}$ (for more information: https://neuroimage.usc.edu/forums/t/eeg-units/1499). The function `lf_convert_frombrainstorm` automatically converts this in $\frac{\mu V}{nA-m}$ as the results are more easily interpreted. See [above](#using-a-leadfield-generated-in-brainstorm) for more information.
+An exception to this is the leadfield converted from Brainstorm. Brainstorm explicitly utlises the International System; thus, every leadfield generated with it is expressed in $\frac{V}{A-m}$ (for more information: https://neuroimage.usc.edu/forums/t/eeg-units/1499). The function `lf_generate_frombrainstorm` automatically converts this in $\frac{\mu V}{nA-m}$ (unless otherwise requested). This should make the results easier to interpret.
 
 ## Contact
 
