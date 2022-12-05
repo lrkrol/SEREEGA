@@ -321,11 +321,11 @@ if useMNI
 else
     % Switch leadfield gain coordinates to accountf for EEGLAB rotation of
     % the channels
-    lf3D    = cat(3, -ydim, xdim, zdim);
+    lf3D    = cat(3, xdim, ydim, zdim);
 
     % Switch dipole coordinates to account for EEGLAB rotation of the
     % channels
-    gridLoc  = [-bsLeadField.GridLoc(:,2), bsLeadField.GridLoc(:,1), bsLeadField.GridLoc(:,3)];
+    gridLoc  = [bsLeadField.GridLoc(:,1), bsLeadField.GridLoc(:,2), bsLeadField.GridLoc(:,3)];
 
      % Check if the dipoles are oriented, if not, set their values to 0
         if isempty(bsLeadField.GridOrient)
@@ -334,8 +334,8 @@ else
             % Use the provided perpendicular orientations and rotate them
             % to account for EEGLAB rotation of the channels
             
-            gridOri(:,1) = -bsLeadField.GridOrient(:,2);
-            gridOri(:,2) = bsLeadField.GridOrient(:,1);
+            gridOri(:,1) = bsLeadField.GridOrient(:,1);
+            gridOri(:,2) = bsLeadField.GridOrient(:,2);
             gridOri(:,3) = bsLeadField.GridOrient(:,3);
         end
 
@@ -347,6 +347,16 @@ else
     if length(fiducialIdx)
         channels(fiducialIdx) = [];
     end
+
+    % Rotate channels to account for EEGLAB Y=-X and X=Y roattion. After
+    % the rotation the channels will be alligned to the SCS used in
+    % Brainstorm
+     originalX = {channels.X};                             %Original X coordinates
+     originalY = {channels.Y};                             %Original Y coordinates
+     newY      = cellfun(@(x) x*(-1), originalX, 'un', 0); %Y = -X
+ 
+     [channels.X] = originalY{:};
+     [channels.Y] = newY{:};
 
     % If requested, convert all the measures from m (as provided by
     % Brainstorm) to mm
@@ -426,7 +436,7 @@ function a = atlas_bs_to_cell(brainstormAtlas)
 
         emptyIdx    = find(cellfun(@isempty,a));
         % Brain will be added during the cration of the leadfield
-        a(emptyIdx) = {'CorticalSurface'};
+        a(emptyIdx) = {'Unknown'};
     end
 end
 

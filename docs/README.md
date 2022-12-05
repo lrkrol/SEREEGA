@@ -18,6 +18,7 @@ Reference:
   - [Installation](#installation)
   - [Configuration](#configuration)
   - [Obtaining a lead field](#obtaining-a-lead-field)
+      - [Using a leadfield generated in Brainstorm](#using-a-leadfield-generated-in-brainstorm)
   - [Picking a source location](#picking-a-source-location)
   - [Orienting a source dipole](#orienting-a-source-dipole)
   - [Defining a source activation signal](#defining-a-source-activation-signal)
@@ -147,6 +148,62 @@ We can inspect the channel locations in the obtained lead field and their relati
 plot_headmodel(lf);
 plot_headmodel(lf, 'style', 'boundary', 'labels', 0);
 ```
+#### Using a leadfield generated in Brainstorm
+
+Brainstorm allows you to create personalised leadfield (aka headmodels in Brainstorm). The `lf_generate_frombrainstorm` enables you to convert a leadfield generated in Brainstorm to a format usable by SEREEGA. 
+
+```matlab
+% Run with default files
+lf = lf_generate_frombrainstorm();
+```
+
+In order for this to work, you will need three files (plus one optional) to be added to the path. The simplest way to do so is to store them in a folder and add the folder to the current matlab path. The files are:
+* The headmodel *mat* file generated in Brainstorm
+* The channel location *mat* file used for the generation of the headmodel in Brainstorm
+* The structural MRI *mat* file to which the electrodes have been coregistered. 
+* (Optional) the atlas file if used
+
+Description of how to obtain these files is included in the help section of `lf_generate_frombrainstorm`
+
+The current function is provided with a precomputed headmodel and associated files. However, you can replace these with your own files. For instance, if you have created a headmodel in Brainstorm from a personal MRI scan. The default model and files were obtained as follows:
+
+* *EGI HydroCel 256* channel locations already coregistered by Brainstorm to the default T1 image (next point)
+* *ICBM152 T1* image used in the default anatomy by Brainstorm
+* Surface *Headmodel* generated from the above files by applying OpenMEEG to the BEM surfaces and costraining the dipoles to the cortex surface
+* *Mindboggle 62* atlas
+
+If you have created a personal headmodel, add the required files to the path, then use:
+
+```matlab
+% Use personal files
+lf = lf_generate_frombrainstorm('chanloc', 'my_chanloc.mat', 't1', 'my_T1_MRI.mat', 'headmodel', 'my_headmodel.mat', 'atlas', 'my_atlas.mat');
+```
+Brainstorm headmodels are expressed in $\frac{V}{A-m}$. `lf_generate_frombrainstorm` automatically converts these into $\frac{\mu V}{nA-m}$ according to the following formula:
+
+$$ \frac{V}{A-m} \cdot \frac{10^6 \mu V}{V} \cdot \frac{A}{10^9 nA} = 10^{-3} \frac{10^{-3} \mu V}{nA-m} $$
+
+The conversion allows working with realistic units, which would help define and interpret the results, especially for ERPs. However, if you desire to work with the International System, you can set the *scaleUnits* argument to 0 to turn the conversion off. The help file of the function provides more details about this.
+
+```matlab
+% Use SI units (V/A-m)
+lf = lf_generate_frombrainstorm('chanloc', 'my_chanloc.mat', 't1', 'my_T1_MRI.mat', 'headmodel', 'my_headmodel.mat', 'atlas', 'my_atlas.mat', 'scaleUnits', 0);
+```
+
+Furthermore, note that this function converts the coordinate system from the *Subject-Coordinate-System* (SCS) used in Brainstorm, to the MNI system used in SEREEGA. You can tunr this 
+option off by setting the parameter `useMNI` to 0.
+
+```matlab
+% Use SI units (V/A-m)
+lf = lf_generate_frombrainstorm('chanloc', 'my_chanloc.mat', 't1', 'my_T1_MRI.mat', 'headmodel', 'my_headmodel.mat', 'atlas', 'my_atlas.mat', 'scaleUnits', 0, 'useMNI', 0);
+```
+Finally, as Brainstorm uses the SCS, the channel and dipole coordinates are expressed in meters. `lf_generate_frombrainstorm' converts these measures in mm, for consistency with the other leadfields. 
+However, if you wish to use meters, then set the parameter `useMm` to 0. Note that the electrode names will not be displayed when calling `plot_headmodel()` with measures expressed in meters. 
+
+```matlab
+% Use SI units (V/A-m)
+lf = lf_generate_frombrainstorm('chanloc', 'my_chanloc.mat', 't1', 'my_T1_MRI.mat', 'headmodel', 'my_headmodel.mat', 'atlas', 'my_atlas.mat', 'scaleUnits', 0, 'useMNI', 0, 'useMm', 0);
+```
+
 ### Picking a source location
 
 The lead field contains a number of 'sources' in the virtual brain, i.e. possible dipole locations plus their projection patterns to the selected electrodes. In order to simulate a signal coming from a given source location, we must first select that source in the lead field.
