@@ -1,4 +1,4 @@
-% sourceIdx = lf_get_source_inradius(leadfield, centre, radius)
+% sourceIdx = lf_get_source_inradius(leadfield, centre, radius, varargin)
 %
 %       Returns the source(s) in the leadfield within a certain radius of
 %       an indicated source or coordinate.
@@ -17,10 +17,15 @@
 %       >> sourceIdx = lf_get_source_inradius(lf, [0 0 0], 10);
 %       >> plot_source_location(sourceIdx, lf);
 % 
-%                    Copyright 2017 Laurens R Krol
+%                    Copyright 2017, 2022 Laurens R. Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
+%                    Neuroadaptive Human-Computer Interaction
+%                    Brandenburg University of Technology
 
+% 2022-11-17 lrk
+%   - Switched to inpurParser to handle arguments
+%   - Added optional 'region' argument
 % 2017-04-27 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -38,12 +43,31 @@
 % You should have received a copy of the GNU General Public License
 % along with SEREEGA.  If not, see <http://www.gnu.org/licenses/>.
 
-function sourceIdx = lf_get_source_inradius(leadfield, centre, radius)
+function sourceIdx = lf_get_source_inradius(leadfield, centre, radius, varargin)
+
+% parsing input
+p = inputParser;
+
+addRequired(p, 'leadfield', @isstruct);
+addRequired(p, 'centre', @isnumeric);
+addRequired(p, 'radius', @isnumeric);
+
+addParameter(p, 'region', {'.*'}, @iscell);
+
+parse(p, leadfield, centre, radius, varargin{:})
+
+leadfield = p.Results.leadfield;
+centre = p.Results.centre;
+radius = p.Results.radius;
+region = p.Results.region;
+
+
+regionIdx = lf_get_source_all(leadfield, 'region', region);
 
 if numel(centre) == 1, centre = leadfield.pos(centre,:); end
 
 sourceIdx = [];
-for p = 1:size(leadfield.leadfield, 2)
+for p = regionIdx
     if sqrt( ...
             (leadfield.pos(p,1) - centre(1))^2 + ...
             (leadfield.pos(p,2) - centre(2))^2 + ...

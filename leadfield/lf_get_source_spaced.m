@@ -17,6 +17,8 @@
 %                   these must not satisfy the spacing criterion among each
 %                   other, but all randomly added sources will be at least
 %                   the indicated distance away from these and each other.
+%       region - cell containing strings and/or regex patterns representing
+%                leadfield.atlas entries. not case sensitive. default: .*
 %
 % Out:
 %       sourceIdx - 1-by-number array containing the source indices of the
@@ -27,10 +29,14 @@
 %       >> sourceIdx = lf_get_source_spaced(lf, 10, 50);
 %       >> plot_source_location(sourceIdx, lf);
 % 
-%                    Copyright 2017 Laurens R Krol
+%                    Copyright 2017, 2022 Laurens R. Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
+%                    Neuroadaptive Human-Computer Interaction
+%                    Brandenburg University of Technology
 
+% 2022-11-17 lrk
+%   - Added optional 'region' argument
 % 2017-08-01 lrk
 %   - Added option to start with given source array
 % 2017-06-12 First version
@@ -60,35 +66,28 @@ addRequired(p, 'number', @(x) isnumeric(x) && ~isempty(x));
 addRequired(p, 'spacing', @(x) isnumeric(x) && ~isempty(x));
 
 addParameter(p, 'sourceIdx', [], @isnumeric);
+addParameter(p, 'region', {'.*'}, @iscell);
 
 parse(p, leadfield, number, spacing, varargin{:})
 
 leadfield = p.Results.leadfield;
 number = p.Results.number;
 spacing = p.Results.spacing;
-sourceIdx = p.Results.sourceIdx;
+initialSourceIdx = p.Results.sourceIdx;
+region = p.Results.region;
 
-if ~all(sourceIdx <= size(leadfield.pos, 1))
+if ~all(initialSourceIdx <= size(leadfield.pos, 1))
     warning('not all indicated sources are in the leadfield.');
-    sourceIdx = sourceIdx(sourceIdx <= size(leadfield.pos, 1));
+    initialSourceIdx = initialSourceIdx(initialSourceIdx <= size(leadfield.pos, 1));
 end
 
-% randomising sources
-sources = randperm(size(leadfield.pos, 1));
+% getting selected region sources
+regionIdx = lf_get_source_all(leadfield, 'region', region);
 
-if isempty(sourceIdx)
-    % starting with first random source, beginning search at second
-    sourceIdx = sources(1);
-    rndsource = 2;
-else
-    % removing given sources from source list, beginning search at first
-    idx = ismember(sources, sourceIdx);
-    sources(idx) = [];
-    rndsource = 1;
-end
-
-% running through remaining sources
+% starting search for resulting source indices
 iteration = 1;
+[sources, rndsource] = local_initialise_search(regionIdx, initialSourceIdx);
+sourceIdx = initialSourceIdx;
 while numel(sourceIdx) < number
     % calculating distance of next source to previously selected sources
     distances = zeros(numel(sourceIdx), 1);
@@ -111,11 +110,30 @@ while numel(sourceIdx) < number
     % the required number of spaced sources
     if rndsource > numel(sources)
         warning('could not find %d sources with %d mm spacing; re-randomising (%d)...', number, spacing, iteration);
-        sources = randperm(size(leadfield.pos, 1));
-        sourceIdx = sources(1);
-        rndsource = 2;
+        [sources, rndsource] = local_initialise_search(regionIdx, initialSourceIdx);
         iteration = iteration + 1;
     end
+end
+
+end
+
+
+function [sources, rndsource] = local_initialise_search(regionIdx, initialSourceIdx)
+
+% randomising all eligible sources
+sources = regionIdx(randperm(numel(regionIdx)));
+
+if isempty(initialSourceIdx)
+    % starting with first random source, beginning search at second
+    initialSourceIdx = sources(1);
+    rndsource = 2;
+else
+    % moving given sources from source to the beginning of the list, then
+    % beginning search at first random source
+    idx = ismember(sources, initialSourceIdx);
+    sources(idx) = [];
+    sources = [initialSourceIdx, sources];
+    rndsource = numel(initialSourceIdx) + 1;
 end
 
 end

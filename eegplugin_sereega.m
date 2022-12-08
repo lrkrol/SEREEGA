@@ -16,6 +16,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2022-11-17 lrk
+%   - Added HArtMuT lead field
 % 2018 through 2021 lrk
 %   - Version number increments
 % 2018-04-23 First version
@@ -37,7 +39,7 @@
 
 function version = eegplugin_sereega(fig, try_strings, catch_strings)
     
-    version = '1.2.0';
+    version = '1.5.0';
     
     % find tools menu
     % ---------------
@@ -84,9 +86,10 @@ function version = eegplugin_sereega(fig, try_strings, catch_strings)
             'eeglab redraw;' ...
             ];
     cb_epochs = 'EEG = pop_sereega_epochs(EEG);';
+    cb_lf_fieldtrip = 'EEG = pop_sereega_lf_generate_fromfieldtrip(EEG);';
+    cb_lf_hartmut = 'EEG = pop_sereega_lf_generate_fromhartmut(EEG);';
     cb_lf_nyhead = 'EEG = pop_sereega_lf_generate_fromnyhead(EEG);';
     cb_lf_pha = 'EEG = pop_sereega_lf_generate_frompha(EEG);';
-    cb_lf_fieldtrip = 'EEG = pop_sereega_lf_generate_fromfieldtrip(EEG);';
     cb_comp_sources = 'EEG = pop_sereega_sources(EEG);';
     cb_comp_signals = 'EEG = pop_sereega_signals(EEG);';
     cb_comp_components = 'EEG = pop_sereega_components(EEG);';
@@ -138,9 +141,10 @@ function version = eegplugin_sereega(fig, try_strings, catch_strings)
         menu_new = uimenu(menu_root, 'label', 'New empty dataset', 'userdata', userdata, 'callback', cb_new);
         menu_epochs = uimenu(menu_root, 'label', 'Configure epochs', 'userdata', userdata, 'callback', cb_epochs);
         menu_lf = uimenu(menu_root, 'label', 'Configure lead field');
+            menu_lf_fieldtrip = uimenu(menu_lf, 'label', 'FieldTrip', 'userdata', userdata, 'callback', cb_lf_fieldtrip);
+            menu_lf_hartmut = uimenu(menu_lf, 'label', 'HArtMuT', 'userdata', userdata, 'callback', cb_lf_hartmut);
             menu_lf_nyhead = uimenu(menu_lf, 'label', 'New York Head', 'userdata', userdata, 'callback', cb_lf_nyhead);
             menu_lf_pha = uimenu(menu_lf, 'label', 'Pediatric Head Atlas', 'userdata', userdata, 'callback', cb_lf_pha);
-            menu_lf_fieldtrip = uimenu(menu_lf, 'label', 'FieldTrip', 'userdata', userdata, 'callback', cb_lf_fieldtrip);
         menu_comp = uimenu(menu_root, 'label', 'Configure components', 'userdata', userdata);
             menu_comp_sources = uimenu(menu_comp, 'label', 'Select source locations', 'userdata', userdata, 'callback', cb_comp_sources);
             menu_comp_signals = uimenu(menu_comp, 'label', 'Define signal activations', 'userdata', userdata, 'callback', cb_comp_signals);

@@ -18,24 +18,27 @@ Reference:
   - [Installation](#installation)
   - [Configuration](#configuration)
   - [Obtaining a lead field](#obtaining-a-lead-field)
-      - [Using a leadfield generated in Brainstorm](#using-a-leadfield-generated-in-brainstorm)
+    - [Using a leadfield generated in Brainstorm](#using-a-leadfield-generated-in-brainstorm)
   - [Picking a source location](#picking-a-source-location)
+    - [Using atlases](#using-atlases)
   - [Orienting a source dipole](#orienting-a-source-dipole)
   - [Defining a source activation signal](#defining-a-source-activation-signal)
-  - [Brain components and scalp data](#brain-components-and-scalp-data)
+  - [Components and scalp data](#components-and-scalp-data)
   - [Finalising a dataset](#finalising-a-dataset)
   - [Variability](#variability)
   - [Noise and multiple signal classes](#noise-and-multiple-signal-classes)
   - [A note on components and sources](#a-note-on-components-and-sources)
-  - [Event-related spectral perturbations](#event-related-spectral-perturbations)
-      - [Frequency burst for event-related synchronization](#frequency-burst-for-event-related-synchronization)
-      - [Inverse frequency burst for event-related desynchronization](#inverse-frequency-burst-for-event-related-desynchronization)
-      - [Amplitude modulation](#amplitude-modulation)
-  - [Pre-generated data as activation signal](#pre-generated-data-as-activation-signal)
-  - [Autoregressive models](#autoregressive-models)
+  - [More signal types](#more-signal-types)
+    - [Event-related spectral perturbations](#event-related-spectral-perturbations)
+        - [Frequency burst for event-related synchronization](#frequency-burst-for-event-related-synchronization)
+        - [Inverse frequency burst for event-related desynchronization](#inverse-frequency-burst-for-event-related-desynchronization)
+        - [Amplitude modulation](#amplitude-modulation)
+    - [Pre-generated data as activation signal](#pre-generated-data-as-activation-signal)
+    - [Autoregressive models](#autoregressive-models)
   - [Random class generation and multiple components](#random-class-generation-and-multiple-components)
   - [Source identification](#source-identification)
   - [Component variability](#component-variability)
+  - [Relativity of the lead field units](#relativity-of-the-lead-field-units)
   - [Using the GUI](#using-the-gui)
 - [Extending SEREEGA](#extending-sereega)
     - [Lead fields](#lead-fields)
@@ -45,15 +48,14 @@ Reference:
     - [Anonymous class creation function](#anonymous-class-creation-function)
     - [Connectivity benchmarking framework](#connectivity-benchmarking-framework)
     - [Simulating data with a specific signal-to-noise ratio](#simulating-data-with-a-specific-signal-to-noise-ratio)
-- [Relativity of the Units of Measure](#relativity-of-the-units-of-measure)
 - [Contact](#contact)
 - [Special thanks and acknowledgements](#special-thanks-and-acknowledgements)
 
 
 ## Introduction
-SEREEGA is an open-source MATLAB-based toolbox to generate simulated, event-related EEG toy data. Starting with a forward model obtained from a head model or pre-generated lead field, dipolar _brain components_ can be defined. Each component has a specified position and orientation in the brain. Different activation signals can be assigned to these components. EEG data is simulated by projecting all activation signals from all components onto the scalp and summing them together.
+SEREEGA is an open-source MATLAB-based toolbox to generate simulated, event-related EEG toy data. Starting with a forward model obtained from a head model or pre-generated lead field, dipolar _components_ can be defined. Each component has a specified position and orientation in the head model. Different activation signals can be assigned to these components. EEG data is simulated by projecting all activation signals from all components onto the scalp and summing them together.
 
-SEREEGA is modular in that different head models and lead fields are supported, as well as different activation signals. Currently, SEREEGA supports the [New York Head (ICBM-NY)](https://www.parralab.org/nyhead) pre-generated lead field, the [Pediatric Head Atlases](https://www.pedeheadmod.net) pre-generated lead fields, and [FieldTrip](http://www.fieldtriptoolbox.org) custom lead field generation. Four types of activation signals are provided: _ERP_ (event-related potential, i.e. systematic deflections in the time domain), _ERSP_ (event-related spectral perturbation, i.e. systematic modulations of oscillatory activations), _noise_ (stochastic processes in the time domain), and signals based on an _autoregressive model_. A final _data_ class allows the inclusion of any already existing time series as an activation signal.
+SEREEGA is modular in that different head models and lead fields are supported, as well as different activation signals. Currently, SEREEGA supports the [New York Head (ICBM-NY)](https://www.parralab.org/nyhead) pre-generated lead field, the [Pediatric Head Atlases](https://www.pedeheadmod.net) pre-generated lead fields, the [HArtMuT (Head Artefact Model using Tripoles)](https://github.com/harmening/HArtMuT) pre-generated lead fields, and [FieldTrip](http://www.fieldtriptoolbox.org) custom lead field generation. Four types of activation signals are provided: _ERP_ (event-related potential, i.e. systematic deflections in the time domain), _ERSP_ (event-related spectral perturbation, i.e. systematic modulations of oscillatory activations), _noise_ (stochastic processes in the time domain), and signals based on an _autoregressive model_. A final _data_ class allows the inclusion of any already existing time series as an activation signal.
 
 SEREEGA is intended as a tool to generate data with a known ground truth in order to evaluate neuroscientific and signal processing methods, e.g. blind source separation, source localisation, connectivity measures, brain-computer interface classifier accuracy, derivative EEG measures, et cetera.
 
@@ -99,9 +101,9 @@ Download [SEREEGA](https://github.com/lrkrol/SEREEGA) to your computer and add a
 
 It is recommended to have MATLAB 2014b or higher with the DSP and Parallel Computing toolboxes installed. SEREEGA's core functionality requires R2013b. This is primarily due to the use of `addParameter` rather than `addParamValue`; if your MATLAB does not support `addParameter`, try exchanging all those references with `addParamValue`. That should restore basic functionality. Some plotting functions rely on the `boundary` function introduced in R2014b. Some signal generation functions depend on the DSP toolbox version 8.6 (R2014a) or higher. Data simulation tries to use parallel processing from the Parallel Computing Toolbox where available.
 
-[EEGLAB](https://sccn.ucsd.edu/eeglab) is used for a number of functions, and should be started before generating a lead field as EEGLAB's `readlocs` is used to add channel location information. SEREEGA was tested with EEGLAB 13.6.5b.
+[EEGLAB](https://sccn.ucsd.edu/eeglab) is used for a number of functions, and should be started before generating a lead field as EEGLAB's `readlocs` is used to add channel location information. SEREEGA was tested with EEGLAB 13.6.5b and 2021.1.
 
-When using the New York Head, as in this tutorial, make sure you have the [New York Head (ICBM-NY) lead field in MATLAB format](http://www.parralab.org/nyhead) in your path. Similarly, the [Pediatric Head Atlases](https://www.pedeheadmod.net) must also first be obtained separately, if you intend to use those. When using FieldTrip to generate a custom lead field, the file `/fileio/ft_read_sens` from the FieldTrip directory will be necessary. FieldTrip can be installed as an EEGLAB plug-in.
+When using the New York Head, as in this tutorial, make sure you have the [New York Head (ICBM-NY) lead field in MATLAB format](http://www.parralab.org/nyhead) in your path. Similarly, the [Pediatric Head Atlases](https://www.pedeheadmod.net) and [HArtMuT head models](https://github.com/harmening/HArtMuT) must also first be obtained separately, if you intend to use those. When using FieldTrip to generate a custom lead field, the file `/fileio/ft_read_sens` from the FieldTrip directory will be necessary. FieldTrip can be installed as an EEGLAB plug-in. To obtain a lead field from [Brainstorm](https://neuroimage.usc.edu/brainstorm/), Brainstorm needs to be in MATLAB's path. When some functionality in SEREEGA relies on external files which you don't have, a warning will appear with instructions on where to find them. Reasons for these files not having been included out of the box include file size and license conflicts.
 
 
 ### Configuration
@@ -117,7 +119,7 @@ epochs.srate = 1000;        % their sampling rate in Hz
 epochs.length = 1000;       % their length in ms
 ```
 
-Additional, general parameters can be added here as well, such as `prestim` to indicate a pre-stimulus time period and shift the x-axis, or `marker` to indicate the event marker accompanying each epoch at t=0.
+Additional, general parameters can be added here as well, such as `prestim` to indicate a pre-stimulus time period (in ms) and shift the x-axis accordingly, or `marker` to indicate the event marker accompanying each epoch at t=0.
 
 
 ### Obtaining a lead field
@@ -136,6 +138,8 @@ lf = lf_generate_fromnyhead('montage', 'S64');
 lf2 = lf_generate_fromnyhead('labels', {'Fz', 'Cz', 'Pz', 'Oz'})
 ```
 
+When not indicating any montage or labels, most functions will default to using all available electrode positions.
+
 When generating the lead field using FieldTrip, we can also indicate the resolution of the source model (i.e. the density of the source grid):
 
 ```matlab
@@ -148,61 +152,61 @@ We can inspect the channel locations in the obtained lead field and their relati
 plot_headmodel(lf);
 plot_headmodel(lf, 'style', 'boundary', 'labels', 0);
 ```
+
+
 #### Using a leadfield generated in Brainstorm
 
-Brainstorm allows you to create personalised leadfield (aka headmodels in Brainstorm). The `lf_generate_frombrainstorm` enables you to convert a leadfield generated in Brainstorm to a format usable by SEREEGA. 
+Most lead fields supported by SEREEGA are more or less pre-packaged. A separate software called [Brainstorm](https://neuroimage.usc.edu/brainstorm/) allows you to create personalised lead fields (aka headmodels in Brainstorm) based on MRI scans. The `lf_generate_frombrainstorm` enables you to convert a lead field generated in Brainstorm to a format usable by SEREEGA. 
+
+To use this function, Brainstorm needs to be installed and in MATLAB's path.
+
+To use your own, personalised lead fields, you need to provide three file paths (plus one optional) to the following files generated by Brainstorm:
+* The headmodel *mat* file generated in Brainstorm.
+* The channel location *mat* file used for the generation of the headmodel in Brainstorm.
+* The structural MRI *mat* file to which the electrodes have been coregistered. 
+* (Optional) the atlas file if used.
+
+A description of how to obtain these files is included in the help section of `lf_generate_frombrainstorm`. The command then becomes:
 
 ```matlab
-% Run with default files
+% use personal files
+lf = lf_generate_frombrainstorm( ...
+    'headmodel', 'PATH_TO\my_headmodel.mat', ...
+    'chanloc', 'PATH_TO\my_chanloc.mat', ...
+    't1', 'PATH_TO\my_T1_MRI.mat', ...
+    'atlas', 'PATH_TO\my_atlas.mat');
+```
+
+The function also comes with a precomputed head model and associated files, which it uses by default if no other files are supplied, i.e., when you run:
+
+```matlab
+% use defaults
 lf = lf_generate_frombrainstorm();
 ```
 
-To use this function you need to provide three file paths (plus one optional) to the following files generated by Brainstorm:
-* The headmodel *mat* file generated in Brainstorm
-* The channel location *mat* file used for the generation of the headmodel in Brainstorm
-* The structural MRI *mat* file to which the electrodes have been coregistered. 
-* (Optional) the atlas file if used
+Note that the atlas remains optional. Therefore, to use this, you would run:
 
-Description of how to obtain these files is included in the help section of `lf_generate_frombrainstorm`
+```matlab
+lf = lf_generate_frombrainstorm('atlas', 'scout_Mindboggle_62.mat');
+```
 
-The current function is provided with a precomputed headmodel and associated files. For instance, if you have created a headmodel in Brainstorm from a personal MRI scan. The default model and files were obtained as follows:
+These default files were obtained as follows:
 
 * *EGI HydroCel 256* channel locations already coregistered by Brainstorm to the default T1 image (next point)
 * *ICBM152 T1* image used in the default anatomy by Brainstorm
 * Surface *Headmodel* generated from the above files by applying OpenMEEG to the BEM surfaces and costraining the dipoles to the cortex surface
 * *Mindboggle 62* atlas
 
-If you have created a personal headmodel, add the required files to the path, then use:
-
-```matlab
-% Use personal files
-lf = lf_generate_frombrainstorm('chanloc', 'PATH_TO\my_chanloc.mat', 't1', 'PATH_TO\my_T1_MRI.mat', 'headmodel', 'PATH_TO\my_headmodel.mat', 'atlas', 'PATH_TO\my_atlas.mat');
-```
 Brainstorm headmodels are expressed in $\frac{V}{A-m}$. `lf_generate_frombrainstorm` automatically converts these into $\frac{\mu V}{nA-m}$ according to the following formula:
 
 $$ \frac{V}{A-m} \cdot \frac{10^6 \mu V}{V} \cdot \frac{A}{10^9 nA} = 10^{-3} \frac{10^{-3} \mu V}{nA-m} $$
 
-The conversion allows working with realistic units, which would help define and interpret the results, especially for ERPs. However, if you desire to work with the International System, you can set the *scaleUnits* argument to 0 to turn the conversion off. The help file of the function provides more details about this.
+The conversion provides more realistic units, which helps when defining and interpreting results, especially for ERPs. However, if you desire to work with the International System, you can set the `scaleUnits` argument to `0` to turn the conversion off. The help file of the function provides more details about this.
 
-```matlab
-% Use SI units (V/A-m)
-lf = lf_generate_frombrainstorm('chanloc', 'PATH_TO\my_chanloc.mat', 't1', 'PATH_TO\my_T1_MRI.mat', 'headmodel', 'PATH_TO\my_headmodel.mat', 'atlas', 'PATH_TO\my_atlas.mat', 'scaleUnits', 0);
-```
+Furthermore, note that this function converts the coordinate system from the *Subject-Coordinate-System* (SCS) used in Brainstorm, to the MNI system used in SEREEGA. You can turn this option off by setting the parameter `useMNI` to `0`.
 
-Furthermore, note that this function converts the coordinate system from the *Subject-Coordinate-System* (SCS) used in Brainstorm, to the MNI system used in SEREEGA. You can tunr this 
-option off by setting the parameter `useMNI` to 0.
+Finally, as Brainstorm uses the SCS, the channel and dipole coordinates are expressed in meters. `lf_generate_frombrainstorm` converts these measures to mm, for consistency with the other leadfields. The argument `useMm` can be used to override this. 
 
-```matlab
-% Use SI units (V/A-m)
-lf = lf_generate_frombrainstorm('chanloc', 'PATH_TO\my_chanloc.mat', 't1', 'PATH_TO\my_T1_MRI.mat', 'headmodel', 'PATH_TO\my_headmodel.mat', 'atlas', 'PATH_TO\my_atlas.mat', 'scaleUnits', 0, 'useMNI', 0);
-```
-Finally, as Brainstorm uses the SCS, the channel and dipole coordinates are expressed in meters. `lf_generate_frombrainstorm' converts these measures in mm, for consistency with the other leadfields. 
-However, if you wish to use meters, then set the parameter `useMm` to 0. Note that the electrode names will not be displayed when calling `plot_headmodel()` with measures expressed in meters. 
-
-```matlab
-% Use SI units (V/A-m)
-lf = lf_generate_frombrainstorm('chanloc', 'PATH_TO\my_chanloc.mat', 't1', 'PATH_TO\my_T1_MRI.mat', 'headmodel', 'PATH_TO\my_headmodel.mat', 'atlas', 'PATH_TO\my_atlas.mat', 'scaleUnits', 0, 'useMNI', 0, 'useMm', 0);
-```
 
 ### Picking a source location
 
@@ -225,6 +229,27 @@ plot_source_location(source, lf, 'mode', '3d');
 Other options to obtain source locations are `lf_get_source_inradius` to get all sources in a specific radius from either given location coordinates, or from another source in the lead field. If you want more than one source picked at random but with a specific spacing between them, use `lf_get_source_spaced`.
 
 
+#### Using atlases
+
+Starting with SEREEGA v1.4.0, lead fields can have an associated atlas. This means that each individual source in the lead field can be associated with a specific region of the brain. Depending on the lead field and atlas used, some sources may be in the 'Prefrontal cortex', others in the 'Superior temporal gyrus', and others in 'Brodmann area 32', for example. This allows you to pick a source based on the names of these regions, as opposed to using numerical coordinates. 
+
+As of December 2022, the New York Head also comes with such an atlas. (If you have downloaded this head model before that time, you may want to download it again.) The following code uses `plot_headmodel` to visualise the region taken up by one particular region, defined as the right insular cortex. It then uses `lf_get_source_random` we saw before to obtain a random source from within this region.
+
+```matlab
+plot_headmodel(lf, 'region', {'Brain_Right_Insular_Cortex'}, 'labels', 0);
+source_insularrnd = lf_get_source_random(lf, 'region', {'Brain_Right_Insular_Cortex'});
+```
+
+Other functions allow you to e.g. obtain a source closest to some calculated 'middle' of a region. All `lf_get_source_*` functions can be constrained to specific regions.
+
+```matlab
+source_insularmid = lf_get_source_middle(lf, 'region', {'Brain_Right_Insular_Cortex'});
+plot_source_location(source_insularmid, lf, 'mode', '3d');
+```
+
+Note that few lead fields come with an appropriate atlas. The latest version of the New York Head does, and the HArtMuT head model has a detailed atlas for all its non-brain sources, using those obtained from the New York Head for its cortical sources. Currently, no other supported third-party lead field comes with an atlas. A utility called [mni2atlas](https://github.com/dmascali/mni2atlas) has been made compatible with SEREEGA through the `utl_add_atlas_frommni2atlas` function, allowing source coordinates from a lead field to be mapped according to a number of available atlases. However, this may result in a poorly-fitting solution, so use with caution.
+
+
 ### Orienting a source dipole
 The sources in the lead field are represented by dipoles at specific locations. These dipoles can be oriented in space into any direction: they can be pointed towards the nose, or the left ear, or anywhere else. Their orientation is indicated using an [x, y, z] orientation array. Along with its location, a dipole's orientation determines how it projects onto the scalp.
 
@@ -236,7 +261,7 @@ plot_source_projection(source, lf, 'orientation', [0 1 0], 'orientedonly', 1);
 plot_source_projection(source, lf, 'orientation', [0 0 1], 'orientedonly', 1);
 ```
 
-These projections can be linearly combined to get any simulated dipole orientation. In the ICBM-NY lead field, default orientations are included, which orient the dipole perpendicular to the cortical surface. If no orientation is provided, this default orientation is used. FieldTrip-generated lead fields and the Pediatric Head Atlases have no meaningful default orientation and thus revert to all-zero orientations. It is thus necessary to explicitly indicate an orientation for these lead fields to work. For that, you can use `utl_get_orientation_random` to get a random orientation, `utl_get_orientation_pseudoperpendicular` for an orientation pointing outward toward the scalp surface, or `utl_get_orientation_pseudotangential` for an orientation that attempts to approximate a tangent to the cortical surface.
+These projections can be linearly combined to get any simulated dipole orientation. In the ICBM-NY lead field, default orientations are included, which orient the dipole perpendicular to the cortical surface. If no orientation is provided, this default orientation is used. FieldTrip-generated lead fields and the Pediatric Head Atlases have no meaningful default orientation and thus revert to all-zero orientations. It is thus necessary to explicitly indicate an orientation for these lead fields to work. For that, you can use `utl_get_orientation_random` to get a random orientation, `utl_get_orientation_pseudoperpendicular` for an orientation pointing outward toward the scalp surface, or `utl_get_orientation_pseudotangential` for an orientation that attempts to approximate a tangent to the surface.
 
 ```matlab
 plot_source_projection(source, lf, 'orientation', [1, 1, 0]);
@@ -245,7 +270,7 @@ plot_source_projection(source, lf);
 
 When looking at source localisation results in EEG literature, authors usually report the _location_ of a source, but not its _orientation_ per se. What they do report, however, is its projection pattern, usually in the form of topoplots like the ones we plotted in this section. To mimic known effects, you could thus either find a souce from your region of interest whose default orientation results in the projection pattern you are seeking to mimic, or you can pick a source and adjust its orientation to match the desired projection.
 
-Note that the `plot_source_projection` function used here merely plots the projection pattern at the indicated orientation; it does not by itself change the orientation of any source in the simulation. The actual source orientations to be used in the simulation are indicated at the level of [brain components](#brain-components-and-scalp-data), described further below.
+Note that the `plot_source_projection` function used here merely plots the projection pattern at the indicated orientation; it does not by itself change the orientation of any source in the simulation. The actual source orientations to be used in the simulation are indicated at the level of [components](#components-and-scalp-data), described further below.
 
 
 ### Defining a source activation signal
@@ -274,7 +299,7 @@ erp = utl_check_class(erp, 'type', 'erp')
 
 (You may notice one of the parameters of the final class is its `type`, which is set to `erp`. This is how SEREEGA knows how to interpret this class. If we had manually added this field to our class definition, we no longer would have needed to pass this information to `utl_check_class`, and instead could have simple called `erp = utl_check_class(erp)`.)
 
-We can now plot what this ERP would look like.
+We can now plot what this ERP would look like. For this, we also need to know the length of the epoch and the sampling rate, which we defined earlier in our `epochs` configuration struct.
 
 ```matlab
 plot_signal_fromclass(erp, epochs);
@@ -283,9 +308,9 @@ plot_signal_fromclass(erp, epochs);
 An ERP activation class can have any number of peaks. For _n_ peaks, you should then also indicate _n_ latencies, _n_ widths, _n_ amplitudes, et cetera--one for each peak. For example, `erp = struct('peakLatency', [450, 500], 'peakWidth', [200, 200], 'peakAmplitude', [-1, 1])` produces an ERP with two peaks.
 
 
-### Brain components and scalp data
+### Components and scalp data
 
-Having defined both a signal (the ERP) and a source location plus projection pattern for this signal, we can now combine these into a single component. _Brain components_ again are represented as structure arrays in this toolbox, with separate fields for the component's source location, orientation, and its activation signal.
+Having defined both a signal (the ERP) and a source location plus projection pattern for this signal, we can now combine these into a single component. _Components_ again are represented as structure arrays in this toolbox, with separate fields for the component's source location, orientation, and its activation signal.
 
 ```matlab
 c = struct();
@@ -295,7 +320,7 @@ c.signal = {erp};       % ERP class, defined above
 c = utl_check_component(c, lf);
 ```
 
-Note that, just as for classes, there is a function, `utl_check_component`, to validate the component structure and fill in any missing parameters. For example, if none is indicated, this function reverts the source's orientation to a default value obtained from the lead field.
+Note that, just as for classes, there is a function, `utl_check_component`, to validate the component structure and fill in any missing parameters. For example, if no orientation is indicated, this function reverts the source's orientation to a default value obtained from the lead field.
 
 (Also have a look at `utl_create_component` in the examples further below for a shorthand function to replace manually assigning structure arrays with `signal` and `source` fields. It also automatically verifies the resulting components.)
 
@@ -317,7 +342,7 @@ scalpdata = generate_scalpdata(c, lf, epochs);
 
 After the above step, `scalpdata` contains the channels-by-samples-by-epochs simulated data, but no additional information, such as time stamps, channel names, et cetera. 
 
-We can turn this into a dataset according to the EEGLAB format which has a standard structure to save such information. Doing so will also allow us to use EEGLAB's analysis tools, for example, to see the scalp projection time course of the ERP we just simulated. At this point, two optional parameters in the configuration array `epochs` are taken into account.
+We can turn this into a dataset according to the EEGLAB format, which has a standard structure to save such information. Doing so will also allow us to use EEGLAB's analysis tools, for example, to see the scalp projection time course of the ERP we just simulated. At this point, two optional parameters in the configuration array `epochs` are taken into account.
 
 ```matlab
 epochs.marker = 'event 1';  % the epochs' time-locking event marker
@@ -347,7 +372,7 @@ Keep in mind that EEGLAB uses the variable `EEG` internally to refer to the curr
 If we scroll through the data, we see that all 100 epochs we generated are exactly the same, having a peak at exactly the indicated latency with a width of exactly 200.
 
 ```matlab
-pop_eegplot( EEG, 1, 1, 1);
+pop_eegplot(EEG, 1, 1, 1);
 ```
 
 This is of course unrealistic and defeats the entire purpose of even simulating multiple epochs in the first place.
@@ -364,7 +389,7 @@ EEG = utl_create_eeglabdataset(generate_scalpdata(c, lf, epochs), ...
 pop_eegplot(EEG, 1, 1, 1);
 ```
 
-Note that `peakLatencyDv` applies to each peak latency value separately. Another parameter, `peakLatencyShift`, works the same way but applies to all values equally.
+When multiple peaks are defined, note that `peakLatencyDv` applies to each peak latency value separately. Another parameter, `peakLatencyShift`, works the same way but applies to all values equally.
 
 Indicating a slope results in a consistent change over time. An amplitude of 1 and an amplitude slope of -.75, for example, results in the signal having a peak amplitude of 1 in the first epoch, and .25 in the last.
 
@@ -403,15 +428,17 @@ noise = struct( ...
 noise = utl_check_class(noise);
 
 c.signal = {noise};
+
 EEG = utl_create_eeglabdataset(generate_scalpdata(c, lf, epochs), ...
         epochs, lf);
 pop_eegplot(EEG, 1, 1, 1);
 ```
 
-It does not have to be either/or. We can also add this noise and the already-existing ERP activation together. We can do this by simply adding both the ERP class variable, and the noise class variable to the  component's signal field.
+It does not have to be either/or. We can also add this noise and the already-existing ERP activation together. We can do this by simply adding both the ERP class variable, and the noise class variable to the component's signal field.
 
 ```matlab
 c.signal = {erp, noise};
+
 EEG = utl_create_eeglabdataset(generate_scalpdata(c, lf, epochs), ...
         epochs, lf);
 pop_eegplot(EEG, 1, 1, 1);
@@ -434,8 +461,21 @@ You can define as many components as you want using any combination of sources a
 
 Keep in mind that adding multiple sources to one and the same component is completely different from adding the same signal(s) to multiple different components that each have one source. In the former case, the _exact same_ signal activation is projected simultaneously from all sources. In the latter case, separately simulated instances of the signal activation are projected from each source.
 
+This, then, results in the following simplified workflow using SEREEGA:
 
-### Event-related spectral perturbations
+![SEREEGA workflow](/docs/workflow.png)
+
+
+### More signal types
+
+We have seen the _event-related potential_ (ERP) and _noise_ types of signal activations above. SEREEGA supports additional signal types, and [can easily be extended]((#activation-signals)) to support more. The next few sections will address the other available signals.
+
+Although not all parameters can easily be visualised, the below figure provides an illustration of three base signal types (ERP, noise, and ERSP, described next) along with its main parameters.
+
+![Selected SEREEGA signals and parameters](/docs/signals.png)
+
+
+#### Event-related spectral perturbations
 
 ERP and noise classes are examples of two types of signal activations. A third type concerns oscillatory activations. In its basic form, it is merely a sine wave of a given frequency, amplitude and, optionally, phase.
 
@@ -467,7 +507,7 @@ plot_signal_fromclass(ersp, epochs);
 Note that the above two examples contained a `modulation` field that was set to `none`. When this field is set to different values, these signals serve as base oscillatory signals that are then modulated in the indicated way.
 
 
-#### Frequency burst for event-related synchronization
+##### Frequency burst for event-related synchronization
 
 The base oscillatory signal can be modulated such that it appears only as a single frequency burst, with a given peak (centre) latency, width, and taper.
 
@@ -483,7 +523,7 @@ plot_signal_fromclass(ersp, epochs);
 ```
 
 
-#### Inverse frequency burst for event-related desynchronization
+##### Inverse frequency burst for event-related desynchronization
 
 The inverse of the above is also possible. It results in an attenuation in the given window. In both cases, it is also possible to set a minimum amplitude, in order to restrict the attenuation, which is otherwise 100%.
 
@@ -496,7 +536,7 @@ plot_signal_fromclass(ersp, epochs);
 ```
 
 
-#### Amplitude modulation
+##### Amplitude modulation
 
 This allows the base signal's amplitude to be modulated according to the phase of another. In the example below, a 20 Hz base frequency is modulated using a 2 Hz wave.
 
@@ -533,7 +573,7 @@ pop_eegplot(EEG, 1, 1, 1);
 Note that variability parameters (deviation, slope) can be added to almost all parameters defining ERSP signals, as above with ERP parameters.
 
 
-### Pre-generated data as activation signal
+#### Pre-generated data as activation signal
 
 Most SEREEGA activation classes are intended for the procedural generation of an activation signal based on given parameters. To include time series that were externally obtained, generated, or modulated, a `data` class is provided. This allows a signal activation to be extracted from a matrix containing time series, based on given indices.
 
@@ -558,7 +598,7 @@ plot_signal_fromclass(data, epochs);
 This class projects, for each simulated epoch `e`, the `e`th row of data from the matrix `randomdata`. `plot_signal` simply plots the first epoch.
 
 
-### Autoregressive models
+#### Autoregressive models
 
 When used as a single signal, an autoregressive model (ARM) class generates a time series where each sample depends linearly on its preceding samples plus a stochastic term. The order of the model, i.e. the number preceding samples the current sample depends on, can be configured. The exact model is generated using random parameters and fixed for that class upon verification.
 
@@ -607,7 +647,7 @@ sourcelocs  = lf_get_source_spaced(leadfield, 10, 50);
 erp = erp_get_class_random([1:3], [200:1000], [25:200], ...
 		[-1:.1:-.5, .5:.1:1], 'numClasses', 10);
 
-% combining into brain components
+% combining into components
 c = utl_create_component(sourcelocs, erp, lf);
 
 % plotting each component's projection and activation
@@ -645,6 +685,13 @@ Just as activation signals can have an epoch-to-epoch variability, so too can th
 Indicating more than one source for a component, as mentioned [above](#a-note-on-components-and-sources), results in a signal projected from all those sources. However, in versions of SEREEGA older than v1.1.0, this was interpreted as location variability of the source. For each epoch, it randomly selected one of the indicated sources to project the signal activation from. This behaviour can be reinstated using the `legacy_rndmultsrc` argument when calling `generate_scalpdata`. As such, you could use `lf_get_source_inradius` to get all sources around a particular point, and add all of these to a single component to simulate activity coming from variable locations in the same brain region. 
 
 
+### Relativity of the lead field units
+
+It is relevant to highlight that the various lead fields supported by SEREEGA can have different units of measure. This is the case, for example, for all three of the originally supported lead fields: NYHead, FieldTrip, and Pediatric Head Atlas. Unfortunately, although knowing the units is important to interpret the results correctly, these have not been reported in the corresponding literature. Consequently, the units of the result are relative to the leadfield employed. As a workaround, the `generate_scalpdata` function contains a `normaliseLeadfield` argument, which normalises the leadfield values to at least maintain comparability. 
+
+An exception to this is the lead field converted from Brainstorm. Brainstorm explicitly utilises the International System; thus, every leadfield generated with it is expressed in $\frac{V}{A-m}$ (more information is provided [here](https://neuroimage.usc.edu/forums/t/eeg-units/1499)). The function `lf_generate_frombrainstorm` automatically converts this to $\frac{\mu V}{nA-m}$, unless otherwise requested.
+
+
 ### Using the GUI
 
 ![SEREEGA](/docs/SEREEGA-GUI.png)
@@ -655,13 +702,13 @@ When using SEREEGA as an EEGLAB plug-in, it will appear as a separate sub-menu i
 
 The option **Configure epochs** allows you to indicate how much data is to be simulated. The various options in the **Configure lead field** sub-menu allow you to add one of these lead fields to the dataset, thus making it the basis for the simulation. Note that these options can all be changed at any time, but they must be set before the following functions can be used.
 
-The **Configure components** sub-menu contains three options which can be used to define the brain components that will underly the simulated data.
+The **Configure components** sub-menu contains three options which can be used to define the components that will underly the simulated data.
 
 First, **Select source locations** provides a dialog window that allows you to find random or specific sources in the brain (i.e. in the configured lead field), determine their desired orientation, and add them to the simulation. Two plots can support you in this task: one for the source's location, and one for its projection. If you have found a source you wish to keep, click *Add source(s)* to add it to the list at the left, and *OK* to save the list to the dataset.
 
 **Define signal activations**, like the previous window to select source locations, provides a list of signals currently stored in the dataset, and options to add additional signal classes. Each signal type has its own button, which pops up a second window to input the parameters that define each signal. Values that are indicated with an asterisk (*) in both their row and column are required. Click *OK* to save the list.
 
-Now it must be decided which of the defined signals will project from which of the selected source locations. The **Assign signals to sources** dialog shows a list of the sources selected earlier, and allows you to assign the defined signal classes to these, thus completing the definition of brain components. 
+Now it must be decided which of the defined signals will project from which of the selected source locations. The **Assign signals to sources** dialog shows a list of the sources selected earlier, and allows you to assign the defined signal classes to these, thus completing the definition of components. 
 
 Finally, **Simulate data** simulates the data and populates the EEGLAB dataset with the corresponding values. 
 
@@ -692,9 +739,14 @@ To add a lead field to SEREEGA, create a `lf_generate_<yourleadfield>.m` script 
 %                    zeros(nsources, 3) if no meaning default is available
 %     .pos         - nsources x 3 xyz MNI coordinates of each source
 %     .chanlocs    - channel information in EEGLAB format
+%     .atlas       - nsources x 1 cell of strings containing the atlas,
+%                    i.e. indciating the name of the corresponding region
+%                    for each source
 ```
 
-If the lead field does not come with a meaning default orientation, set the defaults to all zeros to force a manual orientation.
+If the lead field does not come with a meaningful default orientation, set the defaults to all zeros to force a manual orientation.
+
+Each entry in the atlas must start with one of the three generic categories that SEREEGA recognises: Brain, Eye, or Muscle (not case sensitive). If the lead field does not come with a meaningful atlas, simply only indicate one of these three. Use `utl_sanitize_atlas` to make sure the final atlas format is compatible with other SEREEGA functions.
 
 Note that SEREEGA's standard plotting functions calculate a brain boundary based on dipole locations. The accuracy of these plots thus depend on the resolution of the lead field. Alternatively, there are two `_dipplot` plotting functions functions which use a standard head model as backdrop. 
 
@@ -704,14 +756,14 @@ Some head models, such as the Pediatric Head Atlas of ages up to 2 years old, wi
 
 The electrode coordinates require special attention. These should be centred around a similar zero-point as the standard MNI head midpoint, in order for EEGLAB's `topoplot` to be able to properly plot the lead field's projection patterns. Note that EEGLAB's `readlocs`, which is used by SEREEGA, reads the electrode positions with X=Y and Y=-X.
 
-Or perhaps you came to this section because you wanted to add a new source to an existing lead field in your work space. This can be done manually using `lf_add_source`.
+(If you came to this section of the documentation because you wanted to add a new source to an existing lead field in your work space: This can be done manually using `lf_add_source`.)
 
 
 ### Activation signals
 
 Files and scripts related to signal activation classes are in class-specific subdirectories of the `./signal` directory. To add new classes of signal activations to SEREEGA, the following files, containing functions of the same name, must be supplied in a new subdirectory. <class> denotes the name of the new class.
 
-`<class>_check_class` - Takes a class definition structure, verifies/completes it to pass the requirements of the new class, and returns a class variable that is compatible with all other functions. The class must have a 'type' field that is equal to <class>, allowing `utl_check_class` to find this file. This file is also where the class documentation should be provided. If any deviation and slope fields are provided, add 'Dv' or 'Slope' to the base field name. A slope for a 'frequency' field should thus be called 'frequencySlope', not e.g. 'freqSlope'. This allows e.g. `utl_apply_dvslope` to function properly. Similarly, if any latencies are to be indicated, use a field name that ends in `Latency' and describes what latency it is, as e.g. with  `peakLatency` for ERPs and `modLatency` for ERSP modulations. This allows e.g. `utl_shift_latency` to function properly.
+`<class>_check_class` - Takes a class definition structure, verifies/completes it to pass the requirements of the new class, and returns a class variable that is compatible with all other functions. The class must have a 'type' field that is equal to <class>, allowing `utl_check_class` to find this file. This file is also where the class documentation should be provided. If any deviation and slope fields are provided, add 'Dv' or 'Slope' to the base field name. A slope for a 'frequency' field should thus be called 'frequencySlope', not e.g. 'freqSlope'. This allows e.g. `utl_apply_dvslope` to function properly. Similarly, if any latencies are to be indicated, use a field name that ends in `Latency` and describes what latency it is, as e.g. with  `peakLatency` for ERPs and `modLatency` for ERSP modulations. This allows e.g. `utl_shift_latency` to function properly.
 
 `<class>_generate_signal_fromclass` - Takes a (verified) class structure, an epochs configuration structure, and (at least accepts) an epochNumber argument (indicating the number of the currently generated epoch) and 'baseonly' (whether or not to ignore the deviations, slopes, et cetera). Returns a 1-by-nsamples signal activation time course.
 
@@ -829,11 +881,6 @@ data        = utl_mix_data(sigdata, noisedata, 1/3);
 
 Also note that an additional source of noise, sensor noise, can be added to generated scalp data using the `sensorNoise` argument of `generate_scalpdata`. This noise has no dependencies across channels or samples.
 
-## Relativity of the Units of Measure
-
-It is relevant to highlight that the three leadfield provided by default (NYhead, Fieldtrip, and Pediatric Head Atlas) have different units of measure. Unfortunately, although knowing the units is important to interpret the results correctly, these have not been reported in the literature. Consequently, the units of the result are relative to the leadfield employed. As a workaround, the `generate_scalpdata` function contains a *normaliseLeadfield* argument, which normalises the leadfield values. 
-
-An exception to this is the leadfield converted from Brainstorm. Brainstorm explicitly utlises the International System; thus, every leadfield generated with it is expressed in $\frac{V}{A-m}$ (for more information: https://neuroimage.usc.edu/forums/t/eeg-units/1499). The function `lf_generate_frombrainstorm` automatically converts this in $\frac{\mu V}{nA-m}$ (unless otherwise requested). This should make the results easier to interpret.
 
 ## Contact
 
@@ -842,4 +889,4 @@ Feel free to contact me at lrkrol@gmail.com.
 
 ## Special thanks and acknowledgements
 
-Fabien Lotte provided two early drafts of what are now `lf_generate_fromfieldtrip` and `erp_generate_signal`. I'd like to thank Mahta Mousavi for the band-pass filter design, Stefan Haufe for the autoregressive signal generation code and accompanying support, and Ramón Martínez-Cancino for his assistance with the GUI development. Part of this work was supported by the Deutsche Forschungsgemeinschaft (grant number ZA 821/3-1), Idex Bordeaux and LabEX CPU/SysNum, and the European Research Council with the BrainConquest project (grant number ERC-2016-STG-714567). 
+Fabien Lotte provided two early drafts of what are now `lf_generate_fromfieldtrip` and `erp_generate_signal`. I'd like to thank Mahta Mousavi for the band-pass filter design, Stefan Haufe for the autoregressive signal generation code and accompanying support, and Ramón Martínez-Cancino for his assistance with the GUI development. Part of this work was supported by the Deutsche Forschungsgemeinschaft (grant number ZA 821/3-1), Idex Bordeaux and LabEX CPU/SysNum, and the European Research Council with the BrainConquest project (grant number ERC-2016-STG-714567), and Volkswagen Foundation.

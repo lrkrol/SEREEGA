@@ -30,6 +30,8 @@
 %                           perpendicular to the cortical surface
 %            .pos         - xyz MNI coordinates of each source
 %            .chanlocs    - channel information in EEGLAB format
+%            .atlas       - nsources x 1 cell with atlas (region) 
+%                           indication for each source
 %
 % Usage example:
 %       >> lf = lf_generate_fromnyhead('labels', {'Fz', 'Cz', 'Pz'});
@@ -39,6 +41,11 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2022-11-24 lrk
+%   - Added atlas support from the updated sa_nyhead.mat
+% 2021-01-06 lrk
+%   - Added support for output of lf_prune_nyheadfile
+%   - Added lf.atlas
 % 2018-11-08 lrk
 %   - Now continues with empty labels if montage not found
 % 2017-08-10 lrk
@@ -76,7 +83,10 @@ labels = p.Results.labels;
 montage = p.Results.montage;
 
 % loading the NY Head leadfield
-if exist('sa_nyhead.mat') ~= 2
+if exist('sa_nyhead_sereegareduced.mat')
+    % loading reduced-size version if available, see lf_prune_nyheadfile
+    load('sa_nyhead_sereegareduced.mat', 'sa');
+elseif exist('sa_nyhead.mat') ~= 2
     error('SEREEGA:lf_generate_fromnyhead:fileNotFound', 'Could not find ICBM-NY leadfield file (sa_nyhead.mat) in the path.\nMake sure you have obtained the file, and that MATLAB can find it.\nIt should be available at https://parralab.org/nyhead')
 else
     load('sa_nyhead.mat', 'sa');
@@ -107,5 +117,12 @@ lf.orientation = sa.cortex75K.normals;
 lf.pos = sa.cortex75K.vc;
 lf.chanlocs = readlocs('chanlocs-nyhead231.elp');
 lf.chanlocs = lf.chanlocs(chanidx);
+if isfield(sa, 'HO_labels') && isfield(sa.cortex75K, 'in_HO')
+    lf.atlas = strcat('Brain', {' '}, sa.HO_labels(sa.cortex75K.in_HO));
+    lf.atlas = utl_sanitize_atlas(lf.atlas);
+else
+    warning('No atlas found; defaulting to Brain_CorticalSurface.\nThere is a newer version of the NY Head that includes an atlas.\nIt should be available at https://parralab.org/nyhead', '');
+    lf.atlas = repmat({'Brain_CorticalSurface'}, size(lf.pos, 1), 1);
+end
 
 end

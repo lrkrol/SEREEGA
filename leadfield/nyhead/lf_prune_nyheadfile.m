@@ -2,7 +2,7 @@
 %
 %       Generates a smaller leadfield file from the original New York Head
 %       (ICBM-NY) file, containing only the information used by SEREEGA.
-%       This speeds up loading times. The new file will be
+%       This speeds up loading times. The new file will be called 
 %       'sa_nyhead_sereegareduced.mat', written to the same directory where
 %       'sa_nyhead.mat' is located. lf_generate_fromnyhead will try
 %       to find the reduced file first.
@@ -24,12 +24,14 @@
 %                   takes the first instance it finds.
 %
 % Usage example:
-%       >> lf_nyhead_shrinkfile('C:\Data');
+%       >> lf_prune_nyheadfile('C:\SEREEGA\leadfield\nyhead');
 % 
-%                    Copyright 2021 Laurens R Krol
+%                    Copyright 2021, 2022 Laurens R Krol
 %                    Neuroadaptive Human-Computer Interaction
 %                    Brandenburg University of Technology
 
+% 2022-11-24 lrk
+%   - Added atlas compatibility
 % 2021-01-05 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -65,6 +67,11 @@ else
     sa.cortex75K.V_fem = orig.sa.cortex75K.V_fem;
     sa.cortex75K.normals = orig.sa.cortex75K.normals;
     sa.cortex75K.vc = orig.sa.cortex75K.vc;
+    
+    if isfield(orig.sa, 'HO_labels') && isfield(orig.sa.cortex75K, 'in_HO')
+        sa.HO_labels = orig.sa.HO_labels;
+        sa.cortex75K.in_HO = orig.sa.cortex75K.in_HO;
+    end
 
     newfilepath = fullfile(fileparts(filepath), 'sa_nyhead_sereegareduced.mat');
     save(newfilepath, 'sa');

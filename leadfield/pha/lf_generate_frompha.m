@@ -37,7 +37,7 @@
 %
 % In:
 %       atlas - string indicating the atlas to use: '0to2', '4to8', or
-%               '8to12'.
+%               '8to18'.
 %       layout - string indicating which layout (i.e. number of channels)
 %                to use: '128', '256', or '2562'. note: '256' is not 
 %                available for atlas '0to2'. 
@@ -57,6 +57,9 @@
 %            .pos         - xyz coordinates of each source (not scaled to
 %                           MNI but may be approximate, depending on atlas)
 %            .chanlocs    - channel information in EEGLAB format
+%            .atlas       - atlas (region) indication for each source; this
+%                           is simply 'Brain' until more specific 
+%                           information is added
 %
 % Usage example:
 %       >> lf = lf_generate_frompha('8to18', '2562');
@@ -66,6 +69,9 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2021-01-11 lrk
+%   - Added lf.atlas
+%   - Added warning about coordinate system changes
 % 2018-11-08 lrk
 %   - Now continues with empty labels if montage not found
 % 2018-03-22 jpaw
@@ -183,11 +189,14 @@ for i=1:length(pos)
     pos(i,:) = [-pos(i,2), pos(i,1), pos(i,3)];
 end
 
+warning(sprintf('PHA does not use a standardised coordinate system. SEREEGA has\nshifted and rotated all coordinates into a more convenient, but still nonstandard system'));
+
 % preparing output
 lf = struct();
 lf.leadfield = leadfield;
 lf.orientation = zeros(size(leadfield, 2), 3);
 lf.pos = pos;
 lf.chanlocs = chanlocs;
+lf.atlas = repmat({'Brain'}, size(lf.pos, 1), 1);
 
 end

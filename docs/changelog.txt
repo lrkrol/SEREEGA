@@ -1,3 +1,13 @@
+v1.5.0
+- Added utl_call_gui, allowing GUI functions to be called without requiring the EEGLAB GUI itself to be used or a SEREEGA dataset to be loaded
+- Added source ID to pop_sereega_sources GUI and console output
+- Various documentation updates
+- Added support for new HArtMuT (Head Artefact Model using Tripoles) head models containing ocular and muscular sources alongside brain sources
+- Added atlas support, allowing sources to be selected from specified named regions. SEREEGA leadfields now have an additional atlas field containing, for each source, the name of the region it belongs to. lf_get_source_* functions have been added/adjusted to allow sources to be obtained from specific regions. lf_add_atlas_frommni2atlas can be used to add atlases to existing lead fields using the mni2atlas function from the FMRIB Software Library (not included).
+- Added electrodes argument to plot_headmodel
+- Added plot_source_moment to plot source orientation as arrow
+- Added support for lead fields generated in Brainstorm
+
 v1.2.2
 - Fixed forgotten version increment in eegplugin_sereega.m
 - Fixed forgotten documentation update reflecting 2018-06-04 utl_apply_dvslopeshift change

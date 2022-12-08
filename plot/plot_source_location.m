@@ -24,6 +24,9 @@
 %              [ 0, 90] = axial
 %              [90,  0] = sagittal
 %              [ 0,  0] = coronal (default: [120, 20]
+%       region - cell of strings representing leadfield.atlas entries
+%                indicating which regions should be plotted to provide
+%                context. default {} plots all sources.
 %
 % Out:  
 %       h - handle of the generated figure
@@ -39,6 +42,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2021-01-07 lrk
+%   - Added region argument
 % 2018-10-04 lrk
 %   - Put the toolbar back in 3d mode
 % 2018-03-23 First version
@@ -70,6 +75,7 @@ addParameter(p, 'newfig', 1, @isnumeric);
 addParameter(p, 'shrink', .5, @isnumeric);
 addParameter(p, 'mode', '2d', @ischar);
 addParameter(p, 'view', [120, 20], @isnumeric);
+addParameter(p, 'region', {}, @iscell);
 
 parse(p, sourceIdx, leadfield, varargin{:})
 
@@ -79,6 +85,22 @@ newfig = p.Results.newfig;
 shrink = p.Results.shrink;
 mode = p.Results.mode;
 viewpoint = p.Results.view;
+region = p.Results.region;
+
+% selecting sources based on atlas
+regionIdx = 1:size(leadfield.pos, 1);
+if ~isempty(region)
+    if isfield(leadfield, 'atlas') && ~isempty(leadfield.atlas)
+        idx = lf_get_source_all(leadfield, 'region', region);
+        if any(idx)
+            regionIdx = idx;
+        else
+            warning('indicated region(s) not found in the lead field''s atlas; plotting all sources');
+        end
+    else
+        warning('no atlas information present in the lead field; plotting all sources');
+    end
+end
 
 braincolour = [.85 .85 .85];
 sourcecolour = [ones(numel(sourceIdx),1), linspace(.6, .3, numel(sourceIdx))', linspace(.6, .3, numel(sourceIdx))'];
@@ -88,8 +110,8 @@ markersize = 35;
 if strcmp(mode, '3d')
     if newfig, h = figure('name', 'Source location', 'NumberTitle', 'off'); end
     hold on;
-    k = boundary(leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3), shrink);
-    s = trisurf(k, leadfield.pos(:,1), leadfield.pos(:,2), leadfield.pos(:,3), 'FaceColor', [1 .75, .75], 'EdgeColor', 'none');
+    k = boundary(leadfield.pos(regionIdx,1), leadfield.pos(regionIdx,2), leadfield.pos(regionIdx,3), shrink);
+    s = trisurf(k, leadfield.pos(regionIdx,1), leadfield.pos(regionIdx,2), leadfield.pos(regionIdx,3), 'FaceColor', [1 .75, .75], 'EdgeColor', 'none');
     light('Position',[1 1 1],'Style','infinite', 'Color', braincolour);
     light('Position',[-1 -1 -1],'Style','infinite', 'Color', [.5 .25 .25]);
     scatter3(leadfield.pos(sourceIdx,1), leadfield.pos(sourceIdx,2), leadfield.pos(sourceIdx,3), markersize, sourcecolour, 'fill');
@@ -101,20 +123,21 @@ if strcmp(mode, '3d')
 elseif strcmp(mode, '2d')
     if newfig, h = figure('name', 'Source location', 'NumberTitle', 'off', 'ToolBar', 'none'); end
     
-    xmin = min(leadfield.pos(:,1));
-    xmax = max(leadfield.pos(:,1));
-    ymin = min(leadfield.pos(:,2));
-    ymax = max(leadfield.pos(:,2));
-    zmin = min(leadfield.pos(:,3));
-    zmax = max(leadfield.pos(:,3));
+    xmin = min(leadfield.pos([regionIdx, sourceIdx],1));
+    xmax = max(leadfield.pos([regionIdx, sourceIdx],1));
+    ymin = min(leadfield.pos([regionIdx, sourceIdx],2));
+    ymax = max(leadfield.pos([regionIdx, sourceIdx],2));
+    zmin = min(leadfield.pos([regionIdx, sourceIdx],3));
+    zmax = max(leadfield.pos([regionIdx, sourceIdx],3));
 
     % coronal view
     subplot(1,3,1);
     pos = get(gca, 'Position');
     set(gca, 'Position', [0, pos(2), 1/3, pos(4)]);
     hold on;
-    k = boundary(leadfield.pos(:,1), leadfield.pos(:,3), shrink);
-    fill(leadfield.pos(k,1), leadfield.pos(k,3), braincolour, 'EdgeColor', 'none');
+    xz = [leadfield.pos(regionIdx,1), leadfield.pos(regionIdx,3)];
+    k = boundary(xz, shrink);
+    fill(xz(k,1), xz(k,2), braincolour, 'EdgeColor', 'none');    
     hsxz = scatter(leadfield.pos(sourceIdx, 1), leadfield.pos(sourceIdx, 3), markersize, sourcecolour, 'fill');
     xlabel('X'); ylabel('Z');
     xlim([xmin xmax]);
@@ -126,8 +149,9 @@ elseif strcmp(mode, '2d')
     pos = get(gca, 'Position');
     set(gca, 'Position', [1/2.9, pos(2), 1/3, pos(4)]);
     hold on;
-    k = boundary(leadfield.pos(:,2), leadfield.pos(:,3), shrink);
-    fill(leadfield.pos(k,2), leadfield.pos(k,3), braincolour, 'EdgeColor', 'none');
+    yz = [leadfield.pos(regionIdx,2), leadfield.pos(regionIdx,3)];
+    k = boundary(yz, shrink);
+    fill(yz(k,1), yz(k,2), braincolour, 'EdgeColor', 'none');
     hsyz = scatter(leadfield.pos(sourceIdx, 2), leadfield.pos(sourceIdx, 3), markersize, sourcecolour, 'fill');
     xlabel('Y'); ylabel('Z');
     xlim([ymin ymax]);
@@ -139,8 +163,9 @@ elseif strcmp(mode, '2d')
     pos = get(gca, 'Position');
     set(gca, 'Position', [2/3, pos(2), 1/3, pos(4)]);
     hold on;
-    k = boundary(leadfield.pos(:,1), leadfield.pos(:,2), shrink);
-    fill(leadfield.pos(k,1), leadfield.pos(k,2), braincolour, 'EdgeColor', 'none');
+    xy = [leadfield.pos(regionIdx,1), leadfield.pos(regionIdx,2)];
+    k = boundary(xy, shrink);
+    fill(xy(k,1), xy(k,2), braincolour, 'EdgeColor', 'none');
     hsxy = scatter(leadfield.pos(sourceIdx, 1), leadfield.pos(sourceIdx, 2), markersize, sourcecolour, 'fill');
     xlabel('X'); ylabel('Y');
     xlim([xmin xmax]);

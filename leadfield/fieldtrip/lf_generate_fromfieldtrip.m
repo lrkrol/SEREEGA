@@ -26,6 +26,9 @@
 %                           for each source.
 %            .pos         - xyz MNI coordinates of each source
 %            .chanlocs    - channel information in EEGLAB format
+%            .atlas       - atlas (region) indication for each source; this
+%                           is simply 'Brain' until more specific 
+%                           functionality is added
 %
 % Usage example:
 %       >> lf = lf_generate_fromfieldtrip('labels', {'Fz', 'Cz', 'Pz'}, ...
@@ -40,6 +43,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2021-01-06 lrk
+%   - Added lf.atlas
 % 2018-11-08 lrk
 %   - Now continues with empty labels if montage not found
 % 2018-03-26 lrk
@@ -163,5 +168,6 @@ lf.orientation = zeros(size(leadfield, 2), 3);
 lf.pos = ftlf.pos(ftlf.inside,:);
 lf.chanlocs = readlocs('chanlocs-standard_1005.elp');
 lf.chanlocs = lf.chanlocs(chanidx);
+lf.atlas = repmat({'Brain'}, size(lf.pos, 1), 1);
 
 end

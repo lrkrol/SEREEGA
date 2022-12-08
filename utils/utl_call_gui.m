@@ -17,10 +17,13 @@
 %       >> utl_call_gui('sources', lf);
 %       >> utl_call_gui('plot_headmodel', lf);
 % 
-%                    Copyright 2021 Laurens R Krol
+%                    Copyright 2021, 2022 Laurens R Krol
 %                    Neuroadaptive Human-Computer Interaction
 %                    Brandenburg University of Technology
 
+% 2022-11-16 lrk
+%   - Fixed issue where some GUI dialogs relied on variables in the base
+%     workspace
 % 2021-10-01 First version
 
 % This file is part of Simulating Event-Related EEG Activity (SEREEGA).
@@ -40,18 +43,24 @@
 
 function utl_call_gui(popfunction, leadfield)
 
-% creating temporary EEG dataset
-EEG.etc.sereega.leadfield = leadfield; %#ok<STRNU>
-
-% amending popfunction to full pop_sereega_*(EEG)
+% amending popfunction to full pop_sereega_* if not already the case
 if ~startsWith(popfunction, 'pop_sereega_')
     popfunction = ['pop_sereega_' popfunction];
 end
-if ~endsWith(popfunction, '(EEG)')
-    popfunction = [popfunction '(EEG)'];
-end
+
+% some functions need access to the EEG variable in the base workspace:
+% copying base EEG to temporary variable and replacing with new local EEG
+% that only contains the requested leadfield
+localEEG.etc.sereega.leadfield = leadfield;
+localEEG.etc.sereega.components = struct('source', {}, 'signal', {}, 'orientation', {}, 'orientationDv', {});
+evalin('base', 'tempEEG_for_utl_call_gui = EEG;');
+assignin('base', 'EEG', localEEG);
 
 % calling GUI
-eval(popfunction);
+evalin('base', [popfunction '(EEG);']);
+
+% restoring base variables
+evalin('base', 'EEG = tempEEG_for_utl_call_gui;');
+evalin('base', 'clear tempEEG_for_utl_call_gui;');
 
 end
