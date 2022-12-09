@@ -8,7 +8,7 @@ Reference:
 
 (See also [this PDF mirror](https://lrkrol.com/files/krol2018jnm-sereega.pdf), or [this bioRxiv preprint](https://www.biorxiv.org/content/early/2018/05/18/326066).)
 
-![SEREEGA](/docs/SEREEGA-scripting.png)
+![SEREEGA](/docs/figures/SEREEGA-scripting.png)
 
 
 ## Contents
@@ -463,7 +463,7 @@ Keep in mind that adding multiple sources to one and the same component is compl
 
 This, then, results in the following simplified workflow using SEREEGA:
 
-![SEREEGA workflow](/docs/workflow.png)
+![SEREEGA workflow](/docs/figures/workflow.png)
 
 
 ### More signal types
@@ -472,7 +472,7 @@ We have seen the _event-related potential_ (ERP) and _noise_ types of signal act
 
 Although not all parameters can easily be visualised, the below figure provides an illustration of three base signal types (ERP, noise, and ERSP, described next) along with its main parameters.
 
-![Selected SEREEGA signals and parameters](/docs/signals.png)
+![Selected SEREEGA signals and parameters](/docs/figures/signals.png)
 
 
 #### Event-related spectral perturbations
@@ -694,7 +694,7 @@ An exception to this is the lead field converted from Brainstorm. Brainstorm exp
 
 ### Using the GUI
 
-![SEREEGA](/docs/SEREEGA-GUI.png)
+![SEREEGA](/docs/figures/SEREEGA-GUI.png)
 
 When using SEREEGA as an EEGLAB plug-in, it will appear as a separate sub-menu in EEGLAB's "Tools" menu. The SEREEGA menu provides options to follow the basic steps outlined before in this tutorial. 
 
