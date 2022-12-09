@@ -53,6 +53,8 @@
 %                    Neuroadaptive Human-Computer Interaction
 %                    Brandenburg University of Technology
 
+% 2022-12-09 lrk
+%   - Switched to nanmean of confidence also in finalconsole output
 % 2022-11-25 lrk
 %   - Preallocated variables for efficiency
 % 2022-11-17 lrk
@@ -147,6 +149,6 @@ atlas = utl_sanitize_atlas(atlas);
 leadfield.atlas(currentregionidx) = atlas;
 delete(w);
 
-fprintf('Done.\nAtlas: %s\nAverage confidence: %.1f%%\n%d unkowns (%3.1f%%)\n', atlasnames{atlasselector}, mean(confidence), unknowns, unknowns/numsources*100);
+fprintf('Done.\nAtlas: %s\nAverage confidence: %.1f%%\n%d unkowns (%3.1f%%)\n', atlasnames{atlasselector}, nanmean(confidence), unknowns, unknowns/numsources*100);
 
 end
