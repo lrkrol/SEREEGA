@@ -133,6 +133,8 @@
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2022-12-16 lrk
+%   - fixed unreachable elseif statement to check modulation
 % 2021-09-27 lrk
 %   - updated documentation to reflect 2018-06-04 utl_apply_dvslopeshift change
 % 2018-06-04 lrk
@@ -173,7 +175,7 @@ if ~isfield(class, 'frequency')
     error('SEREEGA:ersp_check_class:missingField', 'field ''frequency'' is missing from given ERSP class variable');
 elseif ~isfield(class, 'amplitude')
     error('SEREEGA:ersp_check_class:missingField', 'field ''amplitude'' is missing from given ERSP class variable');
-elseif ~isfield(class, 'amplitude')
+elseif ~isfield(class, 'modulation')
     error('SEREEGA:ersp_check_class:missingField', 'field ''modulation'' is missing from given ERSP class variable');
 elseif isfield(class, 'frequencyShift') && numel(class.frequencyShift) ~= 1
     error('SEREEGA:ersp_check_class:incorrectFieldValue', 'frequencyShift must be a single value');
