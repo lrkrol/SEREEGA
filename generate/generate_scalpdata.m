@@ -25,8 +25,10 @@
 %                     white noise added to the final scalp data. default: 0
 %                     see utl_add_sensornoise and/or utl_mix_data for more
 %                     options.
-%       showprogress - 1|0, whether or not to show progress updates in the
-%                      console, default 1
+%       showProgress - 1|0, whether or not to show progress updates in the
+%                      console, default: 1
+%       useParallelPool - 1|0, whether or not to use parallel processing
+%                         where available. default: 1
 %       legacy_rndmultsrc - 0|1, reinstates legacy (<=1.0.19) behaviour
 %                           where, when multiple sources are indicated in
 %                           one component, only one random source is
@@ -48,10 +50,12 @@
 %       >> comp = utl_create_component(1, erp, lf);
 %       >> scalpdata = generate_scalpdata(comp, lf, epochs);
 % 
-%                    Copyright 2017, 2018 Laurens R Krol
+%                    Copyright 2017, 2018, 2023 Laurens R. Krol
 %                    Team PhyPA, Biological Psychology and Neuroergonomics,
 %                    Berlin Institute of Technology
 
+% 2023-07-10 lrk
+%   - Added optional useParallelPool argument
 % 2021-07-05 lrk
 %   - Switched to a parallel loop to generate the epochs (where available)
 % 2020-01-11 lrk
@@ -96,7 +100,8 @@ addRequired(p, 'epochs', @isstruct);
 addParameter(p, 'normaliseLeadfield', 0, @isnumeric);
 addParameter(p, 'normaliseOrientation', 0, @isnumeric);
 addParameter(p, 'sensorNoise', 0, @isnumeric);
-addParameter(p, 'showprogress', 1, @isnumeric);
+addParameter(p, 'showProgress', 1, @isnumeric);
+addParameter(p, 'useParallelPool', 1, @isnumeric);
 addParameter(p, 'legacy_rndmultsrc', 0, @isnumeric);
 
 parse(p, component, leadfield, epochs, varargin{:})
@@ -107,7 +112,8 @@ epochs = p.Results.epochs;
 normaliseLeadfield = p.Results.normaliseLeadfield;
 normaliseOrientation = p.Results.normaliseOrientation;
 sensorNoise = p.Results.sensorNoise;
-showprogress = p.Results.showprogress;
+showProgress = p.Results.showProgress;
+useParallelPool = p.Results.useParallelPool;
 legacy_rndmultsrc = p.Results.legacy_rndmultsrc;
 
 component = utl_check_component(component, leadfield);
@@ -115,13 +121,17 @@ component = utl_check_component(component, leadfield);
 scalpdata = zeros(numel(leadfield.chanlocs), floor((epochs.length/1000)*epochs.srate), epochs.n);
 sourcedata = zeros(length(component), floor((epochs.length/1000)*epochs.srate), epochs.n);
 
-% starting parallel pool if available
-if exist('gcp') && isempty(gcp('nocreate'))
+% starting parallel pool if available, or skipping its autocreation
+if ~useParallelPool
+    ps = parallel.Settings;
+    originalSetting = ps.Pool.AutoCreate;
+    ps.Pool.AutoCreate = false;
+elseif exist('gcp', 'file') && isempty(gcp('nocreate'))
     parpool;
 end
 
 fprintf('Generating scalp data... ');
-if showprogress
+if showProgress
     progress_start = tic;
     utl_show_progress_timetocomplete;
     utl_show_progress_parfor(epochs.n);
@@ -186,7 +196,7 @@ parfor e = 1:epochs.n
     sourcedata(:,:,e) = epochsourcedata;
     scalpdata(:,:,e) = sum(epochscalpdata, 3);
         
-    if showprogress
+    if showProgress
         % keeping time
         p = utl_show_progress_parfor();
         utl_show_progress_timetocomplete(p/100, [], [], progress_start);
@@ -194,9 +204,14 @@ parfor e = 1:epochs.n
     
 end
 
-if showprogress
+if showProgress
     % deleting temp file
     utl_show_progress_parfor(0);
+end
+
+% reverting parpool settings
+if ~useParallelPool
+    ps.Pool.AutoCreate = originalSetting;
 end
 
 % adding sensor noise
