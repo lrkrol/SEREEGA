@@ -4,11 +4,11 @@
 %       and validates/completes it. Also validates/completes all indicated 
 %       signals.
 %
-%       A SEREEGA brain component is one of the main elements in the
-%       forward model, and contains the source location, its orientation,
-%       and the activation pattern(s) it produces.
+%       A SEREEGA component is one of the main elements in the forward
+%       model, and contains the source location, its orientation, and the
+%       activation pattern(s) it produces.
 %
-%       A full brain component is defined by the following fields.
+%       A full component is defined by the following fields.
 %         .source        - row array of source indices in the leadfield, 
 %                          giving the component's source location(s). 
 %                          if more than one source is indicated, activity

@@ -4,7 +4,7 @@
 %       given components and a leadfield. 
 %
 % In:
-%       components - 1-by-n struct of SEREEGA brain components. see
+%       components - 1-by-n struct of SEREEGA components. see
 %                    utl_check_component for details.
 %       leadfield - the leadfield from which the components' sources are
 %                   taken.
